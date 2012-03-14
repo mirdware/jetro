@@ -1,4 +1,5 @@
 <html>
+<h1>std.js</h1>
 <p><a href="http://mirdware.co.cc">STD.JS</a> es un proyecto de código abierto, que he comenzado por mi cuenta, con el único fin de reunir una serie de funciones utilizadas frecuentemente con diferentes fines. De esta manera STD.JS posee funciones para:</p>
 
 <ul>
