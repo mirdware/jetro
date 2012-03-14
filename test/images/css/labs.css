@@ -1,0 +1,266 @@
+/* --------------- BOTONES --------------- */
+
+.button, .button:visited { /* botones genéricos */
+background: #222 url(http://sites.google.com/site/zavaletaster/Home/overlay.png) repeat-x;
+display: inline-block;
+padding: 5px 10px 6px;
+color: #FFF;
+text-decoration: none;
+-moz-border-radius: 6px;
+-webkit-border-radius: 6px;
+-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
+border-top: 0px;
+border-left: 0px;
+border-right: 0px;
+border-bottom: 1px solid rgba(0,0,0,0.25);
+position: relative;
+cursor:pointer;
+}
+
+button::-moz-focus-inner,
+input[type="reset"]::-moz-focus-inner,
+input[type="button"]::-moz-focus-inner,
+input[type="submit"]::-moz-focus-inner,
+input[type="file"] > input[type="button"]::-moz-focus-inner {
+border: none;
+}
+
+.button:hover { /* el efecto hover */
+background-color: #111
+color: #FFF;
+}
+
+.button:active{ /* el efecto click */
+top: 1px;
+}
+
+/* botones pequeños */
+.small.button, .small.button:visited {
+font-size: 11px ;
+}
+
+/* botones medianos */
+.button, .button:visited,.medium.button, .medium.button:visited {
+font-size: 13px;
+font-weight: bold;
+line-height: 1;
+text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
+}
+
+/* botones grandes */
+.large.button, .large.button:visited {
+font-size:14px;
+padding: 8px 14px 9px;
+}
+
+/* botones extra grandes */
+.super.button, .super.button:visited {
+font-size: 34px;
+padding: 8px 14px 9px;
+}
+
+.pink.button { background-color: #E22092; }
+.pink.button:hover{ background-color: #C81E82; }
+
+.green.button, .green.button:visited { background-color: #91BD09; }
+.green.button:hover{ background-color: #749A02; }
+
+.red.button, .red.button:visited { background-color: #E62727; }
+.red.button:hover{ background-color: #CF2525; }
+
+.orange.button, .orange.button:visited { background-color: #FF5C00; }
+.orange.button:hover{ background-color: #D45500; }
+
+.blue.button, .blue.button:visited { background-color: #2981E4; }
+.blue.button:hover{ background-color: #2575CF; }
+
+.yellow.button, .yellow.button:visited { background-color: #FFB515; }
+.yellow.button:hover{ background-color: #FC9200; }
+/*********************************/
+@font-face {
+    font-family: 'OrbitronBold';
+    src: url('orbitron-bold-webfont.eot');
+    src: url('orbitron-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('orbitron-bold-webfont.woff') format('woff'),
+         url('orbitron-bold-webfont.ttf') format('truetype'),
+         url('orbitron-bold-webfont.svg#OrbitronBold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+hr {
+	clear: both;
+}
+
+#overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index:1001;
+	background: url(../opacity.png);
+}
+
+#modal {
+	position: fixed;
+	padding: 0;
+	z-index: 1002;
+	overflow: hidden;
+	top: 50%;
+	left: 50%;
+	display: none;
+}
+
+.head {
+	background:#3381B7;
+	width:100%;
+	height: 16px;
+	padding-bottom: 5px;
+	padding-top: 5px;
+	cursor: move;
+}
+
+.head h2 {
+	padding: 0;
+	margin: 0;
+	margin-left: 10px;
+	margin-right: 50px;
+	font: 700 14px Verdana, Geneva, sans-serif;
+	color: #FFF;
+}
+
+.head div {
+	margin-right: 10px;
+	float: right;
+	cursor: pointer;
+	background: url(../cerrar.png) no-repeat;
+	width: 15px;
+	height: 15px;
+}
+
+#overlay h3 {
+	margin: 0;
+}
+
+.round {
+	display: block;
+}
+
+.round * {
+	display: block;
+	height: 1px;
+	overflow: hidden;
+}
+
+.r1 { margin: 0 5px; }
+.r2 { margin: 0 3px; }
+.r3 { margin: 0 2px; }
+.r4 { margin: 0 1px; height: 2px; }
+
+#hola {
+	display: none;
+	padding: 10px;
+	background: #FFF;
+}
+
+#prueba {
+	background: #F00;
+	height: 400px;
+	width: 400px;
+	margin: auto;
+	padding:0;
+	clear: both;
+}
+
+#mover {
+	position: relative;
+	width: 100px;
+	height: 100px;
+	background: #000;
+	color: #FFF;
+	cursor: move;
+}
+
+/*INS*/
+
+#ins {
+	background: #F0F0F0;
+	width: 400px;
+	padding: 10px;
+	display: none;
+}
+
+#rePass {
+	background: #F0F0F0;
+	width: 500px;
+}
+
+#ins fieldset{
+	margin: 10px auto;
+	border: solid 1px #09F;
+}
+
+#ins legend {
+	color: #09F;
+}
+
+#personal {
+	width: 350px;
+}
+
+#usuario {
+	width: 250px;
+}
+
+#ins form{
+	padding: 0;
+	margin: 0;
+}
+
+#ins textarea{
+	max-height: 50px;
+	max-width: 200px;
+	min-height: 50px;
+	min-width: 200px;
+}
+
+#target {
+	width: 20px;
+	height: 20px;
+	background: #0CC;
+}
+#target2 {
+	width: 20px;
+	height: 20px;
+	background: #0CC;
+}
+
+label {
+	display: inline-block;
+	width: 80px;
+	padding: 5px 0;
+}
+
+body {
+	padding:10px;
+	font: 90% Verdana, Geneva, sans-serif;
+}
+
+h2.title {
+	background:#0CF;
+	padding: 5px;
+	color:#FFF;
+	font-size:1.2em;
+	overflow:auto
+}
+
+p{
+	text-align: justify;
+}
+
+a img {
+	border: none;
+}

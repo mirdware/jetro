@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>MirdWare Labs &raquo; std.js</title>
+    <link rel="shortcut icon" href="images/labs.ico" />
+    <script type="text/javascript" src="../src/std.js"></script>
+    <script type="text/javascript" src="js/labs.js"></script>
+    <link href="images/CSS/labs.css" type="text/css" rel="stylesheet" media="screen" />
+    <style type="text/css">
+		.pruebaCSS {
+			width: 50px;
+			height: 50px;
+			margin: 5px;
+			float: left;
+		}
+		#hijo {
+			width:100px;
+			height: 100px;
+			background:#00F;
+			margin: 5px;
+			float:left;
+		}
+    </style>
+</head>
+
+
+
+<body>
+<div style="overflow:auto; padding-bottom:10px;">
+<a href="../" title="MirdWare"><img src="images/labs.png" style="float:left" alt="MirdWare Labs" /></a>
+<h1 style="text-align:center; font:1.5em orbitron; color:#666; margin:0; padding-top:20px">Nuevas Ideas, Buenas Ideas</h1>
+<hr />
+</div>
+<h2 class="title"><a class="button small green" style="float:right" href="https://github.com/marlonramirez/std" rel="external">Repositorio</a>Nuevas funcionalidades en std.js</h2>
+<p>Realizar una petición AJAX puede resultar costosa para el servidor (especialmente en entornos criticos), para evitar realizar peticiones innecesarias se esta planteando mejorar el sistema de ventanas modales, cacheando el nodo devuelto en memoria.</p>
+<a href="modal.html" title="Prueba cache" id="modalcache">Prueba cache</a>
+<p>Finalmente <b>sfx</b> ha dejado de ser Beta para hacer parte formal de la libreria, con el ahora objeto se pueden realizar animaciones como transiciones, efecto drag and drop o fade; su utilización se ha simplificado, para dejar de lado al operador <b>new</b> y la creación de objetos mediante constructor. Actualmente cualquier transición se efecuta con el metodo <b>anim</b> pasando tres parametos, uno de ellos opcional; dichos parametros son: element, props y opt. Element es el emento al cual se le va a aplicar la animación, props es un objeto con las propiedades que se desea animar y los valores finales de la animación, por ultimo opt el objeto con los parametros opcionales de la animación; estos parametros son: duration, fps y onComplete. Duration es el tiempo que va a durar la animación, fps los frames por segundo que interpolara la animación y onComplete es una función que se efecutara al termino de la animación. Acontinuación se vera un ejemplo de animación con sfx:</p>
+<div id="target"></div>
+
+<pre class="javascript" style="color: #006; border: 1px solid #d0d0d0; width:500px; margin:auto; padding-left:20px; font-size:12px;"><div style="font-family: Verdana, Arial, sans-serif; color: #808080; font-size: 0.7em; font-weight: bold; background-color: #f0f0ff; border-bottom: 1px solid #d0d0d0; padding: 2px; margin-left:-20px; margin-bottom: 10px;">Funcionamiento actual de sfx</div>evt.<span style="color: #006600;">add</span><span style="color: #66cc66;">&#40;</span>$<span style="color: #66cc66;">&#40;</span><span style="color: #3366CC;">&quot;#target&quot;</span><span style="color: #66cc66;">&#41;</span>,<span style="color: #66cc66;">&#123;</span>
+	click: <span style="color: #003366; font-weight: bold;">function</span> <span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span> <span style="color: #66cc66;">&#123;</span>
+		<span style="color: #000066; font-weight: bold;">if</span><span style="color: #66cc66;">&#40;</span>css<span style="color: #66cc66;">&#40;</span><span style="color: #000066; font-weight: bold;">this</span><span style="color: #66cc66;">&#41;</span>.<span style="color: #006600;">get</span><span style="color: #66cc66;">&#40;</span><span style="color: #3366CC;">&quot;width&quot;</span><span style="color: #66cc66;">&#41;</span> == <span style="color: #3366CC;">&quot;20px&quot;</span><span style="color: #66cc66;">&#41;</span> <span style="color: #66cc66;">&#123;</span>
+			sfx.<span style="color: #006600;">anim</span><span style="color: #66cc66;">&#40;</span><span style="color: #000066; font-weight: bold;">this</span>, <span style="color: #66cc66;">&#123;</span>
+				width:<span style="color: #3366CC;">&quot;100px&quot;</span>,
+				height:<span style="color: #3366CC;">&quot;100px&quot;</span>
+			<span style="color: #66cc66;">&#125;</span>, <span style="color: #66cc66;">&#123;</span>
+				duration:<span style="color: #CC0000;">500</span>
+			<span style="color: #66cc66;">&#125;</span><span style="color: #66cc66;">&#41;</span>;
+		<span style="color: #66cc66;">&#125;</span> <span style="color: #000066; font-weight: bold;">else</span> <span style="color: #66cc66;">&#123;</span>
+			sfx.<span style="color: #006600;">anim</span><span style="color: #66cc66;">&#40;</span><span style="color: #000066; font-weight: bold;">this</span>, <span style="color: #66cc66;">&#123;</span>
+				width:<span style="color: #3366CC;">&quot;20px&quot;</span>,
+				height:<span style="color: #3366CC;">&quot;20px&quot;</span>
+			<span style="color: #66cc66;">&#125;</span>, <span style="color: #66cc66;">&#123;</span>
+				duration:<span style="color: #CC0000;">500</span>
+			<span style="color: #66cc66;">&#125;</span><span style="color: #66cc66;">&#41;</span>;
+		<span style="color: #66cc66;">&#125;</span>
+	<span style="color: #66cc66;">&#125;</span>,
+	mouseover: <span style="color: #003366; font-weight: bold;">function</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span> <span style="color: #66cc66;">&#123;</span>
+		sfx.<span style="color: #006600;">anim</span><span style="color: #66cc66;">&#40;</span><span style="color: #000066; font-weight: bold;">this</span>, <span style="color: #66cc66;">&#123;</span>
+			backgroundColor: <span style="color: #3366CC;">&quot;#F00&quot;</span>
+		<span style="color: #66cc66;">&#125;</span>, <span style="color: #66cc66;">&#123;</span>
+			duration: <span style="color: #CC0000;">500</span>
+		<span style="color: #66cc66;">&#125;</span><span style="color: #66cc66;">&#41;</span>;
+	<span style="color: #66cc66;">&#125;</span>,
+	mouseout: <span style="color: #003366; font-weight: bold;">function</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span> <span style="color: #66cc66;">&#123;</span>
+		sfx.<span style="color: #006600;">anim</span><span style="color: #66cc66;">&#40;</span><span style="color: #000066; font-weight: bold;">this</span>, <span style="color: #66cc66;">&#123;</span>
+			backgroundColor: <span style="color: #3366CC;">&quot;#0CC&quot;</span>
+		<span style="color: #66cc66;">&#125;</span>, <span style="color: #66cc66;">&#123;</span>
+			duration:<span style="color: #CC0000;">500</span>
+		<span style="color: #66cc66;">&#125;</span><span style="color: #66cc66;">&#41;</span>;
+	<span style="color: #66cc66;">&#125;</span>
+<span style="color: #66cc66;">&#125;</span><span style="color: #66cc66;">&#41;</span>;<div style="font-family: Verdana, Arial, sans-serif; color: #808080; font-size: 0.7em; font-weight: bold; background-color: #f0f0ff; border-top: 1px solid #d0d0d0; padding: 2px; margin-left:-20px; margin-top:10px; text-align:right;">MirdWare &copy; 2012</div></pre>
+
+<p>Se han superado algunas limitaciones gracias al nuevo engine css std, los problemas superados son los siguientes:</p>
+<ul>
+<li>Fade de colores (es decir cambiar gradualmente de un color a otro)</li>
+<li>cambio de animación sobre la marcha (es decir obtener los datos css del elemento y segun esta información realizar la transición hacia las nuevas propiedades)</li>
+</ul>
+
+<p>Estas limitaciones se lograron superar sin abandonar en ningun momento los avances que se habian logrado obtener con la versión beta, ademas de mantener el pequeño peso de la libreria (Lo cual siempre a sido una de las prioridades de std.js). Se evaluo en algun momento del desarrollo el abandono de sfx y la inclusión de una libreria de terceros como <b>emile.js</b> la cual maneja las funciones antes mencionadas pero abandonaba algunas funcionalidades que posee sfx como lo son el manejo de tranparencias, por lo tanto tras varios estudios de rendimiento, compresión y gracias al nuevo motor css se mejoro el objeto sfx. El siguiente es un ejemplo de la misma animación anterior utilizando emile.js:</p>
+
+<div id="target2"></div>
+<pre class="javascript" style="color: #006; border: 1px solid #d0d0d0; width:500px; margin:auto; padding-left:20px; font-size:12px;"><div style="font-family: Verdana, Arial, sans-serif; color: #808080; font-size: 0.7em; font-weight: bold; background-color: #f0f0ff; border-bottom: 1px solid #d0d0d0; padding: 2px; margin-left:-20px; margin-bottom: 10px;">Funcionamiento de emile.js (mismo ejemplo sfx)</div>evt.<span style="color: #006600;">add</span><span style="color: #66cc66;">&#40;</span>$<span style="color: #66cc66;">&#40;</span><span style="color: #3366CC;">&quot;#target2&quot;</span><span style="color: #66cc66;">&#41;</span>, <span style="color: #66cc66;">&#123;</span>
+	mouseover: <span style="color: #003366; font-weight: bold;">function</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span> <span style="color: #66cc66;">&#123;</span>
+		emile<span style="color: #66cc66;">&#40;</span><span style="color: #000066; font-weight: bold;">this</span>, <span style="color: #3366CC;">&quot;background-color: #F00&quot;</span>, <span style="color: #66cc66;">&#123;</span>
+			duration: <span style="color: #CC0000;">500</span>
+		<span style="color: #66cc66;">&#125;</span><span style="color: #66cc66;">&#41;</span>;
+	<span style="color: #66cc66;">&#125;</span>,
+	mouseout: <span style="color: #003366; font-weight: bold;">function</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span> <span style="color: #66cc66;">&#123;</span>
+		emile<span style="color: #66cc66;">&#40;</span><span style="color: #000066; font-weight: bold;">this</span>, <span style="color: #3366CC;">&quot;background-color: #0CC&quot;</span>, <span style="color: #66cc66;">&#123;</span>
+			duration: <span style="color: #CC0000;">500</span>
+		<span style="color: #66cc66;">&#125;</span><span style="color: #66cc66;">&#41;</span>;
+	<span style="color: #66cc66;">&#125;</span>,
+	click: <span style="color: #003366; font-weight: bold;">function</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span> <span style="color: #66cc66;">&#123;</span>
+		<span style="color: #000066; font-weight: bold;">if</span><span style="color: #66cc66;">&#40;</span>css<span style="color: #66cc66;">&#40;</span><span style="color: #000066; font-weight: bold;">this</span><span style="color: #66cc66;">&#41;</span>.<span style="color: #006600;">get</span><span style="color: #66cc66;">&#40;</span><span style="color: #3366CC;">&quot;width&quot;</span><span style="color: #66cc66;">&#41;</span> == <span style="color: #3366CC;">&quot;20px&quot;</span><span style="color: #66cc66;">&#41;</span> <span style="color: #66cc66;">&#123;</span>
+			emile<span style="color: #66cc66;">&#40;</span><span style="color: #000066; font-weight: bold;">this</span>, <span style="color: #3366CC;">&quot;width:100px;height:100px;&quot;</span>, <span style="color: #66cc66;">&#123;</span>
+				duration: <span style="color: #CC0000;">500</span>
+			<span style="color: #66cc66;">&#125;</span><span style="color: #66cc66;">&#41;</span>;
+		<span style="color: #66cc66;">&#125;</span> <span style="color: #000066; font-weight: bold;">else</span> <span style="color: #66cc66;">&#123;</span>
+			emile<span style="color: #66cc66;">&#40;</span><span style="color: #000066; font-weight: bold;">this</span>, <span style="color: #3366CC;">&quot;width:20px;height:20px;&quot;</span>, <span style="color: #66cc66;">&#123;</span>
+				duration: <span style="color: #CC0000;">500</span>
+			<span style="color: #66cc66;">&#125;</span><span style="color: #66cc66;">&#41;</span>;
+		<span style="color: #66cc66;">&#125;</span>
+	<span style="color: #66cc66;">&#125;</span>
+<span style="color: #66cc66;">&#125;</span><span style="color: #66cc66;">&#41;</span>;<div style="font-family: Verdana, Arial, sans-serif; color: #808080; font-size: 0.7em; font-weight: bold; background-color: #f0f0ff; border-top: 1px solid #d0d0d0; padding: 2px; margin-left:-20px; margin-top:10px; text-align:right;">MirdWare &copy; 2012</div></pre>
+
+<p>Una de las premisas de esta nuevaa versión de std es el trabajo modular, no unificado en un solo modulo como lo hacen otras librerias,  si no modular en funcionalidad; es decir un modulo independiente para eventos, unos para JSON, uno para AJAX, etc, precisamente de esta ultima tecnica es la que más se hace uso en std y ahora se encuentra integrada con muchas otras funciones orientadas al mismo proposito dentro de un objeto llamado <b>ajax</b>. Una de las tecnicas es la de recolectar datos de un formulario mediante el metodo <b>form</b>, el cual recibe como parametro la referencia de un formulario y devuelve un objeto que asocia nombre de campo y valor, como se haria normalmente al enviar un formulario. Acontinuación se muestran las diferencias entre enviar un formulario normalmente y enviarlo mediante el metodo <b>request</b> y form del objeto ajax.</p>
+
+<form action="prueba.php" method="get" style="padding:10px 0; margin:auto; width: 300px;" id="form">
+	<fieldset style="text-align:center"><legend>Método</legend>
+    POST<input type="radio" name="method" value="POST" />
+    GET<input type="radio" name="method" value="GET" />
+    </fieldset>
+	<label>Nombre:</label> <input type="text" name="nombre" /><br />
+    <label>Area:</label> <textarea cols="10" rows="5" name="area"></textarea><br />
+    <label>Algo:</label> <input type="checkbox" name="enviar" value="algo" /><br />
+    <label>Opciones:</label> opt1<input type="radio" name="radio" value="opt1" />
+    opt2<input type="radio" name="radio" value="opt2" />
+    opt3<input type="radio" name="radio" value="opt3" /><br />
+    <label>Hola:</label> <select name="hola">
+    	<option>1</option>
+        <option>2</option>
+        <option>3</option>
+    </select><br />
+    <div style="text-align:center">
+    <input type="submit" value="normal" />
+    <input type="submit" value="std" id="std"/>
+    </div>
+</form>
+
+<pre class="javascript" style="color: #006; border: 1px solid #d0d0d0; width:500px; margin:auto; padding-left:20px; font-size:12px;"><div style="font-family: Verdana, Arial, sans-serif; color: #808080; font-size: 0.7em; font-weight: bold; background-color: #f0f0ff; border-bottom: 1px solid #d0d0d0; padding: 2px; margin-left:-20px; margin-bottom: 10px;">Enviar formulario con std.js</div><span style="color: #003366; font-weight: bold;">function</span> ajaxReq<span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span> <span style="color: #66cc66;">&#123;</span>
+	evt.<span style="color: #006600;">get</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>.<span style="color: #006600;">preventDefault</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>;
+	<span style="color: #003366; font-weight: bold;">var</span> form = ajax.<span style="color: #006600;">form</span><span style="color: #66cc66;">&#40;</span><span style="color: #000066; font-weight: bold;">this</span>.<span style="color: #006600;">form</span><span style="color: #66cc66;">&#41;</span>;
+	ajax.<span style="color: #006600;">request</span><span style="color: #66cc66;">&#40;</span><span style="color: #000066; font-weight: bold;">this</span>.<span style="color: #006600;">form</span>.<span style="color: #006600;">action</span>,<span style="color: #003366; font-weight: bold;">function</span><span style="color: #66cc66;">&#40;</span>r<span style="color: #66cc66;">&#41;</span> <span style="color: #66cc66;">&#123;</span>
+		<span style="color: #000066;">alert</span><span style="color: #66cc66;">&#40;</span>r<span style="color: #66cc66;">&#41;</span>;
+	<span style="color: #66cc66;">&#125;</span>,<span style="color: #66cc66;">&#123;</span>
+		data: form,
+		method:form.<span style="color: #006600;">method</span>
+	<span style="color: #66cc66;">&#125;</span><span style="color: #66cc66;">&#41;</span>;
+<span style="color: #66cc66;">&#125;</span><div style="font-family: Verdana, Arial, sans-serif; color: #808080; font-size: 0.7em; font-weight: bold; background-color: #f0f0ff; border-top: 1px solid #d0d0d0; padding: 2px; margin-left:-20px; margin-top:10px; text-align:right;">MirdWare &copy; 2012</div></pre>
+
+<p>Solo he de mencionar que como se ha observado en el anterior ejemplo <b>evt.get().preventDefault();</b> se ha colocado al principio de la función y no al final como era constumbre, esto tiene como fin la deteccion correcta de errores mediante consola javascript.</p>
+
+<p><b>evt</b> (Antiguamente Event) tambien tiene novedades, aparate de la reestructuración interna a un nuevo patron de diseño, cuenta con la inclusión de un nuevo metodo <b>on</b> que sirve para delegar a un elemento padre las acciones que se puedan realizar sobre sus elementos hijos, tiene como principal pilar el burbujeo del evento, por lo cual no son soportados los eventos que no burbujean. La principal función que desempeña este nuevo metodo dentro de std.js, es la de colocar a escuchar al documento todos los elementos anchor que posean atributo <b>rel="modal"</b> o <b>rel="external"</b>, de esta manera cualquier nuevo elemento creado dinamicamente que posea estos atributos, puede accedes a las funcionalidades javascript que estos conllevan.</p>
+
+<ul id="list">
+	<li id="item1"><a href="modal.html" rel="modal" title="Ventana Modal">Item1</a></li>
+    <li id="item2"><a href="modal.html" rel="modal" title="Ventana Modal">Item2</a></li>
+    <li id="item3"><a href="modal.html" rel="modal" title="Ventana Modal">Item3</a></li>
+</ul>
+
+<input type="button" value="Agregar" onclick="addItem()" />
+<button id="prototype">Prototype</button>
+
+
+<pre class="javascript" style="color: #006; border: 1px solid #d0d0d0; width:500px; margin:auto; padding-left:20px; font-size:12px;"><div style="font-family: Verdana, Arial, sans-serif; color: #808080; font-size: 0.7em; font-weight: bold; background-color: #f0f0ff; border-bottom: 1px solid #d0d0d0; padding: 2px; margin-left:-20px; margin-bottom: 10px;">Delegar al elemento #list los eventos de las etiquetas anchors</div>evt.<span style="color: #006600;">on</span><span style="color: #66cc66;">&#40;</span>$<span style="color: #66cc66;">&#40;</span><span style="color: #3366CC;">&quot;#list&quot;</span><span style="color: #66cc66;">&#41;</span>,<span style="color: #3366CC;">&quot;a&quot;</span>,<span style="color: #3366CC;">&quot;click&quot;</span>, <span style="color: #003366; font-weight: bold;">function</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span><span style="color: #66cc66;">&#123;</span>
+	<span style="color: #000066;">alert</span><span style="color: #66cc66;">&#40;</span><span style="color: #3366CC;">&quot;HOLA&quot;</span><span style="color: #66cc66;">&#41;</span>;
+	evt.<span style="color: #006600;">get</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>.<span style="color: #006600;">preventDefault</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>;
+<span style="color: #66cc66;">&#125;</span><span style="color: #66cc66;">&#41;</span>;<div style="font-family: Verdana, Arial, sans-serif; color: #808080; font-size: 0.7em; font-weight: bold; background-color: #f0f0ff; border-top: 1px solid #d0d0d0; padding: 2px; margin-left:-20px; margin-top:10px; text-align:right;">MirdWare &copy; 2012</div></pre>
+
+<p>A raiz de algunos proyectos me he dado cuenta que el metodo on del objeto evt no esta funcionando como deberia, por lo tanto este espacio esta destinado para realizar las pruebas necesarias para que este metodo funcione correctamente.</p>
+
+<div id="observador" style="overflow:auto">
+<a href="#" id="lik2"><img src="images/widget.png" alt="add" /></a>
+<div id="hijo"></div>
+<a href="#" style="width:100px; height: 100px; display:block; margin: 5px; float:left; background:#0F0" id="link1"></a>
+</div>
+
+<p>Se ha solucionado el problema presentado con el nuevo metodo de <b>evt</b> pero su estructura a cambiado en favor de solucionar dicho inconveniente, siempre es bueno poseer un betatester para este tipo de tareas (deteccion de comportamientos no deseados o bugs), pero en ocaciones no es posible y los errores se hallan dentro del entorno mismo de producción, como ha sucedido en esta ocación. El problema radicaba en que al pulsar sobre un nodo, el elemento delegado para observar el comportamiento sus hijos solo observaba el comportamiento del nodo seleccionado y si este nodo no tenia relación con los elementos a observar no se realizaba ninguna acción, hasta ahi se puede decir que el comportamiento es el deseado, pero no es así, supongamos el siguiente caso:</p>
+
+<pre class="html4strict" style="color: #006; border: 1px solid #d0d0d0; width:500px; margin:auto; padding-left:20px; font-size:12px;"><div style="font-family: Verdana, Arial, sans-serif; color: #808080; font-size: 0.7em; font-weight: bold; background-color: #f0f0ff; border-bottom: 1px solid #d0d0d0; padding: 2px; margin-left:-20px; margin-bottom: 10px;">Comportamiento no deseado en on</div><span style="color: #009900;"><a href="http://december.com/html/4/element/div.html"><span style="color: #000000; font-weight: bold;">&lt;div</span></a> <span style="color: #000066;">id</span>=<span style="color: #ff0000;">&quot;observador&quot;</span><span style="color: #ff0000;">&quot;&gt;</span>
+	<span style="color: #009900;">&lt;a rel=&quot;</span>modal<span style="color: #ff0000;">&quot;&gt;</span><span style="color: #009900;">&lt;img src=&quot;</span>images/widget.png<span style="color: #ff0000;">&quot; /&gt;</span><span style="color: #009900;">&lt;/a&gt;</span>
+<span style="color: #009900;">&lt;/div&gt;</span></span><div style="font-family: Verdana, Arial, sans-serif; color: #808080; font-size: 0.7em; font-weight: bold; background-color: #f0f0ff; border-top: 1px solid #d0d0d0; padding: 2px; margin-left:-20px; margin-top:10px; text-align:right;">MirdWare &copy; 2012</div></pre><p>En el caso planteado al pulsar sobre la imagen no se producira ningun tipo de efecto, dado que no se ha clickeado sobre el enlace si no sobre la imagen. Para solucionar esto se debe implementar un burbujeo hacia los padres del elemento pulsado, esto con el fin de revisar si algun padre del elemeto pulsado esta siendo observado. En este caso, se implementa un ciclo para ir revisando los padres del elemento de la siguiente manera:</p>
+
+<pre class="javascript" style="color: #006; border: 1px solid #d0d0d0; width:500px; margin:auto; padding-left:20px; font-size:12px;width:750px;"><div style="font-family: Verdana, Arial, sans-serif; color: #808080; font-size: 0.7em; font-weight: bold; background-color: #f0f0ff; border-bottom: 1px solid #d0d0d0; padding: 2px; margin-left:-20px; margin-bottom: 10px;">Metodo on del objeto evt</div>on: <span style="color: #003366; font-weight: bold;">function</span><span style="color: #66cc66;">&#40;</span>element, observe, nEvent, fn, capture<span style="color: #66cc66;">&#41;</span> <span style="color: #66cc66;">&#123;</span>
+	<span style="color: #000066; font-weight: bold;">if</span><span style="color: #66cc66;">&#40;</span>loops<span style="color: #66cc66;">&#40;</span>element, nEvent, fn, capture, observe<span style="color: #66cc66;">&#41;</span><span style="color: #66cc66;">&#41;</span> <span style="color: #66cc66;">&#123;</span>
+		core.<span style="color: #006600;">add</span><span style="color: #66cc66;">&#40;</span>element, nEvent, <span style="color: #003366; font-weight: bold;">function</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span> <span style="color: #66cc66;">&#123;</span>
+			<span style="color: #003366; font-weight: bold;">var</span> t = core.<span style="color: #006600;">get</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>.<span style="color: #006600;">target</span>;
+			<span style="color: #000066; font-weight: bold;">if</span><span style="color: #66cc66;">&#40;</span>observe == <span style="color: #3366CC;">&quot;*&quot;</span><span style="color: #66cc66;">&#41;</span> <span style="color: #66cc66;">&#123;</span>
+				fn.<span style="color: #006600;">apply</span><span style="color: #66cc66;">&#40;</span>t, arguments<span style="color: #66cc66;">&#41;</span>;
+			<span style="color: #66cc66;">&#125;</span> <span style="color: #000066; font-weight: bold;">else</span> <span style="color: #66cc66;">&#123;</span>
+				<span style="color: #000066; font-weight: bold;">while</span><span style="color: #66cc66;">&#40;</span>t &amp;&amp; t !== element<span style="color: #66cc66;">&#41;</span> <span style="color: #66cc66;">&#123;</span>
+					<span style="color: #000066; font-weight: bold;">if</span><span style="color: #66cc66;">&#40;</span>t.<span style="color: #006600;">nodeName</span> == observe.<span style="color: #006600;">toUpperCase</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span> || <span style="color: #3366CC;">&quot;#&quot;</span>+t.<span style="color: #006600;">id</span> == observe || 
+					<span style="color: #3366CC;">&quot;.&quot;</span>+t.<span style="color: #006600;">className</span> == observe || <span style="color: #3366CC;">&quot;@&quot;</span>+t.<span style="color: #000066;">name</span> == observe<span style="color: #66cc66;">&#41;</span> <span style="color: #66cc66;">&#123;</span>
+						fn.<span style="color: #006600;">apply</span><span style="color: #66cc66;">&#40;</span>t, arguments<span style="color: #66cc66;">&#41;</span>;
+					<span style="color: #66cc66;">&#125;</span>
+					t = t.<span style="color: #006600;">parentNode</span>;
+				<span style="color: #66cc66;">&#125;</span>
+			<span style="color: #66cc66;">&#125;</span>
+		<span style="color: #66cc66;">&#125;</span>, capture<span style="color: #66cc66;">&#41;</span>;
+	<span style="color: #66cc66;">&#125;</span>
+<span style="color: #66cc66;">&#125;</span><div style="font-family: Verdana, Arial, sans-serif; color: #808080; font-size: 0.7em; font-weight: bold; background-color: #f0f0ff; border-top: 1px solid #d0d0d0; padding: 2px; margin-left:-20px; margin-top:10px; text-align:right;">MirdWare &copy; 2012</div></pre>
+
+<p>Como hemos observado las ventanas speudomodales cuenta con un nuevo metodo de apertura que hace uso del ya mensionado evt.on(), con lo cual logra abrir ventanas modales de elementos creados dinamicamente, para esto se ha reestructurado el sistema de apertura en ready().</p>
+
+
+
+<pre class="javascript" style="color: #006; border: 1px solid #d0d0d0; width:500px; margin:auto; padding-left:20px; font-size:12px;width:750px;width:500px;"><div style="font-family: Verdana, Arial, sans-serif; color: #808080; font-size: 0.7em; font-weight: bold; background-color: #f0f0ff; border-bottom: 1px solid #d0d0d0; padding: 2px; margin-left:-20px; margin-bottom: 10px;">Antiguo sistema de apertura modal</div><span style="color: #003366; font-weight: bold;">var</span> anchors = $<span style="color: #66cc66;">&#40;</span><span style="color: #3366CC;">&quot;a&quot;</span><span style="color: #66cc66;">&#41;</span>;
+<span style="color: #000066; font-weight: bold;">for</span><span style="color: #66cc66;">&#40;</span><span style="color: #003366; font-weight: bold;">var</span> i=<span style="color: #CC0000;">0</span>,a; a=anchors<span style="color: #66cc66;">&#91;</span>i<span style="color: #66cc66;">&#93;</span>; i++<span style="color: #66cc66;">&#41;</span> <span style="color: #66cc66;">&#123;</span>
+	<span style="color: #000066; font-weight: bold;">if</span> <span style="color: #66cc66;">&#40;</span>a.<span style="color: #006600;">href</span><span style="color: #66cc66;">&#41;</span> <span style="color: #66cc66;">&#123;</span>
+		<span style="color: #000066; font-weight: bold;">if</span> <span style="color: #66cc66;">&#40;</span>a.<span style="color: #006600;">rel</span><span style="color: #66cc66;">&#41;</span> <span style="color: #66cc66;">&#123;</span>
+			<span style="color: #000066; font-weight: bold;">if</span> <span style="color: #66cc66;">&#40;</span>a.<span style="color: #006600;">rel</span> == <span style="color: #3366CC;">&quot;external&quot;</span><span style="color: #66cc66;">&#41;</span> <span style="color: #66cc66;">&#123;</span>
+				a.<span style="color: #006600;">target</span> = <span style="color: #3366CC;">&quot;_blank&quot;</span>;
+			<span style="color: #66cc66;">&#125;</span> <span style="color: #000066; font-weight: bold;">else</span> <span style="color: #000066; font-weight: bold;">if</span> <span style="color: #66cc66;">&#40;</span>a.<span style="color: #006600;">rel</span> == <span style="color: #3366CC;">&quot;modal&quot;</span><span style="color: #66cc66;">&#41;</span> <span style="color: #66cc66;">&#123;</span>
+				evt.<span style="color: #006600;">add</span><span style="color: #66cc66;">&#40;</span>a,<span style="color: #3366CC;">&quot;click&quot;</span>,showModal<span style="color: #66cc66;">&#41;</span>;
+			<span style="color: #66cc66;">&#125;</span>
+		<span style="color: #66cc66;">&#125;</span>
+	<span style="color: #66cc66;">&#125;</span>
+<span style="color: #66cc66;">&#125;</span><div style="font-family: Verdana, Arial, sans-serif; color: #808080; font-size: 0.7em; font-weight: bold; background-color: #f0f0ff; border-top: 1px solid #d0d0d0; padding: 2px; margin-left:-20px; margin-top:10px; text-align:right;">MirdWare &copy; 2012</div></pre>
+
+<p>Ahora cuando se carga el DOM, mediante ready() se delega al elemento document los eventos sucedidos en las etiquetas anchors, de esta manera no importa cuando, ni donde se creen las etiquetas dentro del documento.</p>
+
+
+
+<pre class="javascript" style="color: #006; border: 1px solid #d0d0d0; width:500px; margin:auto; padding-left:20px; font-size:12px;width:750px;width:500px;"><div style="font-family: Verdana, Arial, sans-serif; color: #808080; font-size: 0.7em; font-weight: bold; background-color: #f0f0ff; border-bottom: 1px solid #d0d0d0; padding: 2px; margin-left:-20px; margin-bottom: 10px;">Nuevo sistema de apertura modal</div>evt.<span style="color: #006600;">on</span><span style="color: #66cc66;">&#40;</span>document,<span style="color: #3366CC;">&quot;a&quot;</span>,<span style="color: #3366CC;">&quot;click&quot;</span>, <span style="color: #003366; font-weight: bold;">function</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span> <span style="color: #66cc66;">&#123;</span>
+	<span style="color: #003366; font-weight: bold;">var</span> rel = <span style="color: #000066; font-weight: bold;">this</span>.<span style="color: #006600;">rel</span>;
+	<span style="color: #000066; font-weight: bold;">if</span><span style="color: #66cc66;">&#40;</span>rel == <span style="color: #3366CC;">&quot;modal&quot;</span><span style="color: #66cc66;">&#41;</span> <span style="color: #66cc66;">&#123;</span>
+		modal.<span style="color: #006600;">show</span>.<span style="color: #006600;">apply</span><span style="color: #66cc66;">&#40;</span><span style="color: #000066; font-weight: bold;">this</span>,arguments<span style="color: #66cc66;">&#41;</span>;
+	<span style="color: #66cc66;">&#125;</span> <span style="color: #000066; font-weight: bold;">else</span> <span style="color: #000066; font-weight: bold;">if</span><span style="color: #66cc66;">&#40;</span>rel == <span style="color: #3366CC;">&quot;external&quot;</span> &amp;&amp; <span style="color: #000066; font-weight: bold;">this</span>.<span style="color: #006600;">target</span> != <span style="color: #3366CC;">&quot;_blank&quot;</span><span style="color: #66cc66;">&#41;</span> <span style="color: #66cc66;">&#123;</span>
+		<span style="color: #000066; font-weight: bold;">this</span>.<span style="color: #006600;">target</span> = <span style="color: #3366CC;">&quot;_blank&quot;</span>;
+	<span style="color: #66cc66;">&#125;</span>
+<span style="color: #66cc66;">&#125;</span><span style="color: #66cc66;">&#41;</span>;<div style="font-family: Verdana, Arial, sans-serif; color: #808080; font-size: 0.7em; font-weight: bold; background-color: #f0f0ff; border-top: 1px solid #d0d0d0; padding: 2px; margin-left:-20px; margin-top:10px; text-align:right;">MirdWare &copy; 2012</div></pre>
+
+<p>El drag and drop que utiliza <b>modal</b>, puede ser utilizado en cualquier otro elemento que este contenido dentro de un area en la cual se pueda desplazar, además podemos probar el metodo <b>fade</b> que se utiliza para mostrar la ventana.</p>
+
+<form action="#" method="post">
+<fieldset style="float:left; margin: 10px"><legend>Fade In</legend>
+Duración:<input type="text" name="duracion" size="5" />Frames Por Segundo:<input type="text" name="fps" size="5" /><button id="showHide">Aparecer/Desaparecer</button>
+</fieldset>
+</form>
+
+<div id="prueba"><div id="mover">MUEVEME!!</div></div>
+
+<p>Mejorando el engine css, esto con el fin de estandarizar las reglas css</p>
+<div class="pruebaCSS" style="background:#960"></div>
+<div class="pruebaCSS" style="background:#999"></div>
+<div class="pruebaCSS" style="background:#C6C"></div>
+<span id="result"></span>
+<hr />
+<p style="text-align:center; font-size: 0.9em">©2012 MirdWare - <a href="uso.php">polticas de uso</a></p>
+</body>
+</html>
