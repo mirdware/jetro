@@ -1,0 +1,29 @@
+                                                                                                                      
+                            ttJJ                              JJtt                                                    
+                            ZZZZtt;;                        ""ZZZZ;;                                                  
+                            ZZZZkk""                        ""ZZZZJJ;;                                                
+                            ZZZZwwtt                        ""ZZZZJJ;;                                                
+  ;;ZZZZZZZZZZZZZZZZZZkk    ZZZZZZZZZZZZww  kkZZZZZZZZZZZZZZZZZZZZJJ;;                            ;;;;"""""""";;      
+  ZZZZZZZZZZZZZZZZZZZZZZJJ  ZZZZZZZZZZZZwwkkZZZZZZZZZZZZZZZZZZZZZZJJ;;            ""wwwwkkkkkkkkkkkkkkkkkkkkkkwwkk;;  
+  ZZZZkkkkkkkkkkkkJJwwZZww;;ZZZZwwkkJJkkJJwwZZwwkkkkJJkkkkJJkkZZZZJJ  ;;;;          ttJJkkkkkkkkkkkkkkkkkkkkkkkkkkJJ;;
+  ZZZZkk""            ""JJ;;ZZZZwwtt;;;;  JJZZZZJJ;;;;;;;;;;ttZZZZJJ    ;;tt""tt;;    ""ttttttkkkkkkkktt""""""""JJkk""
+  ZZZZZZwwwwwwwwwwwwkk;;    ZZZZww""      JJZZZZtt          ""ZZZZJJ;;  kk"";;JJww;;          kkkkkkkkJJtttttttt"";;  
+  ""ZZZZZZZZZZZZZZZZZZZZ;;  ZZZZww""      JJZZZZJJ          ""ZZZZJJ;;;;JJJJJJttZZJJ          kkkkkkkkkkkkkkkkkkkk""  
+    ""kkwwwwwwwwwwwwZZZZkk  wwZZww""      JJZZZZJJ          ""ZZZZJJ  ;;"""";;ttJJkk;;        kkkkwwkkkkkkkkkkkkkkkk;;
+    ;;;;"""""""""";;wwZZww""wwZZww""      JJZZZZtt          ;;ZZZZJJ    ""JJttkk""JJ;;      ""kkkkJJ"";;;;;;;;ttkkkktt
+  ZZZZtt"""""""""";;ZZZZww""ZZZZwwJJ"""";;JJZZZZkk""""""""""JJZZZZJJ;;  ;;JJ""wwkkJJ""      JJkkkkkkkkkkkkkkkkkkkkkktt
+  kkZZZZZZZZZZZZZZZZZZZZww""JJZZZZZZZZZZww;;ZZZZZZZZZZZZZZZZZZZZZZJJ;;    ;;""tt"";;;;ttttJJkkkkkkkkkkkkkkkkkkkkkkkk""
+    kkZZZZZZZZZZZZZZZZwwkk""  JJZZZZZZZZZZttttwwZZZZZZZZZZZZZZZZZZJJ;;              ;;wwkkkkJJkkJJ""ttJJJJJJJJJJJJtt  
+      ttJJJJJJJJJJJJJJJJ""      ""JJJJJJJJtt  ;;ttJJJJJJJJJJJJJJJJtt                  ;;JJkkkkJJ;;      ;;;;;;        
+                                                                                        ;;"";;                        
+                                                                                                                      
+
+STD.JS es un proyecto de código abierto, que he comenzado por mi cuenta, con el único fin de reunir una serie de funciones utilizadas frecuentemente con diferentes fines. De esta manera STD.JS posee funciones para:
+
+Generación de ventanas pseudomodales
+Comunicaciones AJAX
+Soporte a JSON
+Drag and Drop
+Fade In y Out
+
+¿Por que no utilizar una de las tantas librerías JavaScript del mercado, si están tan bien documentadas y son tan funcionales? La respuesta es muy sencilla, porque son unas cajas negras, que solo entienden sus creadores... por eso yo quiero hacer mi propia caja negra
