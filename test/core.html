@@ -3,34 +3,49 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>MirdWare Labs &raquo; prueba del modulo principal</title>
-    <script type="text/javascript" src="../modulos/core.js"></script>
+    <script type="text/javascript" src="../src/std-min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
     <script type="text/javascript">
-	var numeros = {'uno':1, 'dos':2, 'tres':3, 'cuatro':4, 'cinco':5},
-		vocales = {1:'a', 2:'e', 3:'i', 4:'o', 5:'u'};
-	
-	function extendNumerosVocales() {
-		std.$("#obj1").innerHTML = JSON.stringify(std.extend(numeros, vocales));
-	}
-	
-	function extendVocalesNumeros() {
-		std.$("#obj2").innerHTML = JSON.stringify(std.extend(vocales, numeros));
-	}
-	
-	std.ready(function() {
-		alert("Se ha cargado el DOM");
-		std.$("#obj1").innerHTML = JSON.stringify(numeros);
-		std.$("#obj2").innerHTML = JSON.stringify(vocales);
-	});
+		var dateInit = new Date(),
+			numeros = {'uno':1, 'dos':2, 'tres':3, 'cuatro':4, 'cinco':5},
+			vocales = {1:'a', 2:'e', 3:'i', 4:'o', 5:'u'};
+		
+		function extendNumerosVocales() {
+			std.$("#obj1").innerHTML = JSON.stringify(std.extend(numeros, vocales));
+		}
+		
+		function extendVocalesNumeros() {
+			std.$("#obj2").innerHTML = JSON.stringify(std.extend(vocales, numeros));
+		}
+
+		$(window).ready(function() {
+			std.$("#ready-jquery").innerHTML = (new Date())-dateInit;
+		});
+
+		window.onload = function () {
+			std.$("#on-load").innerHTML = (new Date())-dateInit;
+		}
+
+		std.ready(function() {
+			std.$("#ready-std").innerHTML = (new Date())-dateInit;
+			std.$("#obj1").innerHTML = JSON.stringify(numeros);
+			std.$("#obj2").innerHTML = JSON.stringify(vocales);
+		});
 	</script>
 </head>
 
 <body>
-<h1>CORE.JS</h1>
-<p>El core de std.js lo unico que hace es incluir el ready para leer el Document Object Model, extend para poder incluir atributos de un objeto dentro de otro, $ para acortar los getElement y por ultimo se agrega el soporte de JSON para navegadores antigüos</p>
-<b>Numeros:</b>
-<div id="obj1"></div>
-<b>Vocales:</b>
-<div id="obj2"></div>
-<input type="button" value="extender numeros de vocales" onclick="extendNumerosVocales()" /> | | <input type="button" value="extender vocales de numeros" onclick="extendVocalesNumeros()" />
+	<h1>CORE STD.js</h1>
+	<p>El core de std.js lo unico que hace es incluir el ready para leer el Document Object Model, extend para poder incluir atributos de un objeto dentro de otro, $ para acortar los getElement y por ultimo se agrega el soporte de JSON para navegadores antigüos.</p>
+	<p>Velocidad de carga de ready: </p>
+		<b>Ready std.js:</b> <span id="ready-std"></span><br />
+		<b>Evento onload:</b> <span id="on-load"></span><br />
+		<b>Ready jQuery:</b> <span id="ready-jquery"></span>
+	<p>Entre menor es el número mostrado, más rapido carga el script.</p>
+	<p>Otra función mencionada del nucleo central de std es la extención de <b>objetos</b>. Aquí un ejemplo:</p>
+		<b>Numeros:</b><div id="obj1"></div>
+		<b>Vocales:</b><div id="obj2"></div>
+	<input type="button" value="extender numeros de vocales" onclick="extendNumerosVocales()" /> | | <input type="button" value="extender vocales de numeros" onclick="extendVocalesNumeros()" />
+	<p>En este ultimo ejemplo se logra obserbar tambien la utilización del objeto JSON para soporte de navegadores antiguos, adelante pruebalo en ie7 u 8 (no, no nos responsabilizamos por ie 6, ni microsoft lo hace)</p>
 </body>
 </html>

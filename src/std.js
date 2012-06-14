@@ -73,8 +73,7 @@ var TRUE = true,
 			@return: La api publica consta de una unica función que pide como parametro la función a ejecutar
 		*/
 		ready: (function(){
-			var fns = [],
-				read = FALSE;
+			var readyList = [];
 			
 			/**
 				Revisa constantemente (cada 100 milisegundos) si el readyState del documento se encuentra completo,
@@ -82,14 +81,40 @@ var TRUE = true,
 				@param: {undefined} fn se utiliza como parte de XP (eXtreme Programming) para no inicializar el fn que toma 
 						valores dentro del while
 			*/
-			function action(fn) {
-				if(document.readyState == "complete") {
-					while(fn = fns.shift()) {
-						fn();
+			function bindReady(handler){
+				var called = FALSE;
+				
+				function ready() {
+					if (!called){
+						called = TRUE;
+						handler();
 					}
-				} else {
-					setTimeout(action, 100);
 				}
+				
+				if ( document.addEventListener ) {
+					document.addEventListener( "DOMContentLoaded", ready, FALSE);
+				} else if ( document.attachEvent ) {
+					if ( document.documentElement.doScroll && window == window.top ) {
+						function tryScroll(){
+							if (!called || document.body){
+								try {
+									document.documentElement.doScroll("left");
+									ready();
+								} catch(e) {
+									setTimeout(tryScroll, 0);
+								}
+							}
+						}
+						tryScroll();
+					}
+					
+					document.attachEvent("onreadystatechange", function(){
+						if ( document.readyState === "complete" ) {
+							ready();
+						}
+					})
+				}
+				std.evt.add(window, "load", ready);
 			}
 			
 			/**
@@ -97,12 +122,15 @@ var TRUE = true,
 				si es la primera vez que se llama se ejecuta la función encargada de revisar el estado del documento.
 				@param: {function} fn se ejecuta cuando se carga el DOM
 			*/
-			return function(fn) {
-				fns.push(fn);
-				if(!read) {
-					action();
-					read = TRUE;
+			return function(handler) {
+				if (!readyList.length) {
+					bindReady(function() {
+						for(var i=0; i<readyList.length; i++) {
+							readyList[i]();
+                        }
+					})
 				}
+				readyList.push(handler);
 			}
 		})(),
 		
@@ -184,15 +212,18 @@ var TRUE = true,
 									"nodeName",
 							name = (type=="nodeName")?observe.toUpperCase():observe.substr(1);
 						core.add(element, nEvent, function() {
-							var t = core.get().target;
+							var target = core.get().target;
 							if(observe == "*") {
-								fn.apply(t, arguments);
+								fn.apply(target, arguments);
 							} else {
-								while(t && t !== element) {
-									if(t[type].indexOf(name) != -1) {
-										fn.apply(t, arguments);
+								while(target && target !== element) {
+									var array = target[type].split(' ');
+									for (var i=0, el; el = array[i]; i++) {
+										if(el == name) {
+											fn.apply(target, arguments);
+										}
 									}
-									t = t.parentNode;
+									target = target.parentNode;
 								}
 							}
 						}, capture);
@@ -249,6 +280,9 @@ var TRUE = true,
 			*/
 			function loops(element, nEvent, fn, capture, observe) {
 				var caller = loops.caller;
+				/*if(element["data-exe"]) {
+					return TRUE;
+				}*/
 				if(element.length) {
 					for(var i=0; el = element[i]; i++) {
 						caller(el, nEvent, fn, capture);
@@ -284,9 +318,11 @@ var TRUE = true,
 				@return: Retorna la regla de estilo, si se paso como verdadero deleteFlag retorna TRUE si elimino la regla, en caso de 
 						 no encontrala retorna FALSE.
 			*/
-			function getCSSRule(ruleName, deleteFlag) {		
+			function getCSSRule(ruleName, deleteFlag) {
+				//console.log(ruleName);
 				for (var i=0,styleSheet; styleSheet=document.styleSheets[i]; i++) {
 					var cssRules = styleSheet.cssRules || styleSheet.rules;
+					console.log(document.styleSheets[i]);
 					for(var j=0,cssRule; cssRule=cssRules[j]; j++){
 						if (cssRule.selectorText == ruleName) {
 							if (deleteFlag) {
@@ -416,7 +452,7 @@ var TRUE = true,
 					feedback: Función que establece un comportamiento cuando el servidor no retorna una respuesta 200
 					data: Datos que se envian al servidor desde el cliente
 					method: Metodo utilizado para enviar los datos, puede ser POST (por defecto) o GET
-					syn: Valor booleano que dice si la petición es sincrona, por defecto es false y la petición se realiza de modo asincrono
+					sync: Valor booleano que dice si la petición es sincrona, por defecto es false y la petición se realiza de modo asincrono
 			*/
 			request: function(url, callback, opt) {
 				opt || (opt = {});
@@ -425,7 +461,7 @@ var TRUE = true,
 					feedback = opt.feedback,
 					data = opt.data,
 					method = (opt.method || "POST").toUpperCase(),
-					asyn = !opt.syn;
+					async = !opt.sync;
 				
 				xmlHttp.onreadystatechange = function() {
 					if (xmlHttp.readyState == 4) {
@@ -445,9 +481,9 @@ var TRUE = true,
 						url = url+"?"+data;
 						data = NULL;
 					}
-					xmlHttp.open(method, url, asyn);
+					xmlHttp.open(method, url, async);
 				} else {
-					xmlHttp.open("POST", url, asyn);
+					xmlHttp.open("POST", url, async);
 					xmlHttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 				}
 				xmlHttp.send(data);
@@ -465,7 +501,7 @@ var TRUE = true,
 				var res="",
 					encode = encodeURIComponent;
 				for(var key in obj) {
-					if(typeof obj[key] == "string" || typeof obj[dato] == "number") {
+					if(typeof obj[key] == "string" || typeof obj[key] == "number") {
 						res += encode(key)+"="+encode(obj[key])+"\&";
 					}
 				}
@@ -480,13 +516,9 @@ var TRUE = true,
 				@return: Un objeto que contiene todos los campos diligenciados del formulario (nombre del campo: valor del campo)
 			*/
 			form: function(form) {
-				var obj = {},
-					inputs = std.$("input",form),
-					textareas = std.$("textarea",form),
-					selects = std.$("select",form),
-					i = 0;
-				for(var inp; inp = inputs[i]; i++) {
-					if(inp.name != "") {
+				var obj = {};
+				for(var i=0, inp; inp = form[i]; i++) {
+					if(inp.name != undefined  && inp.name != "") {
 						if(inp.type == "radio" || inp.type == "checkbox") {
 							if(inp.checked) {
 								obj[inp.name] = inp.value;
@@ -494,18 +526,6 @@ var TRUE = true,
 						} else {
 							obj[inp.name] = inp.value;
 						}
-					}
-				}
-				i = 0;
-				for(var text; text = textareas[i]; i++) {
-					if(text.name != "") {
-						obj[text.name] = text.value;
-					}
-				}
-				i = 0;
-				for(var sel; sel = selects[i]; i++) {
-					if(sel.name != "") {
-						obj[sel.name] = sel.value;
 					}
 				}
 				return obj;
@@ -596,6 +616,7 @@ var TRUE = true,
 					onComplete: es un comportamiento final tras acabar la animación
 			*/
 			anim: function (element, props, opt) {
+				opt || (opt={});
 				var style = std.css(element),
 					duration = parseInt(opt.duration) || 1000,
 					fps = parseInt(opt.fps) || 100,
@@ -686,6 +707,7 @@ var TRUE = true,
 			var cache = window.sessionStorage || {},
 				modal,
 				overlay,
+				local,
 				core = {
 					/**
 						Renderiza el nodo la ventana modal dependiendo del enlace que la halla invocado, tomando el titulo de la misma etiqueta.
@@ -695,16 +717,19 @@ var TRUE = true,
 					show: function () {
 						std.evt.get().preventDefault();
 						var title = this.getAttribute("title") || "",
-							url = this.getAttribute("href").replace(document.location,""),
+							url = this.getAttribute("href"),
+							path = document.location,
 							element;
-						
+						if (url.indexOf(path+"#") == 0) {
+							url = url.replace(path, "");
+						}
 						if(!overlay) {
 							overlay = document.createElement("div");
 							modal = overlay.cloneNode(FALSE);
 							var head  = overlay.cloneNode(FALSE),
 								img = overlay.cloneNode(FALSE),
 								text = document.createElement("h2");
-								
+							
 							overlay.id = "overlay";
 							modal.id = "modal";
 							head.className = "head";
@@ -716,21 +741,32 @@ var TRUE = true,
 							head.appendChild(img);
 							head.appendChild(text);
 							modal.appendChild(core.round(std.css(".head").get("backgroundColor"),"top"));
-							modal.appendChild(head);
-							
-							
+							modal.appendChild(head);							
 							document.body.appendChild(modal);
 						}
 						
+						if (modal.childNodes[2]) {
+							var self = this,
+								args = arguments;
+							std.sfx.fade(modal, {onComplete:function(){
+								removeLocal();
+								core.show.apply(self, args);
+							}, duration:500});
+							return;
+						} 
+						
 						if (url.indexOf("#") == 0) {
-							element = std.$(url).cloneNode(TRUE);
+							local = std.$(url);
+							var parent = local.parentNode;
+							element = local.cloneNode(TRUE);
+							parent.removeChild(local);
 						} else {
 							var aux = document.createElement("div");
 							if (! (aux.innerHTML = cache[url]) ) {
 								std.ajax.request(url,function(r){
-									//console.log("PETICION");
+									//console.log(r);
 									cache[url] = aux.innerHTML = r;
-								}, {data:"ajax="+TRUE, syn:TRUE});
+								}, {data:"ajax="+TRUE, sync:TRUE});
 							}
 							element = aux.firstChild;
 						}
@@ -765,8 +801,7 @@ var TRUE = true,
 					hide: function () {
 						std.sfx.fade(modal, {onComplete:function(){
 							std.css(overlay).set("display", "none");
-							modal.removeChild(modal.childNodes[2]);
-							modal.removeChild(modal.childNodes[2]);
+							removeLocal();
 						}, duration:500});
 					},
 				
@@ -820,6 +855,14 @@ var TRUE = true,
 					}
 				};
 			
+				function removeLocal () {
+					if (local) {
+						document.body.appendChild(local);
+					}
+					modal.removeChild(modal.childNodes[2]);
+					modal.removeChild(modal.childNodes[2]);
+				}
+
 			return core;
 		})()
 	};
@@ -921,39 +964,14 @@ if(typeof window.JSON == "undefined") {
 			if (typeof strJSON != "string") {
 				return;
 			}
-			strJSON = strJSON.trim();
-			if (/^\{|\[[\n\s]*"[a-zA-Z\$_][a-zA-Z\$\d_]*"[\n\s]*:.+\}|\]$/.test(strJSON)) {
-				var exp1 = strJSON.replace(/[\{\}\[\]]/g,""),
-					frag = exp1.match(/[a-z]+|(['"]).*?\1/g);
-				exp1 = exp1.replace(/[a-z]+|(['"]).*?\1/g,"#?replace#").split(",");
-				
-				for (var i=0,dat1; dat1=exp1[i]; i++) {
-					if (dat1.indexOf(":") == -1) {
-						if (dat1.trim() == "#?replace#") {
-							dat1 = frag.shift();
-						}
-						if (!/^[\n\s]*(".+")|(\+|-)?\d+[\n\s]*$/.test(dat1)){
-							return;
-						}
-					} else {
-						var exp2 = dat1.split(":");
-						for(var j=0,dat2; dat2=exp2[j]; j++) {
-							if (dat2.trim() == "#?replace#") {
-								dat2 = frag.shift();
-							}
-							if (j<exp2.length-1) {
-								if (!/^[\n\s]*"[a-zA-Z\$_][a-zA-Z\$\d_]*"[\n\s]*$/.test(dat2)) {
-									return;
-								}
-							} else if(!/^[\n\s]*(".+")|(\+|-)?\d+[\n\s]*$/.test(dat2)) {
-								return;
-							}
-						}
-					}
-				}
-				return window[ "eval" ]("("+strJSON+")");;
+			if (/^[\],:{}\s]*$/
+				.test(strJSON.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@')
+				.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
+				.replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
+				return window[ "eval" ]("("+strJSON+")");
+			} else {
+				return;
 			}
-			return;
 		}
 	}
 }

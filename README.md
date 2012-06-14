@@ -11,5 +11,6 @@
 </ul>
 <p>¿Por que no utilizar una de las tantas librerías JavaScript del mercado, si están tan bien documentadas y son tan funcionales? La respuesta es muy sencilla, porque son unas cajas negras, que solo entienden sus creadores... por eso yo quiero hacer mi propia caja negra</p>
 
-<p>Recuerda que para realizar las pruebas AJAX debes tener los archivos directamente en tu servidor.</p>
+<h2>Algunas consideraciones</h2>
+<p>Recuerda que para realizar las pruebas AJAX debes tener los archivos directamente en tu servidor. Siguiendo esta misma consideración para la utilización de hojas de estilos en Chrome, pues si se prueba de manera stand alone, puede presentar inconvenientes.</p>
 </html>
