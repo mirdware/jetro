@@ -1,30 +1,7 @@
-<div id="ins">
-    <form method="post" action="#">
-        <fieldset id="personal"><legend>Datos Personales</legend>
-            <label class="first">Documento:</label>
-                <select name="docTipe">
-                    <option>C.C.</option>
-                    <option>T.I.</option>
-                </select>
-                <input type="text" size="20" name="doc" />
-            <label class="first">Nombres:</label>
-                <input type="text" size="30" name="nombres" />
-            <label class="first">Apellidos:</label>
-                <input type="text" size="30" name="apellidos" />
-            <label class="first">Telefono:</label>
-                <input type="text" size="12" name="telefono" />
-            <label class="first">Dirección:</label>
-                <textarea rows="4" cols="25"></textarea>
-            <label class="first">E-Mail:</label>
-                <input type="text" size="20" name="email" />
-        </fieldset>
-        <fieldset id="usuario"><legend>Datos de usuario</legend>
-            <label class="first">Codigo:</label>
-                <input type="text" size="15" name="usuario" />
-            <label class="first">Contraseña:</label>
-                <input type="password" size="15" name="clave" />
-        </fieldset>
-        <div class="botones"><button type="submit">Aceptar</button>
-        <button type="reset">Limpiar</button></div>
-    </form>
+<div id="remote">
+    <p>Esta prueba esta siendo realizada desde un servidor, pues es la unica manera que AJAX funcione correctamente</p>
+    <a href="#local" title="Desde local">Abrir ventana local</a>
+    <div id="local">
+        <p>Siempre estubo en el cuerpo html del padre</p>
+    </div>
 </div>

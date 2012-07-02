@@ -1,0 +1,24 @@
+{
+	"name": "std.js",
+	"title": "std",
+	"language": "javascript",
+	"description": "std is javascript standard",
+	"version": "0.0.9 pre",
+	"homepage": "std.mirdaware.co.cc",
+	"author": {
+		"name": "Marlon Ramirez",
+		"twitter": "marlonyramirez",
+		"mail": "soy.marlon@hotmail.com"
+	},
+	"bugs": {
+		"url": "std.mirdware.co.cc/home/bugs/"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/marlonramirez/std.js.git",
+	},
+	"license": {
+		"type": "MIT",
+		"url": "http://www.opensource.org/licenses/MIT"
+	}
+}

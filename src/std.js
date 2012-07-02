@@ -322,7 +322,6 @@ var TRUE = true,
 				//console.log(ruleName);
 				for (var i=0,styleSheet; styleSheet=document.styleSheets[i]; i++) {
 					var cssRules = styleSheet.cssRules || styleSheet.rules;
-					console.log(document.styleSheets[i]);
 					for(var j=0,cssRule; cssRule=cssRules[j]; j++){
 						if (cssRule.selectorText == ruleName) {
 							if (deleteFlag) {

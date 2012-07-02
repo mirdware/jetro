@@ -186,45 +186,11 @@ hr {
 
 /*INS*/
 
-#ins {
+#remote {
 	background: #F0F0F0;
 	width: 400px;
 	padding: 10px;
 	display: none;
-}
-
-#rePass {
-	background: #F0F0F0;
-	width: 500px;
-}
-
-#ins fieldset{
-	margin: 10px auto;
-	border: solid 1px #09F;
-}
-
-#ins legend {
-	color: #09F;
-}
-
-#personal {
-	width: 350px;
-}
-
-#usuario {
-	width: 250px;
-}
-
-#ins form{
-	padding: 0;
-	margin: 0;
-}
-
-#ins textarea{
-	max-height: 50px;
-	max-width: 200px;
-	min-height: 50px;
-	min-width: 200px;
 }
 
 #target {
