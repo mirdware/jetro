@@ -2,138 +2,32 @@
 	std.js 
 	Es un script generico en el que se abarcan varias funciones comunes para la realización de trabajos 
 	no solo en javascript, si no tambien orientados a AJAX (Asynchronous JavaScript And XML) y con 
-	soporte para JSON. Todo esto basandose en una interfaz sumamente sencilla.
+	soporte para JSON. Todo esto basandose en una interfaz sencilla.
 	
 	Para buscar secciones dentro del documento utiliza "****** sección ******" sin comillas, las secciones de std son:
-		NUCLEO: Se encuentran las funciones principales de std. (ready, $, extend)
-		EVENTOS: Contiene manejadores de eventos dentro del objeto evt. (add, remove, on)
+		NUCLEO: Se encuentran los metodos propios de std(extend, cmode).
+		DOM: Realiza trabajos con el DOM al igual que ejecuta acciones cuando este esta completamente listo(ready).
+		EVENTOS: Contiene manejadores de eventosadd, remove, on) dentro del objeto evt y una verion de event estandarizada(get).
 		ESTILOS: Se encuentra el manejador de estilos css que gestiona tanto elementos como reglas.
-		AJAX: Mediante el objeto ajax se encarga de realizar peticiones asincronas al servidor.
+		AJAX: El objeto ajax se encarga de realizar peticiones asincronas al servidor.
 		EFECTOS ESPECIALES: Contiene funciones dentro del objeto sfx encargadas de pequeñas animaciones.
-		VENTANA MODAL: Encargada de generar y mantener las ventanas speudomodales.
-		FUNCIONES PRIVADAS: Se hallan las funciones a las que más de 1 modulo tiene que tener acceso.
+		FUNCIONES PRIVADAS: Se hallan las funciones a las que más de 1 modulo debe tener acceso.
 		CONFIGURACION DE ENTORNO: Se configura todo lo que no involucra directamente a std, en especial el entorno de ejecución.
-		JSON: Hace parte de la configuración de entorno. Se encarga de registrar el objeto JSON a window cuando este no existe.
+			JSON: Se encarga de registrar el objeto JSON a window cuando este no existe.
 	
 	El camino más sencillo casi siempre es el más rapido y efectivo. Recuerda Keep It Simple, Stupid!!
 	@author: Marlon Ramirez
-	@version: 0.0.8
+	@version: 0.0.9
 */
-(function(frame, window, document, undefined) {
+(function(window, undefined) {
 var TRUE = true,
 	FALSE = false,
 	NULL = null,
+	document = window.document,
+	_$ = window.$,
 	std = {
 		/****** NUCLEO ******/
-		/**
-			Engloba la ejecución de varios getElements, para esto se usa un unico prefijo antes del nombre del identificador.
-			Los prefijos permitidos son:
-			# = getElementById
-			. = getElementsByClassName
-			@ = getElementByName
-			Si se omite el prefijo se utilizara getElementsByTagName.
-			@param: {string} id es el identificador del nodo que se busca, este identificador puede ser un id, una clase, un nombre o una etiqueta
-			@param: {element} node es el padre del elemento que se busca
-			@param: {string} tag es opcional y se utiliza para agilizar la busqueda de clases, es el tipo de etiqueta de la clase
-			@return: El nodo o serie de nodos que se buscan con esta función
-		*/
-		$: function (id, node, tag) {
-			var name = id.substr(1),
-				prefix = id.charAt(0);
-			
-			if (prefix == "#") {
-				return document.getElementById(name);
-			}
-			node || (node = document);
-			if(prefix == "@") {
-				return node.getElementsByName(name);
-			}
-			if (prefix == ".") {
-				if (node.getElementsByClassName) {
-					return node.getElementsByClassName(name);
-				}
-				tag || (tag = "*");
-				var classElements = [],
-					els = std.$(tag),
-					pattern = new RegExp("(^|\\s)"+name+"(\\s|$)");
-				for (var i=0,el, j=0; el=els[i]; i++) {
-					if ( pattern.test(el.className) ) {
-						classElements[j] = el;
-						j++;
-					}
-				}
-				return classElements;
-			}
-			return node.getElementsByTagName(id);
-		},
-		
-		/**
-			Revisa si el DOM está listo para usarse. Es más util que el window.onload pues este debe esperar 
-			a que todos los elementos de la pagina esten cargados (como scripts e imagenes) para ejecutar.
-			@return: La api publica consta de una unica función que pide como parametro la función a ejecutar
-		*/
-		ready: (function(){
-			var readyList = [];
-			
-			/**
-				Revisa constantemente (cada 100 milisegundos) si el readyState del documento se encuentra completo,
-				de ser asi se procesa la cola de ejecución.
-				@param: {undefined} fn se utiliza como parte de XP (eXtreme Programming) para no inicializar el fn que toma 
-						valores dentro del while
-			*/
-			function bindReady(handler){
-				var called = FALSE;
-				
-				function ready() {
-					if (!called){
-						called = TRUE;
-						handler();
-					}
-				}
-				
-				if ( document.addEventListener ) {
-					document.addEventListener( "DOMContentLoaded", ready, FALSE);
-				} else if ( document.attachEvent ) {
-					if ( document.documentElement.doScroll && window == window.top ) {
-						function tryScroll(){
-							if (!called || document.body){
-								try {
-									document.documentElement.doScroll("left");
-									ready();
-								} catch(e) {
-									setTimeout(tryScroll, 0);
-								}
-							}
-						}
-						tryScroll();
-					}
-					
-					document.attachEvent("onreadystatechange", function(){
-						if ( document.readyState === "complete" ) {
-							ready();
-						}
-					})
-				}
-				std.evt.add(window, "load", ready);
-			}
-			
-			/**
-				Coloca en cola de ejecución una función para ser procesada cuando el DOM se encuentre completamente listo,
-				si es la primera vez que se llama se ejecuta la función encargada de revisar el estado del documento.
-				@param: {function} fn se ejecuta cuando se carga el DOM
-			*/
-			return function(handler) {
-				if (!readyList.length) {
-					bindReady(function() {
-						for(var i=0; i<readyList.length; i++) {
-							readyList[i]();
-                        }
-					})
-				}
-				readyList.push(handler);
-			}
-		})(),
-		
+
 		/**
 			Extiende o copia las propiedades de un objeto origen en otro objeto destino. Las propiedades del objeto origen se
 			sobreescriben en el objeto destino.
@@ -146,6 +40,130 @@ var TRUE = true,
 				target[prop] = src[prop];
 			}
 			return target;
+		},
+
+		/**
+			Elimina el uso del alias $ para hacer compatible el uso de la libreria con otras como:
+			protorype, mootools, jQuery,etc. El nombre del metodo viene de Compatibility Mode (cmode).
+			@return: {object} retorna todo std, de esta manera se le puede asignar un nuevo alias fuera del ambito.
+		**/
+		cmode: function () {
+			if ( window.$ === window.std ) {
+				window.$ = _$;
+			}
+			return window.std;
+		},
+
+		/****** DOM ******/
+		dom: {
+			/**
+				Engloba la ejecución de varios getElements, para esto se usa un unico prefijo antes del nombre del identificador.
+				Los prefijos permitidos son:
+				# = getElementById
+				. = getElementsByClassName
+				@ = getElementByName
+				Si se omite el prefijo se utilizara getElementsByTagName.
+				@param: {string} id es el identificador del nodo que se busca, este identificador puede ser un id, una clase, un nombre o una etiqueta
+				@param: {element} node es el padre del elemento que se busca
+				@param: {string} tag es opcional y se utiliza para agilizar la busqueda de clases, es el tipo de etiqueta de la clase
+				@return: El nodo o serie de nodos que se buscan con esta función
+			*/
+			get: function (id, node, tag) {
+				var name = id.substr(1),
+					prefix = id.charAt(0);
+				
+				if (prefix == "#") {
+					return document.getElementById(name);
+				}
+				node || (node = document);
+				if(prefix == "@") {
+					return node.getElementsByName(name);
+				}
+				if (prefix == ".") {
+					if (node.getElementsByClassName) {
+						return node.getElementsByClassName(name);
+					}
+					tag || (tag = "*");
+					var classElements = [],
+						els = std.$(tag),
+						pattern = new RegExp("(^|\\s)"+name+"(\\s|$)");
+					for (var i=0,el, j=0; el=els[i]; i++) {
+						if ( pattern.test(el.className) ) {
+							classElements[j] = el;
+							j++;
+						}
+					}
+					return classElements;
+				}
+				return node.getElementsByTagName(id);
+			},
+		
+			/**
+				Revisa si el DOM está listo para usarse. Es más util que el window.onload pues este debe esperar 
+				a que todos los elementos de la pagina esten cargados (como scripts e imagenes) para ejecutar.
+				@return: La api publica consta de una unica función que pide como parametro la función a ejecutar
+			*/
+			ready: (function(){
+				var readyList = [];
+				
+				/**
+					Revisa constantemente (cada 100 milisegundos) si el readyState del documento se encuentra completo,
+					de ser asi se procesa la cola de ejecución.
+					@param: {undefined} fn se utiliza como parte de XP (eXtreme Programming) para no inicializar el fn que toma 
+							valores dentro del while
+				*/
+				function bindReady(handler){
+					var called = FALSE;
+					
+					function ready() {
+						if (!called){
+							called = TRUE;
+							handler();
+						}
+					}
+					
+					if ( document.addEventListener ) {
+						document.addEventListener( "DOMContentLoaded", ready, FALSE);
+					} else if ( document.attachEvent ) {
+						if ( document.documentElement.doScroll && window == window.top ) {
+							function tryScroll(){
+								if (!called || document.body){
+									try {
+										document.documentElement.doScroll("left");
+										ready();
+									} catch(e) {
+										setTimeout(tryScroll, 0);
+									}
+								}
+							}
+							tryScroll();
+						}
+						
+						document.attachEvent("onreadystatechange", function(){
+							if ( document.readyState === "complete" ) {
+								ready();
+							}
+						})
+					}
+					std.evt.add(window, "load", ready);
+				}
+				
+				/**
+					Coloca en cola de ejecución una función para ser procesada cuando el DOM se encuentre completamente listo,
+					si es la primera vez que se llama se ejecuta la función encargada de revisar el estado del documento.
+					@param: {function} fn se ejecuta cuando se carga el DOM
+				*/
+				return function(handler) {
+					if (!readyList.length) {
+						bindReady(function() {
+							for(var i=0; i<readyList.length; i++) {
+								readyList[i]();
+	                        }
+						})
+					}
+					readyList.push(handler);
+				}
+			})()
 		},
 		
 		/****** EVENTOS ******/
@@ -699,171 +717,7 @@ var TRUE = true,
 					}));
 				}
 			}
-		},
-		
-		/****** VENTANA MODAL ******/
-		modal: (function() {
-			var cache = window.sessionStorage || {},
-				modal,
-				overlay,
-				local,
-				core = {
-					/**
-						Renderiza el nodo la ventana modal dependiendo del enlace que la halla invocado, tomando el titulo de la misma etiqueta.
-						Crea todo el marco de la ventana modal y el overlay que cubrira la pantalla del navegador.
-						@see: EVENTOS, AJAX, NUCLEO , ESTILOS, EFECTOS ESPECIALES
-					*/
-					show: function () {
-						std.evt.get().preventDefault();
-						var title = this.getAttribute("title") || "",
-							url = this.getAttribute("href"),
-							path = document.location,
-							element;
-						if (url.indexOf(path+"#") == 0) {
-							url = url.replace(path, "");
-						}
-						if(!overlay) {
-							overlay = document.createElement("div");
-							modal = overlay.cloneNode(FALSE);
-							var head  = overlay.cloneNode(FALSE),
-								img = overlay.cloneNode(FALSE),
-								text = document.createElement("h2");
-							
-							overlay.id = "overlay";
-							modal.id = "modal";
-							head.className = "head";
-							std.evt.add(head,"mousedown",function(){
-								std.sfx.dyd(std.evt.get(),modal,overlay);
-							});
-							std.evt.add(img,"click",core.hide);
-							document.body.appendChild(overlay);
-							head.appendChild(img);
-							head.appendChild(text);
-							modal.appendChild(core.round(std.css(".head").get("backgroundColor"),"top"));
-							modal.appendChild(head);							
-							document.body.appendChild(modal);
-						}
-						
-						if (modal.childNodes[2]) {
-							var self = this,
-								args = arguments;
-							std.sfx.fade(modal, {onComplete:function(){
-								removeLocal();
-								core.show.apply(self, args);
-							}, duration:500});
-							return;
-						} 
-						
-						if (url.indexOf("#") == 0) {
-							local = std.$(url);
-							var parent = local.parentNode;
-							element = local.cloneNode(TRUE);
-							parent.removeChild(local);
-						} else {
-							var aux = document.createElement("div");
-							if (! (aux.innerHTML = cache[url]) ) {
-								std.ajax.request(url,function(r){
-									//console.log(r);
-									cache[url] = aux.innerHTML = r;
-								}, {data:"ajax="+TRUE, sync:TRUE});
-							}
-							element = aux.firstChild;
-						}
-						modal.appendChild(element);
-						modal.appendChild(core.round(std.css("#"+element.id).get("backgroundColor"),"bottom"));
-						element.style.display = "block";
-						modal.childNodes[1].childNodes[1].innerHTML = title;
-						
-						std.css(overlay).set("display", "block");
-						std.sfx.fade(modal);
-						
-						var childsModal = modal.childNodes,
-							height = 0,
-							width = element.offsetWidth;
-						
-						for (var i=0,h; h=childsModal[i]; i++) {
-							height += h.offsetHeight;
-						}
-						std.css(modal).set({
-							width: width+"px",
-							height: height+"px",
-							marginLeft: -(width/2)+"px",
-							marginTop: -(height/2)+"px"
-						});
-						std.modal.reset();
-					},
-				
-					/**
-						Elimina el nodo principal de la ventana modal y oculta el resto de la estructura.
-						@see: NUCLEO, ESTILOS, EFECTOS ESPECIALES
-					*/
-					hide: function () {
-						std.sfx.fade(modal, {onComplete:function(){
-							std.css(overlay).set("display", "none");
-							removeLocal();
-						}, duration:500});
-					},
-				
-					/**
-						Restablece la posición de la ventana modal, siempre y cuando esta se encuentre dentro del DOM.
-						@see: NUCLEO, ESTILOS
-					*/
-					reset: function (){
-						modal&&std.css(modal).set({
-							top: "50%",
-							left: "50%"
-						});
-					},
-				
-					/**
-						Se encarga de crear bordes redondeados a la ventana modal.
-						@param: {String} color es el color que se desea para el borde que se va a crear
-						@param: {String} position es la posición en la que se colocaran los bordes redondeados, puede ser TOP o BOTTOM
-						@return: Los bordes redondeados para ser incluidos en la ventana
-					*/
-					round: function (color, position) {
-						position = position.toLowerCase();
-						var border = document.createElement("b"),
-							r = [],
-							i = 0;
-						while(i<4) {
-							r[i] = border.cloneNode(FALSE);
-							r[i].style.backgroundColor = color;
-							r[i].className = "r"+(i+1);
-							i++;
-						}
-						border.className = "round";
-						
-						if (position == "top"){
-							i=0;
-							while(i<4) {
-								border.appendChild(r[i]);
-								i++;
-							}
-						} else if (position == "bottom") {
-							i=3;
-							while(i>=0) {
-								border.appendChild(r[i]);
-								i--;
-							}
-						} else {
-							return;
-						}
-						
-						return border;
-					}
-				};
-			
-				function removeLocal () {
-					if (local) {
-						document.body.appendChild(local);
-					}
-					modal.removeChild(modal.childNodes[2]);
-					modal.removeChild(modal.childNodes[2]);
-				}
-
-			return core;
-		})()
+		}
 	};
 
 /****** FUNCIONES PRIVADAS ******/
@@ -887,21 +741,6 @@ function hexToRGB(color) {
 }
 
 /****** CONFIGURACION DE ENTORNO ******/
-/**
-	Se encarga de gestionar los anchors que contengan atributos rel,
-	ademas agrega los eventos necesarios para cuando se carga la libreria.
-*/
-std.ready(function (){
-	std.evt.add(window,"resize",std.modal.reset);
-	std.evt.on(document,"a","click", function() {
-		var rel = this.rel;
-		if(rel == "modal") {
-			std.modal.show.apply(this,arguments);
-		} else if(rel == "external" && this.target != "_blank") {
-			this.target = "_blank";
-		}
-	});
-});
 
 /**
 	Extendiende los objetos nativos javascript necesarios para el funcionamiento de la liberia,
@@ -918,7 +757,6 @@ std.extend (String.prototype,{
 	}
 });
 
-std.extend(frame, std);//extiende los metodos publicos al frame contenedor
 
 
 /****** JSON ******/
@@ -972,6 +810,17 @@ if(typeof window.JSON == "undefined") {
 				return;
 			}
 		}
-	}
+	};
 }
-})(std = {}, window, document);
+
+/* Estableciendo un mismo atajo para std.dom.ready y std.dom.get */
+window.$ = function () {
+	var fun = (typeof arguments[0] == "function")? std.dom.ready: std.dom.get;
+	return fun.apply(this, arguments);
+}
+
+/* Estableciendo std en el exterior */
+std.extend (window.$, std);
+window.std = window.$;
+
+})(window);

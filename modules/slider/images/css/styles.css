@@ -64,6 +64,10 @@ img {
 	width: 50%;
 }
 
+.slider .control .link:hover {
+	background-image: url(../link.gif);
+}
+
 .slider-nav {
 	text-align: center;
 }

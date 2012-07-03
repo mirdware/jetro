@@ -4,28 +4,31 @@
 	<meta charset="utf-8" />
     <title>MirdWare Labs &raquo; prueba del modulo principal</title>
     <link rel="stylesheet" href="images/css/labs.css">
-    <script type="text/javascript" src="../src/std-min.js"></script>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+    <script type="text/javascript" src="../src/std.js"></script>
     <script type="text/javascript">
-    	var addItem = (function () {
+    	var addItem = (function ($) {
     		var i = 4;
 			return function () {
-				std.$("#list").innerHTML += "<li><a href='response.html' rel='modal' title='Ventana Modal'  id='Item"+i+"'>Item"+i+"</a></li>";
+				$("#list").innerHTML += "<li><a href='#' id='link-"+i+"'>link-"+i+"</a></li>";
 				i++;
 			}
-    	})();
+    	})(std);
 
     	function addEvt () {
-    		var btn = std.$("#evt-target");
-    		std.evt.add (btn, "click", function () {
+    		var btn = $("#evt-target");
+    		$.evt.add (btn, "click", function () {
     			alert ("Se ha agregado un evento");
     		});
     		btn.value = "Evento agregado";
     	}
 
-    	std.ready (function () {
-    		std.evt.add (std.$("#add-item"), "click", addItem);
-    		std.evt.add (std.$("#add-evt"), "click", addEvt);
+    	$ (function () {
+    		$.evt.add ($("#add-item"), "click", addItem);
+            $.evt.on ($("#list"), "a", "click", function () {
+                $.evt.get().preventDefault();
+                alert ("precionado enlace: "+this.id);
+            });
+    		$.evt.add ($("#add-evt"), "click", addEvt);
     	});
     </script>
 </head>
@@ -36,9 +39,9 @@
 	<input type="button" value="adicionar evento" id="add-evt" /> -----> <input type="button" value="sin evento" id="evt-target" />
 	<p><b>evt</b> (Antiguamente Event) tambien tiene novedades, aparate de la reestructuración interna a un nuevo patron de diseño, cuenta con la inclusión de un nuevo metodo <b>on</b> que sirve para delegar a un elemento padre las acciones que se puedan realizar sobre sus elementos hijos, tiene como principal pilar el burbujeo del evento, por lo cual no son soportados los eventos que no burbujean. La principal función que desempeña este nuevo metodo dentro de std.js, es la de colocar a escuchar al documento todos los elementos anchor que posean atributo <b>rel="modal"</b> o <b>rel="external"</b>, de esta manera cualquier nuevo elemento creado dinamicamente que posea estos atributos, puede accedes a las funcionalidades javascript que estos conllevan.</p>
 	<ul id="list">
-		<li id="item1"><a href="response.html" rel="modal" title="Ventana Modal">Item1</a></li>
-		<li id="item2"><a href="response.html" rel="modal" title="Ventana Modal">Item2</a></li>
-		<li id="item3"><a href="response.html" rel="modal" title="Ventana Modal">Item3</a></li>
+		<li><a href="#" id="link-1">link-1</a></li>
+		<li><a href="#" id="link-2">link-2</a></li>
+		<li><a href="#" id="link-3">link-3</a></li>
 	</ul>
 
 	<input type="button" value="Agregar" id="add-item" />

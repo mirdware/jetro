@@ -1,6 +1,6 @@
 /** FUNCIONES DEPRECATED DE STD.JS **/
 function isEmail(dato) {
-	return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+std.$/.test(dato);
+	return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+std/.test(dato);
 }
 
 function validateNum() {
@@ -24,7 +24,7 @@ function ajaxReq() {
 
 var i = 4;
 function addItem() {
-	std.$("#list").innerHTML += "<li><a href='response.html' rel='modal' title='Ventana Modal'  id='Item"+i+"'>Item"+i+"</a></li>";
+	std("#list").innerHTML += "<li><a href='resgistro.php' rel='modal' title='Ventana Modal'  id='Item"+i+"'>Item"+i+"</a></li>";
 	i++;
 }
 
@@ -148,11 +148,11 @@ std.query = (function(window, undefined) {
 	};
 	
 	return function (id, node, tag) {
-		return std.extend(std.$(id, node, tag), core);
+		return std.extend(std(id, node, tag), core);
 	}
 })(window);
 
-std.ready(function() {
+std(function() {
 	std.query("#hijo").click(function() {
 		alert("Probando un nuevo plugin");
 	});
@@ -163,28 +163,28 @@ function type (obj) {
   return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase()
 }
 
-std.ready(function() {
-	std.evt.add(std.$("#modalcache"), "click",std.modal.show);
-	std.evt.add(std.$("#std"),"click",ajaxReq);
-	std.evt.add(std.$("#showHide"),"click",function() {
+std(function() {
+	std.evt.add(std("#modalcache"), "click",std.modal.show);
+	std.evt.add(std("#std"),"click",ajaxReq);
+	std.evt.add(std("#showHide"),"click",function() {
 		std.evt.get().preventDefault();
 		var opt = std.ajax.form(this.form);
 		if(isNaN(opt.duracion) || isNaN(opt.fps)) {
 			return;
 		}
-		var target = std.$("#mover");
+		var target = std("#mover");
 		if(!target.block) {
-			std.sfx.fade(std.$('#mover'),opt.duracion,opt.fps);
+			std.sfx.fade(std('#mover'),opt.duracion,opt.fps);
 			target.block = true;
 			setTimeout(function() {
 				target.block = false;
 			}, opt.duracion);
 		}
 	});
-	std.evt.add(std.$("#mover"),"mousedown",function(){
-		std.sfx.dyd(std.evt.get(), std.$("#mover"),std.$("#prueba"));
+	std.evt.add(std("#mover"),"mousedown",function(){
+		std.sfx.dyd(std.evt.get(), std("#mover"),std("#prueba"));
 	});
-	std.evt.add(std.$("#target"),{
+	std.evt.add(std("#target"),{
 		click: function () {
 			if(std.css(this).get("width") == "20px") {
 				std.sfx.anim(this, {
@@ -217,17 +217,17 @@ std.ready(function() {
 			});
 		}
 	});
-	std.evt.add(std.$("#prototype"),"click",function() {
+	std.evt.add(std("#prototype"),"click",function() {
 		var str = '{"hola":[1,2,3,4],"mundo":{"uno":1,"dos":"dos"}}';
 		alert(JSON.parse(str));
 		var obj = {"hola":[1,2,3,4],"mundo":{"uno":1,"dos":"dos"}};
 		alert(JSON.stringify(obj));
 		window.sessionStorage.clear();
 	});
-	std.evt.add(std.$("@duracion")[0],"keypress",validateNum);
-	std.evt.add(std.$("@fps")[0],"keypress",validateNum);
+	std.evt.add(std("@duracion")[0],"keypress",validateNum);
+	std.evt.add(std("@fps")[0],"keypress",validateNum);
 	
-	std.evt.add(std.$("#target2"), {
+	std.evt.add(std("#target2"), {
 		mouseover: function() {
 			emile(this, "background-color: #F00", {
 				duration: 500
@@ -250,12 +250,12 @@ std.ready(function() {
 			}
 		}
 	});
-	std.evt.add([std.$("#hijo"), std.$("#prototype")], "click", function(){alert("multiapt")});
-	std.evt.on(std.$("#list"),"#Item5","click", onPrueba);
-	std.evt.on(std.$("#observador"), "a", "click",  onPrueba);
-	std.evt.add(std.$(".pruebaCSS"), "click", function() {
+	std.evt.add([std("#hijo"), std("#prototype")], "click", function(){alert("multiapt")});
+	std.evt.on(std("#list"),"#Item5","click", onPrueba);
+	std.evt.on(std("#observador"), "a", "click",  onPrueba);
+	std.evt.add(std(".pruebaCSS"), "click", function() {
 		var color = std.css(this).get("background-color");
-		std.$("#result").innerHTML = "Este div es de color <span style='color:" +
+		std("#result").innerHTML = "Este div es de color <span style='color:" +
 						 color + ";'>" + color + "</span>.";
 	});
 });
