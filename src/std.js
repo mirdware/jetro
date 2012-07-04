@@ -405,6 +405,13 @@ var TRUE = true,
 					*/
 					get: function(prop) {
 						normalize(arguments);
+						if (prop.indexOf("-") != -1) {
+							prop = prop.split( "-" );
+							for (var i=1, word; word = prop[i]; i++) {
+								prop[i] = prop[i].charAt(0).toUpperCase()+prop[i].substr(1);
+							}
+							prop = prop.join("");
+						}
 						var style = (obj != ruleName)?obj.style[prop]:(obj.currentStyle || document.defaultView.getComputedStyle(obj, ""))[prop];
 						//unificar a rgb la salida de colores
 						if(style.indexOf("#") == 0) {
