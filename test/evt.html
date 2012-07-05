@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 	<meta charset="utf-8" />
-    <title>MirdWare Labs &raquo; prueba del modulo principal</title>
+    <title>MirdWare Labs &raquo; prueba del modulo de eventos</title>
     <link rel="stylesheet" href="images/css/labs.css">
     <script type="text/javascript" src="../src/std.js"></script>
     <script type="text/javascript">
@@ -16,11 +16,25 @@
 
     	function addEvt () {
     		var btn = $("#evt-target");
-    		$.evt.add (btn, "click", function () {
-    			alert ("Se ha agregado un evento");
-    		});
+    		$.evt.add (btn, "click", evento);
     		btn.value = "Evento agregado";
+            this.value = "Remover evento";
+            $.evt.remove(this, "click", addEvt);
+            $.evt.add(this, "click", removeEvt);
     	}
+
+        function removeEvt () {
+            var btn = $("#evt-target");
+            $.evt.remove (btn, "click", evento);
+            btn.value = "sin evento";
+            this.value = "Adicionar evento";
+            $.evt.remove(this, "click", removeEvt);
+            $.evt.add(this, "click", addEvt);
+        }
+
+        function evento () {
+            alert ("Se ha agregado un evento");
+        }
 
     	$ (function () {
     		$.evt.add ($("#add-item"), "click", addItem);
@@ -35,8 +49,9 @@
 
 <body>
 	<h1>Manejo de eventos</h1>
-	<p>Adicionar eventos de manera cross browser con std.js es sencillo solo basta con colocar: <b>(std.)evt.add (element, "evento", funcion, [bubble]);</b></p>
-	<input type="button" value="adicionar evento" id="add-evt" /> -----> <input type="button" value="sin evento" id="evt-target" />
+    <div class="center"><img src="images/std.png"></div>
+	<p>Adicionar eventos de manera cross browser con std.js es sencillo solo basta con colocar: <b>(std.)evt.add (element, "evento", funcion, [bubble]);</b> de igual manera para eliminar el evento se usa <b>(std.)evt.remove (element, "evento", funcion, [bubble]);</b></p>
+	<input type="button" value="Adicionar evento" id="add-evt" /> -----> <input type="button" value="sin evento" id="evt-target" />
 	<p><b>evt</b> (Antiguamente Event) tambien tiene novedades, aparate de la reestructuración interna a un nuevo patron de diseño, cuenta con la inclusión de un nuevo metodo <b>on</b> que sirve para delegar a un elemento padre las acciones que se puedan realizar sobre sus elementos hijos, tiene como principal pilar el burbujeo del evento, por lo cual no son soportados los eventos que no burbujean. La principal función que desempeña este nuevo metodo dentro de std.js, es la de colocar a escuchar al documento todos los elementos anchor que posean atributo <b>rel="modal"</b> o <b>rel="external"</b>, de esta manera cualquier nuevo elemento creado dinamicamente que posea estos atributos, puede accedes a las funcionalidades javascript que estos conllevan.</p>
 	<ul id="list">
 		<li><a href="#" id="link-1">link-1</a></li>

@@ -2,8 +2,13 @@
 <html lang="es">
 <head>
 	<meta charset="utf-8" />
-    <title>MirdWare Labs &raquo; prueba del modulo principal</title>
-    <link rel="stylesheet" href="images/css/labs.css">
+    <title>MirdWare Labs &raquo; prueba del modulo principal y dom</title>
+    <link rel="shortcut icon" href="images/labs.ico" />
+    <script type="text/javascript" src="../build/mootool.js"></script>
+    <script type="text/javascript">
+	    var $moo = $;
+    </script>
+    <script type="text/javascript" src="../build/prototype.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
     <script type="text/javascript" src="../src/std.js"></script>
     <script type="text/javascript">
@@ -11,6 +16,7 @@
 			numeros = {'uno':1, 'dos':2, 'tres':3, 'cuatro':4, 'cinco':5},
 			vocales = {1:'a', 2:'e', 3:'i', 4:'o', 5:'u'};
 		std.cmode();
+		jQuery.noConflict();
 		
 		function extendNumerosVocales() {
 			std("#obj1").innerHTML = JSON.stringify(std.extend(numeros, vocales));
@@ -20,36 +26,51 @@
 			std("#obj2").innerHTML = JSON.stringify(std.extend(vocales, numeros));
 		}
 
-		$(document).ready(function() {
-			std("#ready-jquery").innerHTML = (new Date())-dateInit;
-		});
-
 		window.onload = function () {
 			std("#on-load").innerHTML = (new Date())-dateInit;
 		}
+		std(function () {
+			std("#ready-std").innerHTML = (new Date())-dateInit;
+		});
+		jQuery(window).ready (function() {
+			std("#ready-jquery").innerHTML = (new Date())-dateInit;
+		});
+
+		Event.observe(window, 'dom:loaded', function() {  
+			std("#ready-prototype").innerHTML = (new Date())-dateInit;
+		});
+
+		window.addEvent('domready', function() {
+		        std("#ready-mootool").innerHTML = (new Date())-dateInit;
+		});
 
 		std(function() {
 			std("#obj1").innerHTML = JSON.stringify(numeros);
 			std("#obj2").innerHTML = JSON.stringify(vocales);
-			std("#ready-std").innerHTML = (new Date())-dateInit;
 		});
 	</script>
+	<link rel="stylesheet" href="images/css/labs.css" />
 </head>
 
 <body>
-	<h1>CORE STD.js</h1>
-	<div style="text-align:center"><img src="images/std.png" /></div>
-	<p>Este script esta usando cmode (Compatibility mode), ya que trabaja con el framework jQuery.</p>
+	<h1>DOM &amp; CORE STD.js</h1>
+	<div class="center"><img src="images/std.png" /></div>
+	<p>Este script esta usando cmode (Compatibility mode), ya que trabaja con diferentes framework como: jQuery, protorype y mootools.</p>
+
 	<p>El core de std.js lo unico que hace es incluir el ready para leer el Document Object Model, extend para poder incluir atributos de un objeto dentro de otro, std para acortar los getElement y por ultimo se agrega el soporte de JSON para navegadores antigüos.</p>
 	<p>Velocidad de carga de ready: </p>
-		<b>Ready std.js:</b> <span id="ready-std"></span><br />
-		<b>Evento onload:</b> <span id="on-load"></span><br />
-		<b>Ready jQuery:</b> <span id="ready-jquery"></span>
+		<ul>
+			<li><b>std.js:</b> <span id="ready-std"></span><br /></li>
+			<li><b>jQuery:</b> <span id="ready-jquery"></span><br /></li>
+			<li><b>prototype:</b> <span id="ready-prototype"></span></li>
+			<li><b>Mootool:</b> <span id="ready-mootool"></span></li>
+			<li><b>Evento onload:</b> <span id="on-load"></span></li>
+		</ul>
 	<p>Entre menor es el número mostrado, más rapido carga el script.</p>
 	<p>Otra función mencionada del nucleo central de std es la extención de <b>objetos</b>. Aquí un ejemplo:</p>
 		<b>Numeros:</b><div id="obj1"></div>
 		<b>Vocales:</b><div id="obj2"></div>
 	<input type="button" value="extender numeros de vocales" onclick="extendNumerosVocales()" /> | | <input type="button" value="extender vocales de numeros" onclick="extendVocalesNumeros()" />
-	<p>En este ultimo ejemplo se logra obserbar tambien la utilización del objeto JSON para soporte de navegadores antiguos, adelante pruebalo en ie7 u 8 (no, no nos responsabilizamos por ie 6, ni microsoft lo hace)</p>
+	<p>En este ultimo ejemplo se logra observar tambien la utilización del objeto JSON para soporte de navegadores antiguos, adelante pruebalo en ie7 u 8 (no, no nos responsabilizamos por ie 6, ni microsoft lo hace)</p>
 </body>
 </html>

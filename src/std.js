@@ -25,6 +25,7 @@ var TRUE = true,
 	NULL = null,
 	document = window.document,
 	_$ = window.$,
+	testElement = document.documentElement,
 	std = {
 		/****** NUCLEO ******/
 
@@ -85,7 +86,7 @@ var TRUE = true,
 					}
 					tag || (tag = "*");
 					var classElements = [],
-						els = std.$(tag),
+						els = std.dom.get(tag),
 						pattern = new RegExp("(^|\\s)"+name+"(\\s|$)");
 					for (var i=0,el, j=0; el=els[i]; i++) {
 						if ( pattern.test(el.className) ) {
@@ -112,40 +113,61 @@ var TRUE = true,
 					@param: {undefined} fn se utiliza como parte de XP (eXtreme Programming) para no inicializar el fn que toma 
 							valores dentro del while
 				*/
-				function bindReady(handler){
+				function bindReady() {
 					var called = FALSE;
 					
+					/*
+						La función que carga las funciones del ready, despues de cargar cada función se remueven 
+						los eventos asociados al principio.
+					*/
 					function ready() {
 						if (!called){
 							called = TRUE;
-							handler();
+							do {
+								readyList.shift()();
+							} while (readyList.length);
+							std.evt.remove (document, {
+								"DOMContentLoaded": ready,
+								"dataavailable": ready,
+								"onreadystatechange": stateChange,
+								"load": ready
+							});
+						}
+					}
+
+					//Prueba para leer el DOM <IE8
+					function tryScroll () {
+						try {
+							testElement.doScroll("left");
+							ready();
+						} catch(e) {
+							setTimeout(tryScroll, 0);
+						}
+					}
+
+					//funcion que comprueba que el DOM halla completado
+					function stateChange () {
+						var readyState = document.readyState;
+						if ( readyState == "complete" || readyState == "interactive" ) {
+							ready();
 						}
 					}
 					
-					if ( document.addEventListener ) {
-						document.addEventListener( "DOMContentLoaded", ready, FALSE);
-					} else if ( document.attachEvent ) {
-						if ( document.documentElement.doScroll && window == window.top ) {
-							function tryScroll(){
-								if (!called || document.body){
-									try {
-										document.documentElement.doScroll("left");
-										ready();
-									} catch(e) {
-										setTimeout(tryScroll, 0);
-									}
-								}
-							}
-							tryScroll();
-						}
-						
-						document.attachEvent("onreadystatechange", function(){
-							if ( document.readyState === "complete" ) {
-								ready();
-							}
-						})
+					/*
+						añadiendo manejadores a los eventos que controlan la carga del documento, de esta manera aparecen:
+						DOMContentLoaded, dataavailable (Carga más rapido que DOMContenetLoaded), onreadystatechange y load
+					*/ 
+					std.evt.add (document, {
+						"DOMContentLoaded": ready,
+						"dataavailable": ready,
+						"onreadystatechange": stateChange,
+						"load": ready
+					});
+					//Se tiene aparte una manera extra para cargar el DOM para <IE8
+					if ( testElement.doScroll && window == window.top ) {
+						tryScroll();
 					}
-					std.evt.add(window, "load", ready);
+
 				}
 				
 				/**
@@ -155,11 +177,7 @@ var TRUE = true,
 				*/
 				return function(handler) {
 					if (!readyList.length) {
-						bindReady(function() {
-							for(var i=0; i<readyList.length; i++) {
-								readyList[i]();
-	                        }
-						})
+						bindReady();
 					}
 					readyList.push(handler);
 				}
@@ -178,14 +196,14 @@ var TRUE = true,
 				*/
 				add: function(element, nEvent, fn, capture) {
 					if(loops(element, nEvent, fn, capture)) {
-						if (element.attachEvent) {
+						if (element.addEventListener) {
+							element.addEventListener(nEvent,fn,capture);
+						} else if (element.attachEvent) {
 							var f= function(){
 								fn.call(element,event);
 							}
 							element.attachEvent("on"+nEvent,f);
 							element[fn.toString()+nEvent] = f;
-						} else if (element.addEventListener) {
-							element.addEventListener(nEvent,fn,capture);
 						} else {
 							element["on"+nEvent] = fn;
 						}
@@ -201,11 +219,11 @@ var TRUE = true,
 				*/
 				remove: function(element, nEvent, fn, capture){
 					if(loops(element, nEvent, fn, capture)) {
-						if (element.detachEvent){
+						if (element.removeEventListener){
+							element.removeEventListener(nEvent,fn,capture);
+						} else if (element.detachEvent){
 							element.detachEvent("on"+nEvent,element[fn.toString()+nEvent]);
 							element[fn.toString()+nEvent] = NULL;
-						} else if (element.removeEventListener){
-							element.removeEventListener(nEvent,fn,capture);
 						} else{
 							element["on"+nEvent] = function(){};
 						}
@@ -325,9 +343,7 @@ var TRUE = true,
 		})(),
 		
 		/****** ESTILOS ******/
-		css: (function(parseInt){
-			var div = document.createElement("b").style;
-			
+		css: (function(parseInt){			
 			/**
 				Busca selectores CSS dentro de las hojas de estilos del documento que coincidan con la regla de estilo pasada como parametro,
 				en caso de encontrarla procede a eliminarla o retornarla segun sea el caso.
@@ -338,9 +354,16 @@ var TRUE = true,
 			*/
 			function getCSSRule(ruleName, deleteFlag) {
 				//console.log(ruleName);
-				for (var i=0,styleSheet; styleSheet=document.styleSheets[i]; i++) {
-					var cssRules = styleSheet.cssRules || styleSheet.rules;
-					for(var j=0,cssRule; cssRule=cssRules[j]; j++){
+				var styleSheets = document.styleSheets,
+					i = styleSheets.length,
+					j, cssRules, cssRule, styleSheet;
+
+				while (i--) {
+					styleSheet = styleSheets[i];
+					cssRules = styleSheet.cssRules || styleSheet.rules;
+					j = cssRules.length;
+					while(j--){
+						cssRule = cssRules[j];
 						if (cssRule.selectorText == ruleName) {
 							if (deleteFlag) {
 								if (styleSheet.cssRules) {
@@ -364,10 +387,24 @@ var TRUE = true,
 				@param: {Array} args son los argumentos pasados a la función que la invoco (get o set) 
 			*/
 			function normalize(args) {
-				if(args[0] == "opacity" && div[args[0]] == undefined) {
-					args[0] = "filter";
-					args[1] = "alpha(opacity='"+args[1]*100+"')";
+				var prop = args[0],
+					value = args[1];
+				if(prop == "opacity" && testElement.style[prop] == undefined) {
+					if (!value) {
+						value = 1;
+					}
+					prop = "filter";
+					value = "alpha(opacity='"+value*100+"')";
 				}
+				if (prop.indexOf("-") != -1) {
+					prop = prop.split( "-" );
+					for (var i=1, word; word = prop[i]; i++) {
+						prop[i] = word.charAt(0).toUpperCase()+word.substr(1);
+					}
+					prop = prop.join("");
+				}
+				args[0] = prop;
+				args[1] = value;
 			}
 			
 			/**
@@ -379,16 +416,18 @@ var TRUE = true,
 				@return: El objeto con los metodos get y set necesarios para trabajar los estilos de manera correcta y estandarizada
 			*/
 			return function(ruleName, deleteFlag) {
-				var obj;
+				var styleSheetInit = document.styleSheets[0],
+					obj;
 				if(typeof ruleName == "string") {
 					if(deleteFlag) {
 						getCSSRule(ruleName, deleteFlag)
 					} else {
 						if (!getCSSRule(ruleName)) {
-							if (document.styleSheets[0].addRule) {
-								document.styleSheets[0].addRule(ruleName, NULL,0);
+
+							if (styleSheetInit.addRule) {
+								styleSheetInit.addRule(ruleName, NULL,0);
 							} else {
-								document.styleSheets[0].insertRule(ruleName+" { }", 0);
+								styleSheetInit.insertRule(ruleName+" { }", 0);
 							}
 						}
 						obj = getCSSRule(ruleName);
@@ -405,13 +444,6 @@ var TRUE = true,
 					*/
 					get: function(prop) {
 						normalize(arguments);
-						if (prop.indexOf("-") != -1) {
-							prop = prop.split( "-" );
-							for (var i=1, word; word = prop[i]; i++) {
-								prop[i] = prop[i].charAt(0).toUpperCase()+prop[i].substr(1);
-							}
-							prop = prop.join("");
-						}
 						var style = (obj != ruleName)?obj.style[prop]:(obj.currentStyle || document.defaultView.getComputedStyle(obj, ""))[prop];
 						//unificar a rgb la salida de colores
 						if(style.indexOf("#") == 0) {

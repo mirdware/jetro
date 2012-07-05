@@ -1,4 +1,5 @@
 /** FUNCIONES DEPRECATED DE STD.JS **/
+std.cmode();
 function isEmail(dato) {
 	return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+std/.test(dato);
 }
@@ -24,7 +25,7 @@ function ajaxReq() {
 
 var i = 4;
 function addItem() {
-	std("#list").innerHTML += "<li><a href='resgistro.php' rel='modal' title='Ventana Modal'  id='Item"+i+"'>Item"+i+"</a></li>";
+	std("#list").innerHTML += "<li><a href='response.html' rel='modal' title='Ventana Modal'  id='Item"+i+"'>Item"+i+"</a></li>";
 	i++;
 }
 
