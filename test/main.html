@@ -1,57 +1,50 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8" />
-<title>MirdWare Labs &raquo; std.js</title>
-<link rel="shortcut icon" href="images/labs.ico" />
-<script type="text/javascript" src="../build/prototype.js"></script>
-<script type="text/javascript" src="../src/std.min.js"></script>
-<script type="text/javascript" src="../build/labs.js"></script>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-<script type="text/javascript">
-var j = jQuery.noConflict(),
-	inicio = new Date();
-std(function() {
+	<meta charset="utf-8" />
+	<title>MirdWare Labs &raquo; std.js</title>
+	<link rel="shortcut icon" href="images/labs.ico" />
+	<script type="text/javascript" src="../build/prototype.js"></script>
+	<script type="text/javascript" src="../src/std.min.js"></script>
+	<script type="text/javascript" src="../build/labs.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script type="text/javascript">
+		var j = jQuery.noConflict(),
+			inicio = new Date();
+		std(function() {
+			console.log("ready std: "+(new Date()-inicio));
+		});
 
-	console.log("ready std: "+(new Date()-inicio));
+		Event.observe(window, 'dom:loaded', function() {  
+			console.log ("prototype: "+(new Date())-inicio);
+		});
 
-});
+		j(document).ready(function() {
+			console.log("ready jquery: "+(new Date()-inicio));
+		});
 
-Event.observe(window, 'dom:loaded', function() {  
-	console.log ("prototype: "+(new Date())-inicio);
-});
+		window.onload = function () {
+			console.log("onload: "+(new Date()-inicio));
+		}
+	</script>
+	<link href="images/CSS/labs.css" type="text/css" rel="stylesheet" media="screen" />
+	<style type="text/css">
+		.pruebaCSS {
+			width: 50px;
+			height: 50px;
+			margin: 5px;
+			float: left;
+		}
 
-j(document).ready(function() {
+		#modal-local {
+			background: #FFF;
+			padding: 5px;
+			width: 300px;
+			display: none;
+		}
 
-	console.log("ready jquery: "+(new Date()-inicio));
-
-});
-
-window.onload = function () {
-
-	console.log("onload: "+(new Date()-inicio));
-
-}
-</script>
-<link href="images/CSS/labs.css" type="text/css" rel="stylesheet" media="screen" />
-<style type="text/css">
-.pruebaCSS {
-	width: 50px;
-	height: 50px;
-	margin: 5px;
-	float: left;
-}
-
-#modal-local {
-	background: #FFF;
-	padding: 5px;
-	width: 300px;
-	display: none;
-}
-
-#hijo {width:100px; height: 100px; background:#00F; margin: 5px; float:left;}
-</style>
-
+		#hijo {width:100px; height: 100px; background:#00F; margin: 5px; float:left;}
+	</style>
 </head>
 
 <body>

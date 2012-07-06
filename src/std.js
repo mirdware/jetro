@@ -25,6 +25,9 @@ var TRUE = true,
 	NULL = null,
 	document = window.document,
 	_$ = window.$,
+	encodeURIComponent = window.encodeURIComponent,
+	parseInt = window.parseInt,
+	parseFloat = window.parseFloat,
 	testElement = document.documentElement,
 	std = {
 		/****** NUCLEO ******/
@@ -316,10 +319,8 @@ var TRUE = true,
 			*/
 			function loops(element, nEvent, fn, capture, observe) {
 				var caller = loops.caller;
-				/*if(element["data-exe"]) {
-					return TRUE;
-				}*/
-				if(element.length) {
+
+				if(!element.nodeType && element.length) {
 					for(var i=0; el = element[i]; i++) {
 						caller(el, nEvent, fn, capture);
 					}
@@ -554,11 +555,11 @@ var TRUE = true,
 				if(!(obj instanceof Object)) {
 					return obj;
 				}
-				var res="",
-					encode = encodeURIComponent;
+				var res="", typeKey;
 				for(var key in obj) {
-					if(typeof obj[key] == "string" || typeof obj[key] == "number") {
-						res += encode(key)+"="+encode(obj[key])+"\&";
+					typeKey = typeof obj[key];
+					if(typeKey == "string" || typeKey == "number") {
+						res += encodeURIComponent(key)+"="+encodeURIComponent(obj[key])+"\&";
 					}
 				}
 				
@@ -699,8 +700,8 @@ var TRUE = true,
 							post[prop][i] = (from[prop][i]-to[prop][i])/((duration/1000)*fps);
 						}
 					} else {
-						from[prop] = parseInt(cssProp);
-						to[prop] = parseInt(props[prop]);
+						from[prop] = parseFloat(cssProp);
+						to[prop] = parseFloat(props[prop]);
 						post[prop] = isNaN(props[prop])?props[prop].replace(/(\+|-)?\d+/g, ""):"";
 					}
 				}

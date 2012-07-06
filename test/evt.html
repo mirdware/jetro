@@ -33,7 +33,8 @@
         }
 
         function evento () {
-            alert ("Se ha agregado un evento");
+            $.evt.get().preventDefault();
+            alert ("Se ha disparado un evento");
         }
 
     	$ (function () {
@@ -43,6 +44,9 @@
                 alert ("precionado enlace: "+this.id);
             });
     		$.evt.add ($("#add-evt"), "click", addEvt);
+            $.evt.add ($(".multi-add"), "click", evento);
+            $.evt.add ([$("#p"), $("#div"), $("#a")], "click", evento);
+            $.evt.add ($("#form"), "submit", evento);
     	});
     </script>
 </head>
@@ -60,5 +64,23 @@
 	</ul>
 
 	<input type="button" value="Agregar" id="add-item" />
+    <p>Se pueden agregar eventos a multiples elementos, por ejemplo los siguientes links tiene la misma clase:</p>
+    <ul>
+        <li><a href="#" class="multi-add">dispara el mismo evento</a></li>
+        <li><a href="#" class="multi-add">dispara el mismo evento</a></li>
+        <li><a href="#" class="multi-add">dispara el mismo evento</a></li>
+    </ul>
+    <p>De igual manera se pueden agrupar los elementos en un array para ser pasados al metodo, de esta manera se logra agrupar elementos totalmente diferentes dentro del dom:</p>
+    <p id="p">Este es un parrafo con id p</p>
+    <a href="#" id="a">Este es un enlace con id a</a>
+    <div id="div">Este es un div con id div</div>
+    <p>Por ultimo agregar que antiguamente la libreria no soportaba eventos sobre elementos form, ya que serializaba los elementos con .length, ahora solo soporta nodeList, HTMLColection y arrays, dejando por fuera elementos que a pesar de tener .length no cumple con los requisitos anteriores:</p>
+    <form method="post" action="nuncavaallegaraca" id="form">
+        <label>Nombres:</label><input type="text" name="nombres" size="30" /><br />
+        <label>Apellidos:</label><input type="text" name="apellidos" size="30" /><br />
+        <label>Dirección:</label><input type="text" name="direccion" size="30" /><br />
+        <label>Email:</label><input type="text" name="email" size="30" /><br />
+        <input type="submit" />
+    </form>
 </body>
 </html>

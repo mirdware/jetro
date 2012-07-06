@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8" />
+    <title>MirdWare Labs &raquo; prueba del modulo sfx</title>
+    <link rel="shortcut icon" href="images/labs.ico" />
+    <script type="text/javascript" src="../src/std.js"></script>
+    <link rel="stylesheet" href="images/css/labs.css" />
+    <script type="text/javascript">
+    	function fade() {
+				std.evt.get().preventDefault();
+				var opt = std.ajax.form(this);
+				if(isNaN(opt.duracion) || isNaN(opt.fps)) {
+					return;
+				}
+				var target = std("#mover");
+				if(!target.block) {
+					std.sfx.fade(std('#mover'),opt.duracion,opt.fps);
+					target.block = true;
+					setTimeout(function() {
+						target.block = false;
+					}, opt.duracion);
+				}
+			}
+
+    	$ (function (){
+    		$.evt.add($("#logo"), {
+    			"mouseover": function () {
+    				$.sfx.anim(this, {
+    					opacity: "0.5"
+    				});
+    			},
+    			"mouseout": function () {
+    				$.sfx.anim(this, {
+    					opacity: "1"
+    				});
+    			}
+    		});
+    		$.evt.add($("#prueba-anim"),{
+				click: function () {
+					if($.css(this).get("width") == "20px") {
+						$.sfx.anim(this, {
+							width:"100px",
+							height:"100px"
+						}, {
+							duration:500
+						});
+					} else {
+						$.sfx.anim(this, {
+							width:"20px",
+							height:"20px"
+						}, {
+							duration:500
+						});
+					}
+				},
+				mouseover: function() {
+					$.sfx.anim(this, {
+						backgroundColor: "#F00"
+					}, {
+						duration: 500
+					});
+				},
+				mouseout: function() {
+					$.sfx.anim(this, {
+						backgroundColor: "#0CC"
+					}, {
+						duration:500
+					});
+				}
+			});
+
+    		$.evt.add($("#mover"),"mousedown",function(){
+				$.sfx.dyd($.evt.get(), this,$("#prueba"));
+			});
+
+			std.evt.add(std("#form-fade"),"submit", fade);
+
+    	});
+
+    </script>
+    <style type="text/css">
+    	#prueba-anim {
+    		width: 20px;
+    		height: 20px;
+    		background-color: #0CC;
+    	}
+    </style>
+</head>
+
+<body>
+	<h1>Efectos especiales en std</h1>
+	<div class="center"><img src="images/std.png" id="logo" /></div>
+	<p>Uno de los efectos especiales de la libreria más representativo es anim, el cual genera una pequeña y sencilla animación sobre el elemento seleccionado, el metodo anim contiene tres parametros:</p>
+	<ol>
+		<li><b>elemento:</b> Logicamente es el elemento que debe ser animado.</li>
+		<li><b>Propiedades:</b> Son las propiedades css a animar del elemento, se pasan como un objeto {estilo:valor}.</li>
+		<li><b>Opciones:</b> Como su nombre lo indica es un parametro totalmente opcional y contiene dentro de un objeto las siguientes propiedades:
+		<ul>
+			<li><b>duración (duration): </b>El tiempo que durará la animación, por defecto son 1000 milisegundos</li>
+			<li><b>Frames por segundo (fps): </b>El numero de intervalos que mostrara la animación en 1 segundo, por defecto son 100</li>
+			<li><b>al completar (onComplete): </b>Una función que sera ejecutada al terminar la animación</li>
+		</ul></li>
+	</ol>
+	<p>Es importante mencionar que (std.)sfx.anim soporta animación de colores:</p>
+	<div id="prueba-anim"></div>
+	<p>sfx cuenta con otros dos metodos que son fade y dyd, el primero realiza una difuminación o atenuación del elemento dependiento si este esta o no visble, por su parte dyd realiza acciones de drag and drop (arrastrar y soltar) ambos efectos los podemos observar en el siguiente recuadro:</p>
+	<form action="#" method="post" id="form-fade">
+		<fieldset style="float:left; margin: 10px"><legend>Fade</legend>
+		Duración:<input type="text" name="duracion" size="5" />
+		Frames Por Segundo:<input type="text" name="fps" size="5" />
+		<input type="submit" value="Aparecer/Desaparecer" />
+		</fieldset>
+	</form>
+	<div id="prueba"><div id="mover">MUEVEME!!</div></div>
+</body>
+</html>
