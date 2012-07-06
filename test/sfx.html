@@ -10,12 +10,12 @@
     	function fade() {
 				std.evt.get().preventDefault();
 				var opt = std.ajax.form(this);
-				if(isNaN(opt.duracion) || isNaN(opt.fps)) {
+				if(isNaN(opt.duration) || isNaN(opt.fps)) {
 					return;
 				}
 				var target = std("#mover");
 				if(!target.block) {
-					std.sfx.fade(std('#mover'),opt.duracion,opt.fps);
+					std.sfx.fade(target,opt);
 					target.block = true;
 					setTimeout(function() {
 						target.block = false;
@@ -107,7 +107,7 @@
 	<p>sfx cuenta con otros dos metodos que son fade y dyd, el primero realiza una difuminación o atenuación del elemento dependiento si este esta o no visble, por su parte dyd realiza acciones de drag and drop (arrastrar y soltar) ambos efectos los podemos observar en el siguiente recuadro:</p>
 	<form action="#" method="post" id="form-fade">
 		<fieldset style="float:left; margin: 10px"><legend>Fade</legend>
-		Duración:<input type="text" name="duracion" size="5" />
+		Duración:<input type="text" name="duration" size="5" />
 		Frames Por Segundo:<input type="text" name="fps" size="5" />
 		<input type="submit" value="Aparecer/Desaparecer" />
 		</fieldset>
