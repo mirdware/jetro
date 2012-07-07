@@ -4347,8 +4347,6 @@ Element.Properties.events = {set: function(events){
 			condition = fn,
 			self = this;
 		if (custom){
-			console.log (realType+": ");
-			console.log (custom);
 			if (custom.onAdd) custom.onAdd.call(this, fn, type);
 			if (custom.condition){
 				condition = function(event){
@@ -6262,8 +6260,7 @@ var domready = function(){
 	window.fireEvent('domready');
 };
 
-var check = function(){
-	console.log (checks);
+var check = function(evt){
 	for (var i = checks.length; i--;) if (checks[i]()){
 		domready();
 		return true;
@@ -6276,7 +6273,9 @@ var poll = function(){
 	if (!check()) timer = setTimeout(poll, 10);
 };
 
-document.addListener('DOMContentLoaded', domready);
+document.addListener('DOMContentLoaded', function () {
+	domready();
+});
 
 /*<ltIE8>*/
 // doScroll technique by Diego Perini http://javascript.nwbox.com/IEContentLoaded/
@@ -6284,6 +6283,7 @@ document.addListener('DOMContentLoaded', domready);
 var doScrollWorks = function(){
 	try {
 		testElement.doScroll();
+
 		return true;
 	} catch (e){}
 	return false;

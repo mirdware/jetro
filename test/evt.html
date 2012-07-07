@@ -4,6 +4,7 @@
 	<meta charset="utf-8" />
     <title>MirdWare Labs &raquo; prueba del modulo de eventos</title>
     <link rel="stylesheet" href="images/css/labs.css">
+    <link rel="shortcut icon" href="images/labs.ico" />
     <script type="text/javascript" src="../src/std.js"></script>
     <script type="text/javascript">
     	var addItem = (function ($) {
@@ -74,7 +75,7 @@
     <p id="p">Este es un parrafo con id p</p>
     <a href="#" id="a">Este es un enlace con id a</a>
     <div id="div">Este es un div con id div</div>
-    <p>Por ultimo agregar que antiguamente la libreria no soportaba eventos sobre elementos form, ya que serializaba los elementos con .length, ahora solo soporta nodeList, HTMLColection y arrays, dejando por fuera elementos que a pesar de tener .length no cumple con los requisitos anteriores:</p>
+    <p>Por ultimo agregar que antiguamente la libreria no soportaba eventos sobre elementos form, ya que serializaba los elementos con atributo length y dado que el form posee este atributo lo serializaba igualmente teniendo como resultado que los eventos eran asignados a sus hijos y no al formulario directamente, actualmente se a logrado solucionar el inconveniente validando que el elemento a serializar no sea un nodo:</p>
     <form method="post" action="nuncavaallegaraca" id="form">
         <label>Nombres:</label><input type="text" name="nombres" size="30" /><br />
         <label>Apellidos:</label><input type="text" name="apellidos" size="30" /><br />
