@@ -2,40 +2,40 @@
 <html lang="es">
 <head>
 	<meta charset="utf-8" />
-    <title>MirdWare Labs &raquo; prueba del modulo css</title>
-    <link rel="shortcut icon" href="images/labs.ico" />
-    <script type="text/javascript" src="../src/std.js"></script>
-    <link rel="stylesheet" href="images/css/labs.css" />
-    <script type="text/javascript">
-    	function metamorfosisElement () {
-    		var css = (this.id == "prueba-css-2")?"."+this.className:this;
-    		$.css(css).set({
-    			"width": "70px",
-    			"height": "70px",
-    			"background-color": "#FF0"
-    		});
-    		$.evt.remove(this, "click", metamorfosisElement);
-    		$.evt.add(this, "click", retrocesoElement);
-    	}
+	<title>MirdWare Labs &raquo; prueba del modulo css</title>
+	<link rel="shortcut icon" href="images/labs.ico" />
+	<script type="text/javascript" src="../src/std.js"></script>
+	<link rel="stylesheet" href="images/css/labs.css" />
+	<script type="text/javascript">
+		function metamorfosisElement () {
+			var css = (this.id == "prueba-css-2")?"."+this.className:this;
+			$.css(css).set({
+				"width": "70px",
+				"height": "70px",
+				"background-color": "#FF0"
+			});
+			$.evt.remove(this, "click", metamorfosisElement);
+			$.evt.add(this, "click", retrocesoElement);
+		}
 
-    	function retrocesoElement () {
-    		var css = (this.id == "prueba-css-2")?"."+this.className:this,
-    			prop = (this.id == "prueba-css-2")?["50px", "50px", "#F0F"]:["", "", ""];
-    		$.css(css).set({
-    			"width": prop[0],
-    			"height": prop[1],
-    			"background-color": prop[2] 
-    		});
-    		$.evt.remove(this, "click", retrocesoElement);
-    		$.evt.add(this, "click", metamorfosisElement);
-    	}
+		function retrocesoElement () {
+			var css = (this.id == "prueba-css-2")?"."+this.className:this,
+				prop = (this.id == "prueba-css-2")?["50px", "50px", "#F0F"]:["", "", ""];
+			$.css(css).set({
+				"width": prop[0],
+				"height": prop[1],
+				"background-color": prop[2] 
+			});
+			$.evt.remove(this, "click", retrocesoElement);
+			$.evt.add(this, "click", metamorfosisElement);
+		}
 
-    	$ (function () {
-    		$.evt.add($(".prueba"), "click", metamorfosisElement);
-    		$.evt.add($(".pruebaCSS"), "click", function() {
+		$ (function () {
+			$.evt.add($(".prueba"), "click", metamorfosisElement);
+			$.evt.add($(".pruebaCSS"), "click", function() {
 				var color = $.css(this).get("backgroundColor");
 				std("#result").innerHTML = "Este div es de color <span style='color:" +
-								 color + ";'>" + color + "</span>.";
+								color + ";'>" + color + "</span>.";
 			});
 			$.evt.add ($("#logo"), {
 				"mouseover": function () {
@@ -46,8 +46,8 @@
 				}
 			});
 
-    	});
-    </script>
+		});
+	</script>
     <style type="text/css">
 	    .prueba {
 	    	width: 50px;

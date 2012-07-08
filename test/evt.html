@@ -55,7 +55,7 @@
 <body>
 	<h1>Manejo de eventos</h1>
     <div class="center"><img src="images/std.png"></div>
-	<p>Adicionar eventos de manera cross browser con std.js es sencillo solo basta con colocar: <b>(std.)evt.add (element, "evento", funcion, [bubble]);</b> de igual manera para eliminar el evento se usa <b>(std.)evt.remove (element, "evento", funcion, [bubble]);</b></p>
+	<p>Adicionar eventos de manera cross browser con std.js es sencillo solo basta con colocar: <b>(std.)evt.add (element, "evento", funcion, [capture]);</b> de igual manera para eliminar el evento se usa <b>(std.)evt.remove (element, "evento", funcion, [bubble]);</b></p>
 	<input type="button" value="Adicionar evento" id="add-evt" /> -----> <input type="button" value="sin evento" id="evt-target" />
 	<p><b>evt</b> (Antiguamente Event) tambien tiene novedades, aparate de la reestructuración interna a un nuevo patron de diseño, cuenta con la inclusión de un nuevo metodo <b>on</b> que sirve para delegar a un elemento padre las acciones que se puedan realizar sobre sus elementos hijos, tiene como principal pilar el burbujeo del evento, por lo cual no son soportados los eventos que no burbujean. La principal función que desempeña este nuevo metodo dentro de std.js, es la de colocar a escuchar al documento todos los elementos anchor que posean atributo <b>rel="modal"</b> o <b>rel="external"</b>, de esta manera cualquier nuevo elemento creado dinamicamente que posea estos atributos, puede accedes a las funcionalidades javascript que estos conllevan.</p>
 	<ul id="list">

@@ -4,7 +4,6 @@
 	<meta charset="utf-8" />
 	<title>MirdWare Labs &raquo; std.js</title>
 	<link rel="shortcut icon" href="images/labs.ico" />
-	<script type="text/javascript" src="../build/prototype.js"></script>
 	<script type="text/javascript" src="../src/std.min.js"></script>
 	<script type="text/javascript" src="../build/labs.js"></script>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
@@ -13,10 +12,6 @@
 			inicio = new Date();
 		std(function() {
 			console.log("ready std: "+(new Date()-inicio));
-		});
-
-		Event.observe(window, 'dom:loaded', function() {  
-			console.log ("prototype: "+(new Date())-inicio);
 		});
 
 		j(document).ready(function() {
@@ -256,7 +251,7 @@
 
 <a href="#" id="lik2"><img src="images/widget.png" alt="add" /></a>
 
-<div id="hijo"></div>
+<div id="hijo"><b>std.query</b></div>
 
 <a href="#" style="width:100px; height: 100px; display:block; margin: 5px; float:left; background:#0F0" id="link1"></a>
 

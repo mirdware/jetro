@@ -135,28 +135,78 @@ function addItem() {
 })('emile', this);
 
 /** stdQuery **/
-std.query = (function(window, undefined) {
-	var core = {
-		click: function(fn, capture) {
-			if(this.length) {
-				for(var i=0,el; el = this[i]; i++) {
-					std.evt.add(el, "click", fn, capture);
+(function($, window, undefined) {
+	$.extend($, {
+		query: (function() {
+			var core = {
+				bind: function (nEvento, fn, capture) {
+					$.evt.add(this, nEvento, fn, capture);
+					return this;
+				},
+				click: function(fn, capture) {
+					$.evt.add(this, "click", fn, capture);
+					return this;
+				},
+				mouseout: function (fn, capture) {
+					$.evt.add(this, "mouseout", fn, capture);
+					return this;
+				},
+				mouseover: function (fn, capture) {
+					$.evt.add(this, "mouseover", fn, capture);
+					return this;
+				},
+				blur: function (fn, capture) {
+					$.evt.add(this, "blur", fn, capture);
+					return this;
+				},
+				focus: function (fn, capture) {
+					$.evt.add(this, "focus", fn, capture);
+					return this;
+				},
+				css: function (name, value) {
+					var css = $.css(this);
+					if (!value && !(name instanceof Object)) {
+						return css.get(name);
+					}
+					css.set(name, value);
+					return this;
+				},
+				attr: function (name, value) {
+					if (!value) {
+						return this.getAttribute(name);
+					}
+					this.setAttribute(name, value);
+        			return this;
 				}
-			} else {
-				std.evt.add(this, "click", fn, capture);
-			}
-		}
-	};
-	
-	return function (id, node, tag) {
-		return std.extend(std(id, node, tag), core);
+			};
+			
+			return {
+				get: function (id, node, tag) {
+					return $.extend($(id, node, tag), core);
+				},
+				create: function (type) {
+					return $.extend(document.createElement(type), core);
+				}
+			};
+		})()
+	});
+
+	if (!$.$) {
+		$.extend($,{$:$.query.get});
 	}
-})(window);
+})(std, window);
 
 std(function() {
-	std.query("#hijo").click(function() {
+	console.log(std.$("#hijo").click(function() {
 		alert("Probando un nuevo plugin");
-	});
+	}).css({
+		backgroundColor: "#000",
+		color: "#FFF"
+	}).mouseover(function () {
+		this.css("background-color", "#F0F");
+	}).mouseout(function() {
+		this.css("background-color", "#000");
+	}).attr("id") );
 });
 
 /** Funciones pruebas **/
@@ -165,7 +215,6 @@ function type (obj) {
 }
 
 std(function() {
-	std.evt.add(std("#modalcache"), "click",std.modal.show);
 	std.evt.add(std("#std"),"click",ajaxReq);
 	std.evt.add(std("#showHide"),"click",function() {
 		std.evt.get().preventDefault();
