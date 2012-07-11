@@ -216,15 +216,15 @@ function type (obj) {
 
 std(function() {
 	std.evt.add(std("#std"),"click",ajaxReq);
-	std.evt.add(std("#showHide"),"click",function() {
+	std.evt.add(std("#form-fade"),"submit",function() {
 		std.evt.get().preventDefault();
-		var opt = std.ajax.form(this.form);
-		if(isNaN(opt.duracion) || isNaN(opt.fps)) {
+		var opt = std.ajax.form(this);
+		if(isNaN(opt.duration) || isNaN(opt.fps)) {
 			return;
 		}
 		var target = std("#mover");
 		if(!target.block) {
-			std.sfx.fade(std('#mover'),opt.duracion,opt.fps);
+			std.sfx.fade(std('#mover'),opt);
 			target.block = true;
 			setTimeout(function() {
 				target.block = false;

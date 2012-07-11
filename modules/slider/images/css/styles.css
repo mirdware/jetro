@@ -15,10 +15,10 @@ img {
 	list-style: none;
 	background: #000;
 	overflow: hidden;
-	border: solid 0.4em #CCC;
-	border-radius: 0.5em;
+	border: solid 4px #CCC;
+	border-radius: 5px;
 	position: relative;
-	box-shadow: 0 0 2.5em #000;
+	box-shadow: 0 0 25px rgba(0, 0, 0, .3);
 }
 
 .slider span {
@@ -30,14 +30,13 @@ img {
 	width: 100%;
 	left: 0;
 	bottom: 0;
-	font-size: 1.2em;
 }
 
 .slider .control {
 	height: 100%;
 	width: 100%;
 	position:  absolute;
-	margin: 0.5em auto;
+	margin: 5px auto;
 	top: 0;
 	text-align: center;
 }
@@ -74,7 +73,7 @@ img {
 
 .slider-nav a {
 	display: inline-block;
-	margin: 0.3em;
+	margin: 3px;
 	width: 13px;
 	height: 13px;
 	background: url(../bg_control_nav.png);

@@ -39,6 +39,85 @@
 		}
 
 		#hijo {width:100px; height: 100px; background:#00F; margin: 5px; float:left;}
+		
+		@font-face {
+		    font-family: 'OrbitronBold';
+		    src: url('orbitron-bold-webfont.eot');
+		    src: url('orbitron-bold-webfont.eot?#iefix') format('embedded-opentype'),
+		         url('orbitron-bold-webfont.woff') format('woff'),
+		         url('orbitron-bold-webfont.ttf') format('truetype'),
+		         url('orbitron-bold-webfont.svg#OrbitronBold') format('svg');
+		    font-weight: normal;
+		    font-style: normal;
+		}
+
+		hr {
+			clear: both;
+		}
+
+		#hola {
+			display: none;
+			padding: 10px;
+			background: #FFF;
+		}
+
+		#prueba {
+			background: #F00;
+			height: 400px;
+			width: 400px;
+			margin: auto;
+			padding:0;
+			clear: both;
+		}
+
+		#mover {
+			position: relative;
+			width: 100px;
+			height: 100px;
+			background: #000;
+			color: #FFF;
+			cursor: move;
+		}
+
+		/*INS*/
+
+		#remote {
+			background: #F0F0F0;
+			width: 400px;
+			padding: 10px;
+			display: none;
+		}
+
+		#target {
+			width: 20px;
+			height: 20px;
+			background: #0CC;
+		}
+		#target2 {
+			width: 20px;
+			height: 20px;
+			background: #0CC;
+		}
+
+		label {
+			display: inline-block;
+			width: 80px;
+			padding: 5px 0;
+		}
+
+		body {
+			padding:10px;
+		}
+
+		h2.title {
+			background:#0CF;
+			padding: 5px;
+			color:#FFF;
+			overflow:auto
+		}
+		label.radio {
+			width: auto;
+		}
 	</style>
 </head>
 
@@ -53,7 +132,7 @@
 
 </div>
 
-<h2 class="title"><a class="button small green" style="float:right" href="https://github.com/marlonramirez/std.js" rel="external">Repositorio</a>Nuevas funcionalidades en std.js</h2>
+<h2 class="title"><a class="btn green" style="float:right; font-size:.7em;" href="https://github.com/marlonramirez/std.js" rel="external">Repositorio</a>Nuevas funcionalidades en std.js</h2>
 
 <p>Prueba de la ventana modal en local, es decir econdiendo el div dentro del mismo documento</p>
 
@@ -165,23 +244,24 @@
 
 	<fieldset style="text-align:center"><legend>Método</legend>
 
-    POST<input type="radio" name="method" value="POST" />
+ 	<label class="radio">POST<input type="radio" name="method" value="POST" /></label>
 
-    GET<input type="radio" name="method" value="GET" />
+    <label class="radio">GET<input type="radio" name="method" value="GET" /></label>
 
     </fieldset>
 
-	<label>Nombre:</label> <input type="text" name="nombre" /><br />
+	<label for="form-nombre">Nombre:</label> <input type="text" name="nombre" id="form-nombre" class="input-text" /><br />
 
-    <label>Area:</label> <textarea cols="10" rows="5" name="area"></textarea><br />
+    <label for="form-area">Area:</label> <textarea cols="20" rows="5" name="area" id="form-area" class="input-text"></textarea><br />
 
-    <label>Algo:</label> <input type="checkbox" name="enviar"/><br />
+    <label>Algo: <input type="checkbox" name="enviar"/></label><br />
 
-    <label>Opciones:</label> opt1<input type="radio" name="radio" value="opt1" />
+    <label>Opciones:</label>
+    <label class="radio">opt1<input type="radio" name="radio" value="opt1" /></label>
 
-    opt2<input type="radio" name="radio" value="opt2" />
+    <label class="radio">opt2<input type="radio" name="radio" value="opt2" /></label>
 
-    opt3<input type="radio" name="radio" value="opt3" /><br />
+    <label class="radio">opt3<input type="radio" name="radio" value="opt3" /><br /></label>
 
     <label>Hola:</label> <select name="hola">
 
@@ -195,9 +275,9 @@
 
     <div style="text-align:center">
 
-    <input type="submit" value="normal" />
+    <input type="submit" value="normal" class="btn" />
 
-    <input type="submit" value="std" id="std"/>
+    <input type="submit" value="std" id="std" class="btn"/>
 
     </div>
 
@@ -234,9 +314,9 @@
 
 </ul>
 
-<input type="button" value="Agregar" onclick="addItem()" />
+<input type="button" value="Agregar" onclick="addItem()" class="btn" />
 
-<button id="prototype">Prototype</button>
+<input type="button" value="Protorype" id="prototype" class="btn" />
 
 
 
@@ -318,15 +398,17 @@
 
 
 
-<form action="#" method="post">
-
-<fieldset style="float:left; margin: 10px"><legend>Fade In</legend>
-
-Duración:<input type="text" name="duracion" size="5" />Frames Por Segundo:<input type="text" name="fps" size="5" /><button id="showHide">Aparecer/Desaparecer</button>
-
-</fieldset>
-
-</form>
+<form action="#" method="post" id="form-fade">
+		<fieldset style="float:left; margin: 10px"><legend>Fade</legend>
+			<label class="radio">Duración:
+				<input type="text" name="duration" size="5" class="input-text" />
+			</label>
+			<label class="radio">Frames Por Segundo:
+				<input type="text" name="fps" size="5" class="input-text" />
+			</label>
+			<button class="btn">Aparecer/Desaparecer</button>
+		</fieldset>
+	</form>
 
 <div id="prueba"><div id="mover">MUEVEME!!</div></div>
 

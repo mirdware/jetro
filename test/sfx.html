@@ -85,6 +85,23 @@
     		height: 20px;
     		background-color: #0CC;
     	}
+    	#prueba {
+			background: #F00;
+			height: 400px;
+			width: 400px;
+			margin: auto;
+			padding:0;
+			clear: both;
+		}
+
+		#mover {
+			position: relative;
+			width: 100px;
+			height: 100px;
+			background: #000;
+			color: #FFF;
+			cursor: move;
+		}
     </style>
 </head>
 
@@ -107,11 +124,16 @@
 	<p>sfx cuenta con otros dos metodos que son fade y dyd, el primero realiza una difuminación o atenuación del elemento dependiento si este esta o no visble, por su parte dyd realiza acciones de drag and drop (arrastrar y soltar) ambos efectos los podemos observar en el siguiente recuadro:</p>
 	<form action="#" method="post" id="form-fade">
 		<fieldset style="float:left; margin: 10px"><legend>Fade</legend>
-		Duración:<input type="text" name="duration" size="5" />
-		Frames Por Segundo:<input type="text" name="fps" size="5" />
-		<input type="submit" value="Aparecer/Desaparecer" />
+			<label class="radio">Duración:
+				<input type="text" name="duration" size="5" class="input-text" />
+			</label>
+			<label class="radio">Frames Por Segundo:
+				<input type="text" name="fps" size="5" class="input-text" />
+			</label>
+			<button class="btn">Aparecer/Desaparecer</button>
 		</fieldset>
 	</form>
-	<div id="prueba"><div id="mover">MUEVEME!!</div></div>
+
+<div id="prueba"><div id="mover">MUEVEME!!</div></div>
 </body>
 </html>

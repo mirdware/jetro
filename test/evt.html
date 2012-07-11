@@ -56,7 +56,7 @@
 	<h1>Manejo de eventos</h1>
     <div class="center"><img src="images/std.png"></div>
 	<p>Adicionar eventos de manera cross browser con std.js es sencillo solo basta con colocar: <b>(std.)evt.add (element, "evento", funcion, [capture]);</b> de igual manera para eliminar el evento se usa <b>(std.)evt.remove (element, "evento", funcion, [bubble]);</b></p>
-	<input type="button" value="Adicionar evento" id="add-evt" /> -----> <input type="button" value="sin evento" id="evt-target" />
+	<input type="button" value="Adicionar evento" id="add-evt" class="btn" /> -----> <input type="button" value="sin evento" id="evt-target" class="btn" />
 	<p><b>evt</b> (Antiguamente Event) tambien tiene novedades, aparate de la reestructuración interna a un nuevo patron de diseño, cuenta con la inclusión de un nuevo metodo <b>on</b> que sirve para delegar a un elemento padre las acciones que se puedan realizar sobre sus elementos hijos, tiene como principal pilar el burbujeo del evento, por lo cual no son soportados los eventos que no burbujean. La principal función que desempeña este nuevo metodo dentro de std.js, es la de colocar a escuchar al documento todos los elementos anchor que posean atributo <b>rel="modal"</b> o <b>rel="external"</b>, de esta manera cualquier nuevo elemento creado dinamicamente que posea estos atributos, puede accedes a las funcionalidades javascript que estos conllevan.</p>
 	<ul id="list">
 		<li><a href="#" id="link-1">link-1</a></li>
@@ -64,7 +64,7 @@
 		<li><a href="#" id="link-3">link-3</a></li>
 	</ul>
 
-	<input type="button" value="Agregar" id="add-item" />
+	<input type="button" value="Agregar" id="add-item" class="btn" />
     <p>Se pueden agregar eventos a multiples elementos, por ejemplo los siguientes links tiene la misma clase:</p>
     <ul>
         <li><a href="#" class="multi-add">dispara el mismo evento</a></li>
@@ -77,11 +77,11 @@
     <div id="div">Este es un div con id div</div>
     <p>Por ultimo agregar que antiguamente la libreria no soportaba eventos sobre elementos form, ya que serializaba los elementos con atributo length y dado que el form posee este atributo lo serializaba igualmente teniendo como resultado que los eventos eran asignados a sus hijos y no al formulario directamente, actualmente se a logrado solucionar el inconveniente validando que el elemento a serializar no sea un nodo:</p>
     <form method="post" action="nuncavaallegaraca" id="form">
-        <label>Nombres:</label><input type="text" name="nombres" size="30" /><br />
-        <label>Apellidos:</label><input type="text" name="apellidos" size="30" /><br />
-        <label>Dirección:</label><input type="text" name="direccion" size="30" /><br />
-        <label>Email:</label><input type="text" name="email" size="30" /><br />
-        <input type="submit" />
+        <label>Nombres:</label><input type="text" name="nombres" size="30" class="input-text" /><br />
+        <label>Apellidos:</label><input type="text" name="apellidos" size="30" class="input-text" /><br />
+        <label>Dirección:</label><input type="text" name="direccion" size="30" class="input-text" /><br />
+        <label>Email:</label><input type="text" name="email" size="30" class="input-text" /><br />
+        <input type="submit" class="btn" />
     </form>
 </body>
 </html>
