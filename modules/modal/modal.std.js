@@ -11,11 +11,13 @@
 
 (function ($) {
 	$.extend($, {
-		modal: (function() {
+		modal: (function(window, undefined) {
 			var cache = window.sessionStorage || {},
 				FALSE = false,
 				TRUE = true,
 				NULL = true,
+				document = window.document,
+				location = document.location,
 				modal,
 				overlay,
 				local,
@@ -30,7 +32,7 @@
 						var title = this.getAttribute("title") || "",
 							isCache = this.rel.split("-")[1] == "cache",
 							url = this.getAttribute("href"),
-							path = document.location,
+							path = location.href.replace(location.hash, ""),
 							element;
 
 						if (url.indexOf(path+"#") == 0) {
@@ -68,7 +70,6 @@
 							}, duration:500});
 							return;
 						} 
-						
 						if (url.indexOf("#") == 0) {
 							local = $(url);
 							var parent = local.parentNode;
@@ -182,11 +183,13 @@
 
 
 			/**
-				Se encarga de gestionar los anchors que contengan atributos rel,
-				ademas agrega los eventos necesarios para cuando se carga la libreria.
+				Configuración de entorno para la creación de ventanas modal, aparte de generar el entorno
+				para las ventanas, tambien permite omitir por (X)HTML el atributo target="_blank", pudiendolo
+				reemplazar por rel="external"
 			*/
+			$.evt.add(window,"resize",core.reset);
+
 			$(function (){
-				$.evt.add(window,"resize",$.modal.reset);
 				$.evt.on(document,"a","click", function() {
 					var rel = this.rel;
 					if(rel.indexOf("modal") == 0 ) {
@@ -198,6 +201,6 @@
 			});
 
 			return core;
-		})()
+		})(window)
 	});
 }) (std);

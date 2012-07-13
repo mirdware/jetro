@@ -190,7 +190,9 @@ var TRUE = true,
 		
 		/****** EVENTOS ******/
 		evt: (function() {
-			var core = {
+			var id = 0,//id unico para cada funcion que se vaya a asociar
+				events = [],//array con las funciones asociadas a IE<9
+				core = {
 				/**
 					Realiza la captura de ciertos eventos a un elemento.
 					@param: {element} element es el elemento al cual se le va a asignar el evento
@@ -203,11 +205,13 @@ var TRUE = true,
 						if (element.addEventListener) {
 							element.addEventListener(nEvent,fn,capture);
 						} else if (element.attachEvent) {
-							var f= function(){
-								fn.call(element,event);
+							if (fn.id == undefined) {
+								events[id] = function(){
+									fn.call(element,event);
+								};
+								fn.id = id++;
 							}
-							element.attachEvent("on"+nEvent,f);
-							element[fn.toString()+nEvent] = f;
+							element.attachEvent("on"+nEvent,events[fn.id]);
 						} else {
 							element["on"+nEvent] = fn;
 						}
@@ -225,10 +229,9 @@ var TRUE = true,
 					if(loops(element, nEvent, fn, capture)) {
 						if (element.removeEventListener){
 							element.removeEventListener(nEvent,fn,capture);
-						} else if (element.detachEvent){
-							element.detachEvent("on"+nEvent,element[fn.toString()+nEvent]);
-							element[fn.toString()+nEvent] = NULL;
-						} else{
+						} else if (element.detachEvent) {
+							element.detachEvent("on"+nEvent,events[fn.id]);
+						} else {
 							element["on"+nEvent] = function(){};
 						}
 					}
