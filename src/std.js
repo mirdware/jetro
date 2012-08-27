@@ -129,7 +129,7 @@ var TRUE = true,
 							do {
 								readyList.shift()();
 							} while (readyList.length);
-							std.evt.remove (document, {
+							std.evt.remove(document, {
 								"DOMContentLoaded": ready,
 								"dataavailable": ready,
 								"readystatechange": stateChange
@@ -166,12 +166,12 @@ var TRUE = true,
 						DOMContentLoaded, dataavailable (Carga más rapido que DOMContenetLoaded), onreadystatechange y 
 						para window load (document no lo acepta)
 					*/ 
-					std.evt.add (document, {
+					std.evt.add(document, {
 						"DOMContentLoaded": ready,
 						"dataavailable": ready,
 						"readystatechange": stateChange
 					});
-					std.evt.add (window, "load", ready);
+					std.evt.add(window, "load", ready);
 				}
 				
 				/**
@@ -424,18 +424,23 @@ var TRUE = true,
 				@return: El objeto con los metodos get y set necesarios para trabajar los estilos de manera correcta y estandarizada
 			*/
 			return function(ruleName, deleteFlag) {
-				var styleSheetInit = document.styleSheets[0],
+				var styleSheets = document.styleSheets,
 					obj;
 				if(typeof ruleName == "string") {
 					if(deleteFlag) {
 						getCSSRule(ruleName, deleteFlag)
 					} else {
+						if (!styleSheets.length) {
+							$("head")[0].appendChild(document.createElement("style"));
+						}
+						var styleSheetEnd = styleSheets[styleSheets.length-1],
+							lengthRule = styleSheetEnd.length;
 						if (!getCSSRule(ruleName)) {
 
-							if (styleSheetInit.addRule) {
-								styleSheetInit.addRule(ruleName, NULL,0);
+							if (styleSheetEnd.addRule) {
+								styleSheetEnd.addRule(ruleName, NULL, lengthRule);
 							} else {
-								styleSheetInit.insertRule(ruleName+" { }", 0);
+								styleSheetEnd.insertRule(ruleName+" { }", lengthRule);
 							}
 						}
 						obj = getCSSRule(ruleName);
