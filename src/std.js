@@ -76,6 +76,9 @@ var TRUE = true,
 				var name = id.substr(1),
 					prefix = id.charAt(0);
 				
+				if (node === null) {
+					return testElement;
+				}
 				if (prefix == "#") {
 					return document.getElementById(name);
 				}
@@ -743,32 +746,6 @@ var TRUE = true,
 				}, Math.round(1000/fps));
 
 				return timer;
-			},
-			
-			/**
-				Animación que oculta o muestra un elemento gradualmente, si el elemento es display block lo oculta y si es display none lo muestra
-				@see: ESTILOS
-				@param: {Element} obj es el elemento que se desea mostrar u ocultar
-				@param: {Object} opt son las opciones configurables durante el efecto, estas son las mismas de anim.
-			*/
-			fade: function (obj, opt) {
-				opt || (opt = {});
-				var cssObj = std.css(obj),
-					onComplete = opt.onComplete;
-				if(cssObj.get("display") == "none") {
-					cssObj.set({
-						display: "block",
-						opacity: 0
-					});
-					std.sfx.anim(obj, {opacity: 1}, opt);
-				} else {
-					std.sfx.anim(obj, {opacity: 0}, std.extend(opt, {
-						onComplete: function(){
-							cssObj.set("display", "none");
-							onComplete&&onComplete();
-						}
-					}));
-				}
 			}
 		}
 	};

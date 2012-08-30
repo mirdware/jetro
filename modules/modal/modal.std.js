@@ -40,6 +40,7 @@
 						}
 
 						if(!overlay) {
+							$.css("#modal").set("opacity", 0);
 							overlay = document.createElement("div");
 							modal = overlay.cloneNode(FALSE);
 							var head  = overlay.cloneNode(FALSE),
@@ -53,12 +54,12 @@
 								$.sfx.dyd($.evt.get(),modal,overlay);
 							});
 							$.evt.add([img, overlay],"click",core.hide);
-							document.body.appendChild(overlay);
 							head.appendChild(img);
 							head.appendChild(text);
 							modal.appendChild(core.round($.css(".head").get("backgroundColor"),"top"));
-							modal.appendChild(head);							
-							document.body.appendChild(modal);
+							modal.appendChild(head);
+							overlay.appendChild(modal);
+							document.body.appendChild(overlay);
 						}
 						
 						if (modal.childNodes[2]) {
@@ -94,7 +95,7 @@
 						modal.childNodes[1].childNodes[1].innerHTML = title;
 						
 						$.css(overlay).set("display", "block");
-						$.sfx.fade(modal);
+						$.sfx.anim(modal, {opacity:1});
 						
 						var childsModal = modal.childNodes,
 							height = 0,
@@ -117,7 +118,7 @@
 						@see: std
 					*/
 					hide: function () {
-						$.sfx.fade(modal, {onComplete:function(){
+						$.sfx.anim(modal, {opacity: 0}, {onComplete:function(){
 							$.css(overlay).set("display", "none");
 							removeLocal();
 						}, duration:500});

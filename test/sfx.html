@@ -7,7 +7,35 @@
     <script type="text/javascript" src="../src/std.js"></script>
     <link rel="stylesheet" href="images/css/labs.css" />
     <script type="text/javascript">
-    	function fade() {
+
+
+		/**
+			Animación que oculta o muestra un elemento gradualmente, si el elemento es display block lo oculta y si es display none lo muestra
+			@see: ESTILOS
+			@param: {Element} obj es el elemento que se desea mostrar u ocultar
+			@param: {Object} opt son las opciones configurables durante el efecto, estas son las mismas de anim.
+		*/
+		function fade (obj, opt) {
+			opt || (opt = {});
+			var cssObj = std.css(obj),
+				onComplete = opt.onComplete;
+			if(cssObj.get("display") == "none") {
+				cssObj.set({
+					display: "block",
+					opacity: 0
+				});
+				std.sfx.anim(obj, {opacity: 1}, opt);
+			} else {
+				std.sfx.anim(obj, {opacity: 0}, std.extend(opt, {
+					onComplete: function(){
+						cssObj.set("display", "none");
+						onComplete&&onComplete();
+					}
+				}));
+			}
+		}
+
+    	function fadeForm() {
 				std.evt.get().preventDefault();
 				var opt = std.ajax.form(this);
 				if(isNaN(opt.duration) || isNaN(opt.fps)) {
@@ -15,7 +43,7 @@
 				}
 				var target = std("#mover");
 				if(!target.block) {
-					std.sfx.fade(target,opt);
+					fade(target,opt);
 					target.block = true;
 					setTimeout(function() {
 						target.block = false;
@@ -74,7 +102,7 @@
 				$.sfx.dyd($.evt.get(), this,$("#prueba"));
 			});
 
-			std.evt.add(std("#form-fade"),"submit", fade);
+			std.evt.add(std("#form-fade"),"submit", fadeForm);
 
     	});
 
