@@ -21,6 +21,7 @@
 				modal,
 				overlay,
 				local,
+				body,
 				core = {
 					/**
 						Renderiza el nodo la ventana modal dependiendo del enlace que la halla invocado, tomando el titulo de la misma etiqueta.
@@ -41,26 +42,26 @@
 
 						if(!overlay) {
 							$.css("#modal").set("opacity", 0);
-							overlay = document.createElement("div");
+							overlay = createElement("div");
 							modal = overlay.cloneNode(FALSE);
 							var head  = overlay.cloneNode(FALSE),
 								img = overlay.cloneNode(FALSE),
-								text = document.createElement("h2");
+								text = createElement("h2");
 							
 							overlay.id = "overlay";
 							modal.id = "modal";
 							head.className = "head";
-							$.sfx.dyd(head, {
-								mov: modal,
-								area: overlay
-							});
 							$.evt.add([img, overlay],"click",core.hide);
 							head.appendChild(img);
 							head.appendChild(text);
 							modal.appendChild(core.round($.css(".head").get("backgroundColor"),"top"));
 							modal.appendChild(head);
-							document.body.appendChild(modal);
-							document.body.appendChild(overlay);
+							body.appendChild(modal);
+							body.appendChild(overlay);
+							$.sfx.dyd(head, {
+								mov: modal,
+								area: overlay
+							});
 						}
 						
 						if (modal.childNodes[2]) {
@@ -78,7 +79,7 @@
 							element = local.cloneNode(TRUE);
 							parent.removeChild(local);
 						} else {
-							var aux = document.createElement("div");
+							var aux = createElement("div");
 							if (!isCache || !(aux.innerHTML = cache[url])) {
 								$.ajax.request(url,function(r){
 									//console.log(r);
@@ -146,7 +147,7 @@
 					*/
 					round: function (color, position) {
 						position = position.toLowerCase();
-						var border = document.createElement("b"),
+						var border = createElement("b"),
 							r = [],
 							i = 0;
 						while(i<4) {
@@ -179,12 +180,15 @@
 			
 			function removeLocal () {
 				if (local) {
-					document.body.appendChild(local);
+					body.appendChild(local);
 				}
 				modal.removeChild(modal.childNodes[2]);
 				modal.removeChild(modal.childNodes[2]);
 			}
 
+			function createElement (element) {
+				return document.createElement(element);
+			}
 
 			/**
 				Configuración de entorno para la creación de ventanas modal, aparte de generar el entorno
@@ -194,6 +198,7 @@
 			$.evt.add(window,"resize",core.reset);
 
 			$(function (){
+				body = document.body;
 				$.evt.on(document,"a","click", function() {
 					var rel = this.rel;
 					if(rel.indexOf("modal") == 0 ) {
