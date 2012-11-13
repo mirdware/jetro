@@ -30,6 +30,7 @@ var TRUE = true,
 	parseFloat = window.parseFloat,
 	testElement = document.documentElement,
 	styleSheets = document.styleSheets,
+	FormData = window.FormData,
 	std = {
 		/****** NUCLEO ******/
 
@@ -212,11 +213,9 @@ var TRUE = true,
 							!fn.idf && (fn.idf = id++);
 							!element.ide && (element.ide = id++);
 							var sid = fn.idf+"-"+element.ide;
-							if (!events[sid]) {
-								events[sid] = function(){
-									fn.call(element,event);
-								};
-							}
+							events[sid] = function(){
+								fn.call(element,event);
+							};
 							element.attachEvent("on"+nEvent,events[sid]);
 						} else {
 							element["on"+nEvent] = fn;
@@ -254,19 +253,23 @@ var TRUE = true,
 				*/
 				on: function(element, observe, nEvent, fn, capture) {
 					if(loops(element, nEvent, fn, capture, observe)) {
+						!fn.idf && (fn.idf = id++);
+						!element.ide && (element.ide = id++);
 						var prefix = observe.charAt(0),
 							type = 	(prefix == "#")?"id":
 									(prefix == ".")?"className":
 									(prefix == "@")?"name":
 									"nodeName",
-							name = (type=="nodeName")?observe.toUpperCase():observe.substr(1);
-						core.add(element, nEvent, function() {
-							var target = core.get().target;
+							name = (type=="nodeName")?observe.toUpperCase():observe.substr(1),
+							sid = observe+fn.idf+"-"+element.ide;
+						events[sid] = function () {
+							var target = core.get().target,
+								array;
 							if(observe == "*") {
 								fn.apply(target, arguments);
 							} else {
 								while(target && target !== element) {
-									var array = target[type].split(' ');
+									array = target[type].split(' ');
 									for (var i=0, el; el = array[i]; i++) {
 										if(el == name) {
 											fn.apply(target, arguments);
@@ -275,8 +278,13 @@ var TRUE = true,
 									target = target.parentNode;
 								}
 							}
-						}, capture);
+						};
+						core.add(element, nEvent, events[sid], capture);
 					}
+				},
+
+				off: function (element, observe, nEvent, fn, capture) {
+					core.remove(element, nEvent, events[observe+fn.idf+"-"+element.ide], capture);
 				},
 				
 				/**
@@ -368,7 +376,8 @@ var TRUE = true,
 			*/
 			function getCSSRule(ruleName, deleteFlag) {
 				//console.log(ruleName);
-				for (var i = 0, styleSheet, cssRules; styleSheet = styleSheets[i]; i++) {
+				for (var i = 0, styleSheet, cssRules; i<styleSheets.length; i++) {//si se hace como se deberia, no funciona en IE 8, 7
+					styleSheet = styleSheets[i]
 					cssRules = styleSheet.cssRules || styleSheet.rules;
 					for (var j = 0, cssRule; cssRule = cssRules[j]; j++){
 						if (cssRule.selectorText == ruleName) {
@@ -527,6 +536,7 @@ var TRUE = true,
 					feedback = opt.feedback,
 					data = opt.data,
 					method = (opt.method || "POST").toUpperCase(),
+					isDataForm = FormData && data instanceof FormData,
 					async = !opt.sync;
 				
 				xmlHttp.onreadystatechange = function() {
@@ -540,15 +550,15 @@ var TRUE = true,
 						feedback(xmlHttp.readyState);
 					}
 				};
-				data = std.ajax.url(data);
-				if (method == "GET" && data) {
-					url = url+"?"+data;
-					data = NULL;
+				if (data && !isDataForm) {
+					data = std.ajax.url(data);
+					if (method == "GET") {
+						url = url+"?"+data;
+						data = NULL;
+					}
 				}
 				xmlHttp.open(method, url, async);
-				if (method == "POST") {
-					xmlHttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-				}
+				!isDataForm && xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 				xmlHttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 				xmlHttp.send(data);
 			},

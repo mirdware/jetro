@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width">
+		<title>MirdWare Labs &raquo; prueba del modulo AJAX</title>
+		<link rel="stylesheet" href="images/css/labs.css">
+	    <link rel="shortcut icon" href="images/labs.ico" />
+	    <script type="text/javascript" src="../src/std.js"></script>
+	    <script type="text/javascript">
+	    function simpleAJAX() {
+			std.evt.get().preventDefault();
+			var form = std.ajax.form(this.form);
+			std.ajax.request(this.form.action,function(r) {
+				std('#response').innerHTML = r;
+			},{
+				data: form,
+				method:form.method
+			});
+		}
+
+		function formDataAJAX () {
+			if(window.FormData){
+		        formdata = new FormData();
+		    }
+            var i = 0, len = this.files.length, img, reader, file;
+            
+            std('#response').innerHTML = 'Subiendo...';
+            
+            //Si hay varias imágenes, las obtenemos una a una
+            for( ; i < len; i++){
+                file = this.files[i];
+                
+                //Una pequeña validación para subir imágenes
+                if(!!file.type.match(/image.*/)){
+                    
+                    //Si existe una instancia de FormData
+                    if(formdata)
+                        //Usamos el método append, cuyos parámetros son:
+                            //name : El nombre del campo
+                            //value: El valor del campo (puede ser de tipo Blob, File e incluso string)
+                        formdata.append('images[]', file);
+                }
+            }
+
+            $.ajax.request("http://localhost:8914/", function (r) {
+            	std('#response').innerHTML = r;
+            }, {data: formdata});
+		}
+
+		std(function () {
+			std.evt.add(std("#std"),"click",simpleAJAX);
+			std.evt.add(std("#images"), "change", formDataAJAX);
+		});
+	  	</script>
+	</head>
+	<body>
+		<h1>AJAX con std.js</h1>
+		<p>Una de las premisas de esta nuevaa versión de std es el trabajo modular, no unificado en un solo modulo como lo hacen otras librerias,  si no modular en funcionalidad; es decir un modulo independiente para eventos, unos para JSON, uno para AJAX, etc, precisamente de esta ultima tecnica es la que más se hace uso en std y ahora se encuentra integrada con muchas otras funciones orientadas al mismo proposito dentro de un objeto llamado <b>ajax</b>. Una de las tecnicas es la de recolectar datos de un formulario mediante el metodo <b>form</b>, el cual recibe como parametro la referencia de un formulario y devuelve un objeto que asocia nombre de campo y valor, como se haria normalmente al enviar un formulario. Acontinuación se muestran las diferencias entre enviar un formulario normalmente y enviarlo mediante el metodo <b>request</b> y form del objeto ajax.</p>
+		<form action="http://localhost:8914/" method="post" id="form">
+			<fieldset><legend>Método</legend>
+		 	<label class="radio">POST<input type="radio" name="method" value="POST" /></label>
+		    <label class="radio">GET<input type="radio" name="method" value="GET" /></label>
+		    </fieldset>
+
+			<label for="form-nombre">Nombre:</label> <input type="text" name="nombre" id="form-nombre" class="input-text" /><br />
+		    <label for="form-area">Area:</label> <textarea cols="20" rows="5" name="area" id="form-area" class="input-text"></textarea><br />
+		    <label>Algo: <input type="checkbox" name="enviar"/></label><br />
+		    <label>Opciones:</label>
+		    <label class="radio">opt1<input type="radio" name="radio" value="opt1" /></label>
+		    <label class="radio">opt2<input type="radio" name="radio" value="opt2" /></label>
+		    <label class="radio">opt3<input type="radio" name="radio" value="opt3" /></label><br />
+		    <label>Hola:</label> <select name="hola">
+		    	<option>1</option>
+		        <option>2</option>
+		        <option>3</option>
+		    </select><br />
+		    <div style="text-align:center">
+		    <input type="submit" value="normal" class="btn" />
+		    <input type="submit" value="std" id="std" class="btn"/>
+		    </div>
+		</form>
+
+		<div class="btn custom-input-file">
+			<input type="file" id="images" class="input-file" name="images[]" />
+			Probando dataform
+		</div>
+		<div id="response" class="center">...</div>
+
+	</body>
+</html>

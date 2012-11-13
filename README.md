@@ -14,15 +14,20 @@
 <p>Logicamente std.js no ha sido testeado infinidad de veces como lo hacen "fameworks" más populares y por lo tanto es MUY posible que este pragado de errores y asuntos aún no resueltos, según he ido testeando el funcionamiento de la libreria he observado que algunos errores son debido a algunas consideraciones que se deben tener en cuenta.</p>
 <h3>Pruébalo en un servidor</h3>
 <p>Para realizar las pruebas AJAX se deben tener los archivos directamente en algún servidor, esta misma consideración debe ser tomada en cuenta para la utilización de hojas de estilos en Chrome, pues si se prueba de manera stand alone, puede presentar inconvenientes.</p>
+<h3>Tú eres primero</h3>
+<p>Si vas a usar hojas de estilos o scripts ajenos a tú servidor (caso de redes sociales) no olvides que estas deben ser enlazadas al final del documento, esto se debede principalmente al modo como std recorre las hojas de estilos externas.</p>
 <h2>Módulos externos</h2>
 <p>A partir de la versión 0.0.9 de la librería se acepta la inclusión de módulos externos (también conocidos como plugins), gracias a esta nueva característica se ha podido separar el modulo encargado de generar las ventanas speudomodales y su inclusión a la librería es opcional. La manera de crear módulos externos para la librería es la siguiente:</p>
+```javascript
 	(function($, window, undefined) {
 		//extiende std con el modulo externo
 		$.extend($, {
 			modulo: ...
 		});
 	})(std, window);
+```
 <p>Se usa std y no el alias, ya que std siempre va a estar apuntando inmodificable a la librería así se use cmode, gracias a esto se pueden encerrar funcionalidades en un solo ámbito que use la librería, de esta manera se evitan futuros problemas de incompatibilidad entre frameworks y std.</p>
+```javascript
 	(function($, window, undefined) {
 		// declaración de variables globales
 		var FALSE = false,
@@ -35,3 +40,4 @@
 
 		})
 	})(std, window);
+```

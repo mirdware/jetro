@@ -133,7 +133,7 @@
 						@see: std
 					*/
 					reset: function (){
-						modal&&$.css(modal).set({
+						modal && $.css(modal).set({
 							top: "50%",
 							left: "50%"
 						});

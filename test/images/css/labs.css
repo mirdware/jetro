@@ -148,3 +148,20 @@ th, td {
 }
 
 .center { text-align: center; }
+
+#form {
+	width: 300px;
+	margin: auto;
+}
+
+#form fieldset {
+	width: 100px;
+	margin: auto;
+	border: 1px solid #CCC;
+	border-radius: 0 5px;
+	padding: 5px;
+}
+
+#response {
+	padding: 10px;
+}

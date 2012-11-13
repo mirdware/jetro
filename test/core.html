@@ -4,11 +4,11 @@
 	<meta charset="utf-8" />
     <title>MirdWare Labs &raquo; prueba del modulo principal y dom</title>
     <link rel="shortcut icon" href="images/labs.ico" />
-    <script type="text/javascript" src="../build/mootool.js"></script>
+    <!--[if !(IE 7)]><script type="text/javascript" src="../build/mootool.js"></script>
     <script type="text/javascript">
 	    var $moo = $;
     </script>
-    <script type="text/javascript" src="../build/prototype.js"></script>
+    <script type="text/javascript" src="../build/prototype.js"></script><![endif]-->
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
     <script type="text/javascript" src="../src/std.js"></script>
     <script type="text/javascript">
@@ -36,13 +36,20 @@
 			std("#ready-jquery").innerHTML = (new Date())-dateInit;
 		});
 
-		Event.observe(window, 'dom:loaded', function() {  
-			std("#ready-prototype").innerHTML = (new Date())-dateInit;
-		});
+		if (window.Event) {
+			Event.observe(window, 'dom:loaded', function() {  
+				std("#ready-prototype").innerHTML = (new Date())-dateInit;
+			});
 
-		window.addEvent('domready', function() {
+			window.addEvent('domready', function() {
 		        std("#ready-mootool").innerHTML = (new Date())-dateInit;
-		});
+			});
+		}
+
+		function pruebaJSON () {
+			var obj = {hola: "mundo", num: 123, array: [1,2,3,4,5]};
+			alert(JSON.stringify(obj));
+		}
 
 		std(function() {
 			std("#obj1").innerHTML = JSON.stringify(numeros);
@@ -72,6 +79,6 @@
 		<b>Vocales:</b><div id="obj2"></div>
 	<input type="button" value="extender numeros de vocales" onclick="extendNumerosVocales()" class="btn" /> | | <input type="button" value="extender vocales de numeros" onclick="extendVocalesNumeros()" class="btn" />
 	<p>En este ultimo ejemplo se logra observar tambien la utilización del objeto JSON para soporte de navegadores antiguos, adelante pruebalo en ie7 u 8 (no, no nos responsabilizamos por ie 6, ni microsoft lo hace)</p>
-	<input type="button" value="Prueba" id="dalepues" class="btn" />
+	<input type="button" value="Prueba" onclick="pruebaJSON()" class="btn" />
 </body>
 </html>

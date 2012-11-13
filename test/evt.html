@@ -38,13 +38,29 @@
             alert ("Se ha disparado un evento");
         }
 
-    	$ (function () {
-    		$.evt.add ($("#add-item"), "click", addItem);
-            $.evt.on ($("#list"), "a", "click", function () {
+        delegateList = (function ($) {
+            var on = false;
+            function delegate () {
                 $.evt.get().preventDefault();
                 alert ("precionado enlace: "+this.id);
-            });
+            }
+            return function () {
+                if (on) {
+                    $.evt.off($("#list"), "a", "click", delegate);
+                    this.value = "ON";
+                    on = false;
+                } else {
+                    $.evt.on($("#list"), "a", "click", delegate);
+                    this.value = "OFF";
+                    on = true;
+                }
+            }
+        })(std);
+
+    	$ (function () {
+    		$.evt.add ($("#add-item"), "click", addItem);
     		$.evt.add ($("#add-evt"), "click", addEvt);
+            $.evt.add ($("#delegate"), "click", delegateList);
             $.evt.add ($(".multi-add"), "click", evento);
             $.evt.add ([$("#p"), $("#div"), $("#a")], "click", evento);
             $.evt.add ($("#form"), "submit", evento);
@@ -65,6 +81,7 @@
 	</ul>
 
 	<input type="button" value="Agregar" id="add-item" class="btn" />
+    <input type="button" value="ON" class="btn" id="delegate" />
     <p>Se pueden agregar eventos a multiples elementos, por ejemplo los siguientes links tiene la misma clase:</p>
     <ul>
         <li><a href="#" class="multi-add">dispara el mismo evento</a></li>
