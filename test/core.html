@@ -4,11 +4,15 @@
 	<meta charset="utf-8" />
     <title>MirdWare Labs &raquo; prueba del modulo principal y dom</title>
     <link rel="shortcut icon" href="images/labs.ico" />
-    <!--[if !(IE 7)]><script type="text/javascript" src="../build/mootool.js"></script>
+    <script>isIE7 = false;</script>
+    <!--[if IE 7]>
+	<script>isIE7 = true;</script>
+	<![endif]-->
     <script type="text/javascript">
-	    var $moo = $;
+    	if (!isIE7) {
+    		document.write('\<script type="text/javascript" src="../build/mootool.js"\>\</script\>\<script type="text/javascript" src="../build/prototype.js"\>\</script\>');
+    	}
     </script>
-    <script type="text/javascript" src="../build/prototype.js"></script><![endif]-->
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
     <script type="text/javascript" src="../src/std.js"></script>
     <script type="text/javascript">
@@ -47,8 +51,10 @@
 		}
 
 		function pruebaJSON () {
-			var obj = {hola: "mundo", num: 123, array: [1,2,3,4,5]};
+			var obj = {hola: "mundo", num: 123, array: [1,2,3,4,5], fn: function(){alert('HOLA')}};
 			alert(JSON.stringify(obj));
+			/*var str = '{"hola": "mundo", "num": 123, "array": [1,2,3,4,5]}';
+			console.log(JSON.parse(str));*/
 		}
 
 		std(function() {

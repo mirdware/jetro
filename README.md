@@ -4,7 +4,7 @@
 	<li>atajos y ejecución del DOM</li>
 	<li>Manejo de estilos</li>
 	<li>Comunicaciones AJAX</li>
-	<li>Soporte a JSON (IE 7 y 8)</li>
+	<li>Soporte a JSON (IE 7)</li>
 	<li>Efectos y animaciones</li>
 	<li>Manejador de eventos</li>
 	<li>Compatibilidad con frameworks js</li>
@@ -17,27 +17,35 @@
 <h3>Tú eres primero</h3>
 <p>Si vas a usar hojas de estilos o scripts ajenos a tú servidor (caso de redes sociales) no olvides que estas deben ser enlazadas al final del documento, esto se debede principalmente al modo como std recorre las hojas de estilos externas.</p>
 <h2>Módulos externos</h2>
-<p>A partir de la versión 0.0.9 de la librería se acepta la inclusión de módulos externos (también conocidos como plugins), gracias a esta nueva característica se ha podido separar el modulo encargado de generar las ventanas speudomodales y su inclusión a la librería es opcional. La manera de crear módulos externos para la librería es la siguiente:</p>
+<p>A partir de la versión 0.0.9 de la librería se acepta la inclusión de módulos externos (también conocidos como plugins), gracias a esta nueva característica se ha podido separar el módulo encargado de generar las ventanas speudomodales y su inclusión a la librería es opcional. La manera de crear módulos externos para la librería es la siguiente:</p>
 ```javascript
 	(function($, window, undefined) {
-		//extiende std con el modulo externo
-		$.extend($, {
-			modulo: ...
-		});
+		/*#module*/
 	})(std, window);
 ```
 <p>Se usa std y no el alias, ya que std siempre va a estar apuntando inmodificable a la librería así se use cmode, gracias a esto se pueden encerrar funcionalidades en un solo ámbito que use la librería, de esta manera se evitan futuros problemas de incompatibilidad entre frameworks y std.</p>
+<p>La estructura interna del módulo se puede dividir en tres bloques: la declaración de variables globales, las funciones internas y la exportación, la exportación del módulo se puede hacer por medio de $.extend en cuyo caso se debe extender el objeto std $ con el nuevo módulo que se ha creado, otra manera es usar $.dom.ready o su alias para que al momento de cargar el dom y dependiendo de los atributos de algunos elementos se ejecuten las funciones dadas.</p>
 ```javascript
 	(function($, window, undefined) {
 		// declaración de variables globales
 		var FALSE = false,
 			TRUE = true,
 			NULL = null,
-			document = window.document;
+			document = window.document,
+			core = {
+				/*#code*/
+			};
 
-		//domready
+		//funciones intenarnas
+		function fn () {
+			/*#code*/
+		}
+
+		//Exportación del módulo por $.extend, $.dom.ready o ambas
 		$ (function () {
-
+			/*#code*/
 		})
+
+		$.extend($, {module: core});
 	})(std, window);
 ```
