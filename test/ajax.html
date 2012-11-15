@@ -11,6 +11,7 @@
 	    function simpleAJAX() {
 			std.evt.get().preventDefault();
 			var form = std.ajax.form(this.form);
+			console.log(form);
 			std.ajax.request(this.form.action,function(r) {
 				std('#response').innerHTML = r;
 			},{
@@ -43,7 +44,7 @@
                 }
             }
 
-            $.ajax.request("http://localhost:8914/", function (r) {
+            $.ajax.request("server.php", function (r) {
             	std('#response').innerHTML = r;
             }, {data: formdata});
 		}
@@ -57,7 +58,7 @@
 	<body>
 		<h1>AJAX con std.js</h1>
 		<p>Una de las premisas de esta nuevaa versión de std es el trabajo modular, no unificado en un solo modulo como lo hacen otras librerias,  si no modular en funcionalidad; es decir un modulo independiente para eventos, unos para JSON, uno para AJAX, etc, precisamente de esta ultima tecnica es la que más se hace uso en std y ahora se encuentra integrada con muchas otras funciones orientadas al mismo proposito dentro de un objeto llamado <b>ajax</b>. Una de las tecnicas es la de recolectar datos de un formulario mediante el metodo <b>form</b>, el cual recibe como parametro la referencia de un formulario y devuelve un objeto que asocia nombre de campo y valor, como se haria normalmente al enviar un formulario. Acontinuación se muestran las diferencias entre enviar un formulario normalmente y enviarlo mediante el metodo <b>request</b> y form del objeto ajax.</p>
-		<form action="http://localhost:8914/" method="post" id="form">
+		<form action="server.php" method="post" id="form">
 			<fieldset><legend>Método</legend>
 		 	<label class="radio">POST<input type="radio" name="method" value="POST" /></label>
 		    <label class="radio">GET<input type="radio" name="method" value="GET" /></label>
@@ -70,7 +71,7 @@
 		    <label class="radio">opt1<input type="radio" name="radio" value="opt1" /></label>
 		    <label class="radio">opt2<input type="radio" name="radio" value="opt2" /></label>
 		    <label class="radio">opt3<input type="radio" name="radio" value="opt3" /></label><br />
-		    <label>Hola:</label> <select name="hola">
+		    <label>Hola:</label> <select name="false">
 		    	<option>1</option>
 		        <option>2</option>
 		        <option>3</option>

@@ -62,7 +62,7 @@
     		$.evt.add ($("#add-evt"), "click", addEvt);
             $.evt.add ($("#delegate"), "click", delegateList);
             $.evt.add ($(".multi-add"), "click", evento);
-            $.evt.add ([$("#p"), $("#div"), $("#a")], "click", evento);
+            $.evt.add ([$("p", $("#prueba-evt"))[0], $("@btn")[0], $("#a")], "click", evento);
             $.evt.add ($("#form"), "submit", evento);
     	});
     </script>
@@ -89,9 +89,11 @@
         <li><a href="#" class="multi-add">dispara el mismo evento</a></li>
     </ul>
     <p>De igual manera se pueden agrupar los elementos en un array para ser pasados al metodo, de esta manera se logra agrupar elementos totalmente diferentes dentro del dom:</p>
-    <p id="p">Este es un parrafo con id p</p>
-    <a href="#" id="a">Este es un enlace con id a</a>
-    <div id="div">Este es un div con id div</div>
+    <div id="prueba-evt">
+        <p>Este es un parrafo sin id</p>
+        <a href="#" id="a">Este es un enlace con id a</a><br /><br />
+        <input type="button" value="Este es un botón con name btn" name="btn" class="btn" />
+    </div>
     <p>Por ultimo agregar que antiguamente la libreria no soportaba eventos sobre elementos form, ya que serializaba los elementos con atributo length y dado que el form posee este atributo lo serializaba igualmente teniendo como resultado que los eventos eran asignados a sus hijos y no al formulario directamente, actualmente se a logrado solucionar el inconveniente validando que el elemento a serializar no sea un nodo:</p>
     <form method="post" action="nuncavaallegaraca" id="form">
         <label>Nombres:</label><input type="text" name="nombres" size="30" class="input-text" /><br />

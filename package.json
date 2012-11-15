@@ -1,17 +1,17 @@
 {
 	"name": "std.js",
-	"title": "std",
+	"title": "std.js",
 	"language": "javascript",
-	"description": "std is javascript standard",
-	"version": "0.0.9 pre",
-	"homepage": "std.mirdaware.co.cc",
+	"description": "is javascript standard",
+	"version": "0.0.9",
+	"homepage": "mirdaware.co.cc",
 	"author": {
 		"name": "Marlon Ramirez",
 		"twitter": "marlonyramirez",
-		"mail": "soy.marlon@hotmail.com"
+		"mail": "marlonramirez@outlook.com"
 	},
 	"bugs": {
-		"url": "std.mirdware.co.cc/bugs/"
+		"url": "https://github.com/marlonramirez/std.js/issues"
 	},
 	"repository": {
 		"type": "git",

@@ -211,13 +211,13 @@ var TRUE = true,
 						if (element.addEventListener) {
 							element.addEventListener(nEvent,fn,capture);
 						} else if (element.attachEvent) {
-							if (!fn.idf) {
-								fn.idf = id++;
+							if (!fn.id) {
+								fn.id = id++;
 							}
-							if (!element.ide) {
-								element.ide = id++;
+							if (!element.id) {
+								element.id = id++;
 							}
-							var sid = fn.idf+"-"+element.ide;
+							var sid = fn.id+"-"+element.id;
 							events[sid] = function(){
 								fn.call(element,event);
 							};
@@ -240,7 +240,7 @@ var TRUE = true,
 						if (element.removeEventListener){
 							element.removeEventListener(nEvent,fn,capture);
 						} else if (element.detachEvent) {
-							element.detachEvent("on"+nEvent,events[fn.idf+"-"+element.ide]);
+							element.detachEvent("on"+nEvent,events[fn.id+"-"+element.id]);
 						} else {
 							element["on"+nEvent] = function(){};
 						}
@@ -258,11 +258,11 @@ var TRUE = true,
 				*/
 				on: function(element, observe, nEvent, fn, capture) {
 					if(loops(element, nEvent, fn, capture, observe)) {
-						if (!fn.idf) {
-							fn.idf = id++;
+						if (!fn.id) {
+							fn.id = id++;
 						}
-						if (!element.ide) {
-							element.ide = id++;
+						if (!element.id) {
+							element.id = id++;
 						}
 						var prefix = observe.charAt(0),
 							type = 	(prefix == "#")?"id":
@@ -270,7 +270,7 @@ var TRUE = true,
 									(prefix == "@")?"name":
 									"nodeName",
 							name = (type=="nodeName")?observe.toUpperCase():observe.substr(1),
-							sid = observe+fn.idf+"-"+element.ide;
+							sid = observe+fn.id+"-"+element.id;
 						events[sid] = function () {
 							var target = core.get().target,
 								array;
@@ -301,7 +301,7 @@ var TRUE = true,
 					@param {boolean} capture establece como ocurria el flujo de eventos TRUE si es capture y FALSE si es bubbling
 				*/
 				off: function (element, observe, nEvent, fn, capture) {
-					core.remove(element, nEvent, events[observe+fn.idf+"-"+element.ide], capture);
+					core.remove(element, nEvent, events[observe+fn.id+"-"+element.id], capture);
 				},
 				
 				/**
@@ -309,16 +309,14 @@ var TRUE = true,
 					@return: El evento formateado para su correcto uso
 				*/
 				get: function() {
-					var e = window.event;	
+					var e = window.event,
+						body = document.body;	
 					if (e) {
-						if( navigator.appName == "Opera") {
-							return e;
-						}
 						e.charCode = (e.type == "keypress") ? e.keyCode : 0;
 						e.eventPhase = 2;
 						e.isChar = (e.charCode > 0);
-						e.pageX = e.clientX + document.body.scrollLeft;
-						e.pageY = e.clientY + document.body.scrollTop;
+						e.pageX = e.clientX + body.scrollLeft;
+						e.pageY = e.clientY + body.scrollTop;
 						
 						e.preventDefault = function() {
 							this.returnValue = FALSE;
@@ -353,11 +351,11 @@ var TRUE = true,
 				@param {string} observe puede ser undefined lo que indica que fue llamado desde add o remove
 			*/
 			function loops(element, nEvent, fn, capture, observe) {
-				var caller = loops.caller;
-
 				if (!element) {
 					return FALSE;
 				}
+				var caller = loops.caller;
+				
 				if(!element.nodeType && element.length) {
 					for(var i=0; el = element[i]; i++) {
 						caller(el, nEvent, fn, capture);
@@ -392,8 +390,8 @@ var TRUE = true,
 						 no encontrala retorna FALSE.
 			*/
 			function getCSSRule(ruleName, deleteFlag) {
-				//console.log(ruleName);
-				for (var i = 0, styleSheet, cssRules; i<styleSheets.length; i++) {//si se hace como se deberia, no funciona en IE 8, 7
+				//si se hace como se deberia, no funciona en IE 8, 7
+				for (var i = 0, styleSheet, cssRules; i<styleSheets.length; i++) {
 					styleSheet = styleSheets[i]
 					cssRules = styleSheet.cssRules || styleSheet.rules;
 					for (var j = 0, cssRule; cssRule = cssRules[j]; j++){
@@ -586,18 +584,16 @@ var TRUE = true,
 				@return: una cadena url segura para enviar via ajax o url
 			*/
 			url: function(obj) {
-				if(!(obj instanceof Object)) {
+				if(typeof obj != "object") {
 					return obj;
 				}
-				var res=[], i=0, typeKey;
+				var res=[], typeKey;
 				for(var key in obj) {
 					typeKey = typeof obj[key];
 					if(typeKey == "string" || typeKey == "number") {
-						res[i] = encodeURIComponent(key)+"="+encodeURIComponent(obj[key]);
-						i++;
+						res.push( encodeURIComponent(key)+"="+encodeURIComponent(obj[key]) );
 					}
 				}
-
 				return res.join("&");
 			},
 			
@@ -610,15 +606,18 @@ var TRUE = true,
 			form: function(form) {
 				var obj = {};
 				
-				for(var i=0, inp; inp = form[i]; i++) {
-					if(inp.name != undefined  && inp.name != "") {
-						if(inp.type == "radio" || inp.type == "checkbox") {
-							if(inp.checked) {
-								obj[inp.name] = inp.value;
-							}
-						} else {
-							obj[inp.name] = inp.value;
+				for(var i=0, inp, name, type, index; inp = form[i]; i++) {
+					name = inp.name;
+					type = inp.type;
+					if(name) {
+						if( (type == "radio" || type == "checkbox") && !inp.checked ) {
+							continue;
 						}
+						if(type.indexOf("select") == 0 && (index = inp.selectedIndex) != -1) {
+							obj[name] = inp.options[index].text;
+							continue;
+						}
+						obj[name] = inp.value;
 					}
 				}
 				return obj;
