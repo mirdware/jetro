@@ -9,6 +9,7 @@ img {
 
 .slider {
 	margin: 0 auto;
+	display: table;
 }
 
 .slider ul {
@@ -36,7 +37,6 @@ img {
 	height: 100%;
 	width: 100%;
 	position:  absolute;
-	margin: 5px auto;
 	top: 0;
 	text-align: center;
 }
@@ -73,13 +73,15 @@ img {
 
 .slider-nav a {
 	display: inline-block;
-	margin: 3px;
+	margin: 10px 5px;
 	width: 13px;
 	height: 13px;
-	background: url(../bg_control_nav.png);
+	background: url(../bg_control_nav.png) no-repeat;
 	cursor: pointer;
-	text-indent: -999em;
+	font-size: 0;
+	line-height: 0;
 	zoom: 1;
+	vertical-align: middle;
 	*display: inline;
 }
 

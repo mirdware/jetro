@@ -51,10 +51,15 @@
 		}
 
 		function pruebaJSON () {
-			var obj = {hola: "mundo", num: 123, array: [1,2,3,4,5], fn: function(){alert('HOLA')}};
-			alert(JSON.stringify(obj));
-			/*var str = '{"hola": "mundo", "num": 123, "array": [1,2,3,4,5]}';
-			console.log(JSON.parse(str));*/
+			/*var obj = {hola: "mundo", num: 123, array: [1,2,3,4,5], fn: function(){alert('HOLA')}};
+			alert(JSON.stringify(obj));*/
+			var str = 'alert';
+			console.log(JSON.parse(str));
+		}
+
+		function obtenerId() {
+			console.log(std(".btn", std("#p"))[0]);
+			alert(std(".btn", std("#p"))[0].id);
 		}
 
 		std(function() {
@@ -70,7 +75,7 @@
 	<div class="center"><img src="images/std.png" /></div>
 	<p>Este script esta usando cmode (Compatibility mode), ya que trabaja con diferentes framework como: jQuery, protorype y mootools.</p>
 
-	<p>El core de std.js lo unico que hace es incluir el ready para leer el Document Object Model, extend para poder incluir atributos de un objeto dentro de otro, std para acortar los getElement y por ultimo se agrega el soporte de JSON para navegadores antigüos.</p>
+	<p>El core de std.js lo unico que hace es incluir extend para incluir atributos de un objeto dentro de otro y cmode para controlar la compatibilidad de la libreria con frameworks que usen el atajo $, asunto aparte es el modulo interno DOM que posee metodos como ready para leer el Document Object Model o std para acortar los getElement, pero que igual se incluyen dentro del core pues es un modulo primordial, por ultimo se agrega el soporte de JSON para navegadores antigüos dentro de la configuración de entorno, en donde tambien se extande caracteristicas como trim() para variables de tipo String.</p>
 	<p>Velocidad de carga de ready: </p>
 		<ul>
 			<li><b>std.js:</b> <span id="ready-std"></span><br /></li>
@@ -83,7 +88,12 @@
 	<p>Otra función mencionada del nucleo central de std es la extención de <b>objetos</b>. Aquí un ejemplo:</p>
 		<b>Numeros:</b><div id="obj1"></div>
 		<b>Vocales:</b><div id="obj2"></div>
-	<input type="button" value="extender numeros de vocales" onclick="extendNumerosVocales()" class="btn" /> | | <input type="button" value="extender vocales de numeros" onclick="extendVocalesNumeros()" class="btn" />
+	<p>
+		<input type="button" value="extender numeros de vocales" onclick="extendNumerosVocales()" class="btn" /> &nbsp; <input type="button" value="extender vocales de numeros" onclick="extendVocalesNumeros()" class="btn" />
+	</p>
+	<p id="p">
+		<input type="button" value="probando getElementsByClassName" class="btn blue name" id="btn" onclick="obtenerId()"/>
+	</p>
 	<p>En este ultimo ejemplo se logra observar tambien la utilización del objeto JSON para soporte de navegadores antiguos, adelante pruebalo en ie7 u 8 (no, no nos responsabilizamos por ie 6, ni microsoft lo hace)</p>
 	<input type="button" value="Prueba" onclick="pruebaJSON()" class="btn" />
 </body>

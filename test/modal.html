@@ -9,22 +9,28 @@
 	<script type="text/javascript" src="../src/std.js"></script>
 	<script type="text/javascript" src="../modules/modal/modal.std.js"></script>
 	<style type="text/css">
-		#youtube {
-			background-color: #000;
+		#gmaps, #modal-local,#youtube {
 			display: none;
 		}
-		#gmaps, #show {
-			background-color: #FFF;
-			display: none;
+		#youtube {
+			background-color: #000;
+		}
+		#modal-local {
+			width: 200px;
+		}
+		#remote {
+			width: 500px;
+			padding-top: 1px;
 		}
 	</style>
 </head>
 <body>
 	<p><a href="#youtube" title="Video de youtube" rel="modal">Soporta videos de youtube</a></p>
 	<p><a href="#gmaps" title="Google Maps" rel="modal">Soporta google maps</a></p>
-	<p><a href="#show" title="Ventana modal local" rel="modal">Soporta data:hidden</a></p>
+	<p><a href="#modal-local" title="Ventana modal local" rel="modal">Soporta data:hidden</a></p>
+	<p><a href="response.html" title="Ventana modal por AJAX" rel="modal">Soporta AJAX</a></p>
 	<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/Nwm46hiFNBQ?rel=0" frameborder="0" allowfullscreen id="youtube"></iframe>
 	<iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://maps.google.es/?ie=UTF8&amp;ll=7.907921,-72.525473&amp;spn=0.005983,0.010568&amp;t=h&amp;z=17&amp;output=embed" id="gmaps"></iframe>
-	<div id="show">HOLA MUNDO!!</div>
+	<div id="modal-local">HOLA MUNDO!!</div>
 </body>
 </html>

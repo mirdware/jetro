@@ -4,7 +4,7 @@
 	no solo en javascript, si no tambien orientados a AJAX (Asynchronous JavaScript And XML) y con 
 	soporte para JSON. Todo esto basandose en una interfaz sencilla.
 	
-	Para buscar secciones dentro del documento utiliza "****** sección ******" sin comillas, las secciones de std son:
+	Para buscar secciones dentro del documento utiliza "* sección" sin comillas, las secciones de std son:
 		NUCLEO: Se encuentran los metodos propios de std(extend, cmode).
 		DOM: Realiza trabajos con el DOM al igual que ejecuta acciones cuando este esta completamente listo(ready).
 		EVENTOS: Contiene manejadores de eventosadd, remove, on) dentro del objeto evt y una verion de event estandarizada(get).
@@ -29,11 +29,11 @@ var TRUE = true,
 	parseInt = window.parseInt,
 	parseFloat = window.parseFloat,
 	isNaN = window.isNaN,
+	FormData = window.FormData,
 	testElement = document.documentElement,
 	styleSheets = document.styleSheets,
-	FormData = window.FormData,
 	std = {
-		/****** NUCLEO ******/
+		/** NUCLEO */
 
 		/**
 			Extiende o copia las propiedades de un objeto origen en otro objeto destino. Las propiedades del objeto origen se
@@ -61,7 +61,7 @@ var TRUE = true,
 			return std;
 		},
 
-		/****** DOM ******/
+		/** DOM */
 		dom: {
 			/**
 				Engloba la ejecución de varios getElements, para esto se usa un unico prefijo antes del nombre del identificador.
@@ -71,11 +71,10 @@ var TRUE = true,
 				@ = getElementByName
 				Si se omite el prefijo se utilizara getElementsByTagName.
 				@param: {string} id es el identificador del nodo que se busca, este identificador puede ser un id, una clase, un nombre o una etiqueta
-				@param: {element} node es el padre del elemento que se busca
-				@param: {string} tag es opcional y se utiliza para agilizar la busqueda de clases, es el tipo de etiqueta de la clase
+				@param: {element} node es el padre del elemento que se busca (por defecto es document)
 				@return: El nodo o serie de nodos que se buscan con esta función
 			*/
-			get: function (id, node, tag) {
+			get: function (id, node) {
 				var name = id.substr(1),
 					prefix = id.charAt(0);
 				
@@ -93,14 +92,12 @@ var TRUE = true,
 					if (node.getElementsByClassName) {
 						return node.getElementsByClassName(name);
 					}
-					tag || (tag = "*");
 					var classElements = [],
-						els = std(tag),
+						els = std("*", node),
 						pattern = new RegExp("(^|\\s)"+name+"(\\s|$)");
-					for (var i=0,el, j=0; el=els[i]; i++) {
+					for (var i=0, el; el=els[i]; i++) {
 						if ( pattern.test(el.className) ) {
-							classElements[j] = el;
-							j++;
+							classElements.push(el);
 						}
 					}
 					return classElements;
@@ -194,7 +191,7 @@ var TRUE = true,
 			})()
 		},
 		
-		/****** EVENTOS ******/
+		/** EVENTOS */
 		evt: (function() {
 			var id = 0,//id unico para cada funcion que se vaya a asociar
 				events = [],//array con las funciones asociadas a IE<9
@@ -271,23 +268,23 @@ var TRUE = true,
 									"nodeName",
 							name = (type=="nodeName")?observe.toUpperCase():observe.substr(1),
 							sid = observe+fn.id+"-"+element.id;
+
 						events[sid] = function () {
 							var target = core.get().target,
-								array;
+								args = arguments,
+								pattern = new RegExp("(^|\\s)"+name+"(\\s|$)");
 							if(observe == "*") {
-								fn.apply(target, arguments);
+								fn.apply(target, args);
 							} else {
 								while(target && target !== element) {
-									array = target[type].split(' ');
-									for (var i=0, el; el = array[i]; i++) {
-										if(el == name) {
-											fn.apply(target, arguments);
-										}
+									if( (prefix == "." && pattern.test(target[type])) || target[type] == name ) {
+										fn.apply(target, args);
 									}
 									target = target.parentNode;
 								}
 							}
 						};
+
 						core.add(element, nEvent, events[sid], capture);
 					}
 				},
@@ -379,7 +376,7 @@ var TRUE = true,
 			
 		})(),
 		
-		/****** ESTILOS ******/
+		/** ESTILOS */
 		css: (function(){	
 			/**
 				Busca selectores CSS dentro de las hojas de estilos del documento que coincidan con la regla de estilo pasada como parametro,
@@ -453,7 +450,7 @@ var TRUE = true,
 						getCSSRule(ruleName, deleteFlag)
 					} else {
 						if (!styleSheets.length) {
-							$("head")[0].appendChild(document.createElement("style"));
+							std("head")[0].appendChild(document.createElement("style"));
 						}
 						var lastStyleSheet = styleSheets[styleSheets.length-1],
 							lengthRule = lastStyleSheet.length;
@@ -511,7 +508,7 @@ var TRUE = true,
 			
 		})(),
 		
-		/****** AJAX ******/
+		/** AJAX */
 		ajax: {
 			/**
 				Crea un objeto XMLHttpRequest crossbrowser
@@ -547,7 +544,7 @@ var TRUE = true,
 			request: function(url, callback, opt) {
 				opt || (opt = {});
 				var xmlHttp =std.ajax.xhr(),
-					response = (opt.response || "Text").toUpperCase(),
+					response = (opt.response || "TEXT").toUpperCase(),
 					feedback = opt.feedback,
 					data = opt.data,
 					method = (opt.method || "POST").toUpperCase(),
@@ -613,18 +610,17 @@ var TRUE = true,
 						if( (type == "radio" || type == "checkbox") && !inp.checked ) {
 							continue;
 						}
-						if(type.indexOf("select") == 0 && (index = inp.selectedIndex) != -1) {
-							obj[name] = inp.options[index].text;
-							continue;
-						}
 						obj[name] = inp.value;
+						if(!obj[name] && type.indexOf("select") == 0 && (index = inp.selectedIndex) != -1) {
+							obj[name] = inp.options[index].text;
+						}
 					}
 				}
 				return obj;
 			}
 		},
 		
-		/****** EFECTOS ESPECIALES ******/
+		/** EFECTOS ESPECIALES */
 		sfx: {
 			/**
 				Genera un efecto drag and drop de un elemento dentro de otro elemento contenedor.
@@ -702,7 +698,7 @@ var TRUE = true,
 							mousemove: drag,
 							mouseup: drop
 						}, TRUE);
-						onDrop&&onDrop();
+						onDrop && onDrop();
 					}
 					
 					std.evt.add(document,{
@@ -791,7 +787,7 @@ var TRUE = true,
 		}
 	};
 
-/****** FUNCIONES PRIVADAS ******/
+/** FUNCIONES PRIVADAS */
 /**
 	Cuando un color se encuentra en formato #hexadecimal esta función lo convierte a RGB, se bebe comprobar que el parametro pasado es un 
 	hexadecimal ya que la función no realiza dicha comprobación.
@@ -811,7 +807,7 @@ function hexToRGB(color) {
 	return [color >> 16, color >> 8 & 255, color & 255];
 }
 
-/****** CONFIGURACION DE ENTORNO ******/
+/** CONFIGURACION DE ENTORNO */
 
 /**
 	Extendiende los objetos nativos javascript necesarios para el funcionamiento de la liberia,
@@ -830,7 +826,7 @@ std.extend (String.prototype,{
 
 
 
-/****** JSON ******/
+/** JSON */
 if(window.JSON == undefined) {
 	window.JSON = {
 		/**
@@ -873,15 +869,16 @@ if(window.JSON == undefined) {
 				return window[ "eval" ]("("+strJSON+")");
 			}
 			
-			throw new SyntaxError('JSON.parse');
+			throw new Error("JSON.parse");
 		}
 	};
 }
 
 /* Estableciendo un mismo atajo para std.dom.ready y std.dom.get */
 window.$ = function () {
-	var fun = (typeof arguments[0] == "function")? std.dom.ready: std.dom.get;
-	return fun.apply(this, arguments);
+	var args = arguments,
+		fun = (typeof args[0] == "function")? std.dom.ready: std.dom.get;
+	return fun.apply(this, args);
 }
 
 /* Estableciendo std en el exterior */
