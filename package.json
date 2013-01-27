@@ -1,10 +1,10 @@
 {
 	"name": "std.js",
 	"title": "std.js",
-	"language": "javascript",
-	"description": "is javascript standard",
-	"version": "0.0.9",
-	"homepage": "mirdaware.info",
+	"language": "JavaScript",
+	"description": "is JavaScript standard",
+	"version": "0.1pre",
+	"homepage": "http://mirdaware.info",
 	"author": {
 		"name": "Marlon Ramirez",
 		"twitter": "marlonyramirez",
@@ -17,8 +17,10 @@
 		"type": "git",
 		"url": "https://github.com/marlonramirez/std.js.git",
 	},
-	"license": {
-		"type": "MIT",
-		"url": "http://www.opensource.org/licenses/MIT"
-	}
+	"license": [
+		{
+			"type": "MIT",
+			"url": "https://raw.github.com/marlonramirez/std.js/master/MIT-License.txt"
+		}
+	]
 }

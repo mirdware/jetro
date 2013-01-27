@@ -17,7 +17,7 @@
 	
 	El camino más sencillo casi siempre es el más rapido y efectivo. Recuerda Keep It Simple, Stupid!!
 	@author: Marlon Ramirez
-	@version: 0.0.9
+	@version: 0.1
 */
 (function(window, undefined) {
 var TRUE = true,
@@ -68,7 +68,7 @@ var TRUE = true,
 				Los prefijos permitidos son:
 				# = getElementById
 				. = getElementsByClassName
-				@ = getElementByName
+				@ = getElementsByName
 				Si se omite el prefijo se utilizara getElementsByTagName.
 				@param: {string} id es el identificador del nodo que se busca, este identificador puede ser un id, una clase, un nombre o una etiqueta
 				@param: {element} node es el padre del elemento que se busca (por defecto es document)
@@ -216,7 +216,7 @@ var TRUE = true,
 							}
 							var sid = fn.id+"-"+element.id;
 							events[sid] = function(){
-								fn.call(element,event);
+								fn.call(element, core.fix());
 							};
 							element.attachEvent("on"+nEvent,events[sid]);
 						} else {
@@ -269,8 +269,8 @@ var TRUE = true,
 							name = (type=="nodeName")?observe.toUpperCase():observe.substr(1),
 							sid = observe+fn.id+"-"+element.id;
 
-						events[sid] = function () {
-							var target = core.get().target,
+						events[sid] = function (e) {
+							var target = e.target,
 								args = arguments,
 								pattern = new RegExp("(^|\\s)"+name+"(\\s|$)");
 							if(observe == "*") {
@@ -305,7 +305,7 @@ var TRUE = true,
 					Se encarga de generar un objeto evento con un formato unico permitiendo asi una solución crossbrowser.
 					@return: El evento formateado para su correcto uso
 				*/
-				get: function() {
+				fix: function() {
 					var e = window.event,
 						body = document.body;	
 					if (e) {
@@ -334,7 +334,7 @@ var TRUE = true,
 						return e;
 					}
 					
-					return core.get.caller.arguments[0];
+					return core.fix.caller.arguments[0];
 				}
 			};
 			
@@ -348,28 +348,30 @@ var TRUE = true,
 				@param {string} observe puede ser undefined lo que indica que fue llamado desde add o remove
 			*/
 			function loops(element, nEvent, fn, capture, observe) {
-				if (!element) {
-					return FALSE;
-				}
 				var caller = loops.caller;
-				
-				if(!element.nodeType && element.length) {
-					for(var i=0; el = element[i]; i++) {
-						caller(el, nEvent, fn, capture);
-					}
-					return FALSE;
-				}
-				if(nEvent instanceof Object) {
-					for(var attr in nEvent) {
-						if(observe) {
-							caller(element, observe, attr, nEvent[attr], fn);
-						} else {
-							caller(element, attr, nEvent[attr], fn);
+
+				if (element) {
+					/*	validar si no es un elemento (una lista de elementos es distinta), si tiene una
+						longitud, es decir se encuentra serializado y es diferente a window, esta ultima
+						validación al igual que la primera es para evitar que los elementos a los que se
+						desea añadir el evente no se les adicione a causa de hacerlo a sus hijos.*/
+					if(!element.nodeType && element.length && element != window) {
+						for(var i=0, el; el = element[i]; i++) {
+							caller(el, nEvent, fn, capture);
 						}
+						return FALSE;
 					}
-					return FALSE;
+					if (nEvent instanceof Object) {
+						/*	Recorre el objeto tomando como nombre de evento el key y como funcion el
+							contenido del elemento de array.*/
+						for(var attr in nEvent) {
+							observe?caller(element, observe, attr, nEvent[attr], fn):
+									caller(element, attr, nEvent[attr], fn);
+						}
+						return FALSE;
+					}
 				}
-				return TRUE;
+				return !!element;
 			}
 			
 			return core;
@@ -511,57 +513,41 @@ var TRUE = true,
 		/** AJAX */
 		ajax: {
 			/**
-				Crea un objeto XMLHttpRequest crossbrowser
+				Crea un objeto XMLHttpRequest crossbrowser, se usa una tecnica de reflección
+				para reducir el codígo del script.
 				@return: El objeto XMLHttpRequest dependiendo del browser en el que se realize la petición
 			*/
 			xhr: function() {
-				try {
-					return new XMLHttpRequest();
-				} catch(e1) {
+				for (var i=0; i<4; i++) {
 					try {
-						return new ActiveXObject("Microsoft.XMLHTTP");
-					} catch(e2) {
-						try {
-							return new ActiveXObject("Msxml2.XMLHTTP");
-						} catch(e3) {
-							return NULL;
-						}
-					}
+						return i?new ActiveXObject([, "Microsoft", "Msxml3", "Msxml2"][i]+".XMLHTTP")
+								:new XMLHttpRequest;
+					} catch (e) {}
 				}
 			},
 			
 			/**
 				Realiza una petición asincrona al servidor
 				@param: {String} url es la ruta del archivo del servidor que procesara la solicitud
-				@param: {function} callback es la función que establece el comportamiento cuando el servidor retorna una respuesta 200
 				@param: {object} opt es el conjunto de opciones que se le puede pasar al metodo, estas opciones son:
 					response: Tipo de respuesta, puede ser text (por defecto) o XML
+					callback: Función que establece el comportamiento cuando el servidor retorna una respuesta 200
 					feedback: Función que establece un comportamiento cuando el servidor no retorna una respuesta 200
 					data: Datos que se envian al servidor desde el cliente
 					method: Metodo utilizado para enviar los datos, puede ser POST (por defecto) o GET
 					sync: Valor booleano que dice si la petición es sincrona, por defecto es false y la petición se realiza de modo asincrono
 			*/
-			request: function(url, callback, opt) {
+			request: function(url, opt) {
 				opt || (opt = {});
-				var xmlHttp =std.ajax.xhr(),
+				var xmlHttp = opt.xhr || std.ajax.xhr(),
 					response = (opt.response || "TEXT").toUpperCase(),
 					feedback = opt.feedback,
+					callback = opt.callback,
 					data = opt.data,
 					method = (opt.method || "POST").toUpperCase(),
 					isDataForm = FormData && data instanceof FormData,
 					async = !opt.sync;
-				
-				xmlHttp.onreadystatechange = function() {
-					if (xmlHttp.readyState == 4) {
-						if (xmlHttp.status == 200) {
-							callback( (response == "XML")?xmlHttp.responseXML:xmlHttp.responseText );
-						} else if (feedback) {
-							feedback(xmlHttp.status);
-						}
-					} else if (feedback) {
-						feedback(xmlHttp.readyState);
-					}
-				};
+
 				if (data && !isDataForm) {
 					data = std.ajax.url(data);
 					if (method == "GET") {
@@ -569,6 +555,19 @@ var TRUE = true,
 						data = NULL;
 					}
 				}
+				xmlHttp.onreadystatechange = function() {
+					if (xmlHttp.readyState == 4) {
+						if (xmlHttp.status == 200) {
+							callback && callback( response == "XML"?xmlHttp.responseXML:
+																	xmlHttp.responseText );
+						} else if (feedback) {
+							feedback(xmlHttp.status);
+						}
+					} else if (feedback) {
+						feedback(xmlHttp.readyState);
+					}
+				};
+				
 				xmlHttp.open(method, url, async);
 				!isDataForm && xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 				xmlHttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
@@ -601,12 +600,13 @@ var TRUE = true,
 				@return: Un objeto que contiene todos los campos diligenciados del formulario (nombre del campo: valor del campo)
 			*/
 			form: function(form) {
-				var obj = {};
+				var obj = {},
+					i=0, inp, name, type, index;
 				
-				for(var i=0, inp, name, type, index; inp = form[i]; i++) {
+				for(; inp = form[i]; i++) {
 					name = inp.name;
-					type = inp.type;
 					if(name) {
+						type = inp.type;
 						if( (type == "radio" || type == "checkbox") && !inp.checked ) {
 							continue;
 						}
@@ -643,9 +643,8 @@ var TRUE = true,
 					movIsAbsolute = (cssMov.get("position") == "absolute");
 
 
-				function dragstart () {
-					var e = std.evt.get(),
-						marginL = parseInt(cssMov.get("marginLeft")) || 0,
+				function dragstart (e) {
+					var marginL = parseInt(cssMov.get("marginLeft")) || 0,
 						marginT = parseInt(cssMov.get("marginTop")) || 0,
 						cEjeX = e.clientX+testElement.scrollLeft+body.scrollLeft,
 						cEjeY = e.clientY+testElement.scrollTop+body.scrollTop,
@@ -656,9 +655,8 @@ var TRUE = true,
 						Cambia la posición del elemento que se esta arrastrando dependiendo de la posición del puntero.
 						@see: EVENTOS, ESTILOS
 					*/
-					function drag() {
-						var e = std.evt.get(),
-							nowX = e.clientX+testElement.scrollLeft+body.scrollLeft,
+					function drag(e) {
+						var nowX = e.clientX+testElement.scrollLeft+body.scrollLeft,
 							nowY = e.clientY+testElement.scrollTop+body.scrollTop,
 							aLeft = !movIsAbsolute?area.offsetLeft:0,
 							aTop = !movIsAbsolute?area.offsetTop:0,
@@ -797,11 +795,8 @@ var TRUE = true,
 function hexToRGB(color) {
 	color = color.substr(1);
 	if (color.length == 3) {
-		var aux = color.split("");
-		color = "";
-		for (var i=0;i<3;i++){
-			color+=aux[i]+aux[i];
-		}
+		color = color.split("");
+		color = color[0]+color[0]+color[1]+color[1]+color[2]+color[2];
 	}
 	color = parseInt(color, 16);
 	return [color >> 16, color >> 8 & 255, color & 255];
@@ -840,20 +835,22 @@ if(window.JSON == undefined) {
 				return obj;
 			}
 			var isArray = obj instanceof Array,
-				strJSON = isArray?"[":"{";
+				strJSON = isArray?"[":"{",
+				value;
 				
 			for(var key in obj) {
-				if(typeof obj[key] != "function") {
+				value = obj[key]
+				if(typeof value != "function") {
 					if (!isArray) {
-						strJSON += '"'+key+'" : ';
+						strJSON += '"'+key+'":';
 					}
-					strJSON += (obj[key] instanceof Object? JSON.stringify(obj[key]):
-								(isNaN(obj[key]))?'"'+obj[key]+'"':
-								obj[key])+', ';
+					strJSON += (value instanceof Object? JSON.stringify(value):
+								typeof value == "string"?'"'+value+'"':
+								value)+',';
 				}
 			}
 			
-			return strJSON.substr(0, strJSON.length-2) + (isArray?"]":"}");
+			return strJSON.substr(0, strJSON.length-1) + (isArray?"]":"}");
 		},
 		/**
 			Crea un objeto partiendo de una cadena JSON correctamente formateada.

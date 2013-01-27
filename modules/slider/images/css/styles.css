@@ -7,12 +7,12 @@ img {
 	border: 0;
 }
 
-.slider {
+.slider-std {
 	margin: 0 auto;
 	display: table;
 }
 
-.slider ul {
+.slider-std ul {
 	list-style: none;
 	background: #000;
 	overflow: hidden;
@@ -22,7 +22,7 @@ img {
 	box-shadow: 0 0 25px rgba(0, 0, 0, .3);
 }
 
-.slider span {
+.slider-std span {
 	background: url(../opacity.png);
 	color: #FFF;
 	display: block;
@@ -33,7 +33,7 @@ img {
 	bottom: 0;
 }
 
-.slider .control {
+.slider-std .control {
 	height: 100%;
 	width: 100%;
 	position:  absolute;
@@ -41,7 +41,7 @@ img {
 	text-align: center;
 }
 
-.slider .control .navLeft, .slider .control .navRight, .slider .control .link {
+.slider-std .control .navLeft, .slider-std .control .navRight, .slider-std .control .link {
 	cursor: pointer;
 	display: inline-block;
 	width: 25%;
@@ -50,20 +50,20 @@ img {
 	*display: inline;
 }
 
-.slider .control .navLeft {
+.slider-std .control .navLeft {
 	background: url(../left.gif) no-repeat center left;
 	float: left;
 }
-.slider .control .navRight {
+.slider-std .control .navRight {
 	background: url(../right.gif) no-repeat center right;
 	float: right;
 }
-.slider .control .link {
+.slider-std .control .link {
 	background: no-repeat center center;
 	width: 50%;
 }
 
-.slider .control .link:hover {
+.slider-std .control .link:hover {
 	background-image: url(../link.gif);
 }
 

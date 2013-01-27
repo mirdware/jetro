@@ -35,8 +35,8 @@
 			}
 		}
 
-    	function fadeForm() {
-				std.evt.get().preventDefault();
+    	function fadeForm(e) {
+				e.preventDefault();
 				var opt = std.ajax.form(this);
 				if(isNaN(opt.duration) || isNaN(opt.fps)) {
 					return;

@@ -8,13 +8,14 @@
 	    <link rel="shortcut icon" href="images/labs.ico" />
 	    <script type="text/javascript" src="../src/std.js"></script>
 	    <script type="text/javascript">
-	    function simpleAJAX() {
-			std.evt.get().preventDefault();
+	    function simpleAJAX(e) {
+			e.preventDefault();
 			var form = std.ajax.form(this.form);
 			console.log(form);
-			std.ajax.request(this.form.action,function(r) {
-				std('#response').innerHTML = r;
-			},{
+			std.ajax.request(this.form.action,{
+				callback: function(r) {
+					std('#response').innerHTML = r;
+				},
 				data: form,
 				method:form.method
 			});
@@ -44,9 +45,12 @@
                 }
             }
 
-            $.ajax.request("server.php", function (r) {
-            	std('#response').innerHTML = r;
-            }, {data: formdata});
+            $.ajax.request("server.php", {
+            	callback: function (r) {
+	            	std('#response').innerHTML = r;
+	            },
+            	data: formdata
+            });
 		}
 
 		std(function () {
@@ -87,6 +91,6 @@
 			Probando dataform
 		</div>
 		<div id="response" class="center">...</div>
-
+		
 	</body>
 </html>

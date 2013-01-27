@@ -15,9 +15,9 @@
 		document = window.document,
 		opacity = 0.4;
 
-	$.css(".slider .control .navLeft").set("opacity", opacity);
-	$.css(".slider .control .navRight").set("opacity", opacity);
-	$.css(".slider .control .link").set("opacity", opacity);
+	$.css(".slider-std .control .navLeft").set("opacity", opacity);
+	$.css(".slider-std .control .navRight").set("opacity", opacity);
+	$.css(".slider-std .control .link").set("opacity", opacity);
 
 	function show(slider, img) {
 		
@@ -207,7 +207,7 @@
 	}
 
 	function load(slider) {
-		var img = img = new Image();
+		var img = new Image();
 		$.evt.add(img, "load", function() {
 			show(slider, img);
 		});
@@ -221,10 +221,12 @@
 	function createTextNode (text) {
 		return document.createTextNode(text);
 	}
+
+	/* Exportar el modulo */
+	$.extend($, { slider: load });
 	
 	$(function() {
-		var sliders = $(".slider");
-		for (var i=0, slider; slider = sliders[i]; i++) {
+		for (var sliders = $(".slider-std"), i = 0, slider; slider = sliders[i]; i++) {
 			load(slider);
 		}
 	});

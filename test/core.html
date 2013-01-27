@@ -51,10 +51,8 @@
 		}
 
 		function pruebaJSON () {
-			/*var obj = {hola: "mundo", num: 123, array: [1,2,3,4,5], fn: function(){alert('HOLA')}};
-			alert(JSON.stringify(obj));*/
-			var str = 'alert';
-			console.log(JSON.parse(str));
+			var str = {hola: "mundo", num: "123", data: [0,1,2,3], fn:function(){alert("HOLA")}, obj: {mi:"mamá", me:"mima", otronum: 253}};
+			console.log(JSON.stringify(str));
 		}
 
 		function obtenerId() {

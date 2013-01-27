@@ -9,18 +9,21 @@
 	<script type="text/javascript" src="../src/std.js"></script>
 	<script type="text/javascript" src="../modules/modal/modal.std.js"></script>
 	<style type="text/css">
-		#gmaps, #modal-local,#youtube {
+		#gmaps, #modal-local,#youtube, .image {
 			display: none;
 		}
 		#youtube {
 			background-color: #000;
 		}
-		#modal-local {
-			width: 200px;
-		}
 		#remote {
 			width: 500px;
 			padding-top: 1px;
+		}
+		.modal-style {
+			background-color: #000;
+			padding: .5em;
+			width: 200px;
+			color: #FFF;
 		}
 	</style>
 </head>
@@ -31,6 +34,10 @@
 	<p><a href="response.html" title="Ventana modal por AJAX" rel="modal">Soporta AJAX</a></p>
 	<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/Nwm46hiFNBQ?rel=0" frameborder="0" allowfullscreen id="youtube"></iframe>
 	<iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://maps.google.es/?ie=UTF8&amp;ll=7.907921,-72.525473&amp;spn=0.005983,0.010568&amp;t=h&amp;z=17&amp;output=embed" id="gmaps"></iframe>
-	<div id="modal-local">HOLA MUNDO!!</div>
+	<a href="#imagen1" rel="modal" title="IMAGEN 1">
+		<img src="images/geek-1.jpg" width="200">
+	</a>
+	<div id="modal-local" class="modal-style">HOLA MUNDO!!</div>
+	<img src="images/geek-1.jpg" class="image" id="imagen1">
 </body>
 </html>

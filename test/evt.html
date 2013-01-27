@@ -33,15 +33,15 @@
             $.evt.add(this, "click", addEvt);
         }
 
-        function evento () {
-            $.evt.get().preventDefault();
+        function evento (e) {
+            e.preventDefault();
             alert ("Se ha disparado un evento");
         }
 
         delegateList = (function ($) {
             var on = false;
-            function delegate () {
-                $.evt.get().preventDefault();
+            function delegate (e) {
+                e.preventDefault();
                 alert ("precionado enlace: "+this.id);
             }
             return function () {

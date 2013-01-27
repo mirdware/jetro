@@ -28,16 +28,15 @@
 				Crea todo el marco de la ventana modal y el overlay que cubrira la pantalla del navegador.
 				@see: std
 			*/
-			show: function () {
+			show: function (e) {
 				var self = this,
 					title = self.getAttribute("title") || "",
 					isCache = self.rel.split("-")[1] == "cache",
 					url = self.getAttribute("href"),
 					path = location.href.replace(location.hash, ""),
-					e = $.evt.get(),
 					element;
-
-				e.preventDefault && e.preventDefault();
+					
+				e && e.preventDefault();
 				if (url.indexOf(path+"#") == 0) {
 					url = url.replace(path, "");
 				}
@@ -69,12 +68,10 @@
 				modal.style.display = "";
 
 				if (modal.childNodes[1]) {
-					var self = this,
-						args = arguments;
 					$.sfx.anim(modal, {opacity: 0}, {
 						onComplete: function(){
 							removeLocal();
-							core.show.apply(self, args);
+							core.show.call(self);
 						},
 						duration: 500
 					});
@@ -89,17 +86,20 @@
 					var aux = createElement("div");
 					if (!isCache || !(aux.innerHTML = cache[url])) {
 						body.appendChild(loading);
-						$.ajax.request(url,function(r){
-							body.removeChild(loading);
-							if (isCache) {
-								cache[url] = r;
-							}
-							aux.innerHTML = r;
-						}, { sync:TRUE });
+						$.ajax.request(url, {
+							callback: function(r){
+								body.removeChild(loading);
+								if (isCache) {
+									cache[url] = r;
+								}
+								aux.innerHTML = r;
+							},
+							sync:TRUE
+						});
 					}
 					element = aux.firstChild;
 				}
-				element.className = "modal-body";
+				element.className += " modal-body";
 				modal.appendChild(element);
 				element.style.display = "block";
 				text.innerHTML = title;
