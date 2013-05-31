@@ -165,3 +165,30 @@ th, td {
 #response {
 	padding: 10px;
 }
+
+#outer, #show-relatedTarget {
+	display: inline-block;
+	vertical-align: middle;
+	*zoom: 1;
+	*display: inline;
+}
+
+#outer {
+	position: relative;
+	width: 300px;
+	height: 300px;
+}
+
+#bottom, #top {
+	position: absolute;
+	width: 50px;
+	height: 50px;
+	top: 100px;
+	left: 100px;
+	background-color: red;
+}
+
+#bottom {
+	top: 150px;
+	background-color: blue;
+}

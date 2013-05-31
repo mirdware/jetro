@@ -1,6 +1,6 @@
 {
-	"name": "std.js",
-	"title": "std.js",
+	"name": "std",
+	"title": "std JS",
 	"language": "JavaScript",
 	"description": "is JavaScript standard",
 	"version": "0.1pre",
@@ -11,7 +11,7 @@
 		"mail": "marlonramirez@outlook.com"
 	},
 	"bugs": {
-		"url": "https://github.com/marlonramirez/std.js/issues"
+		"url": "https://github.com/marlonramirez/std.js/issues/new"
 	},
 	"repository": {
 		"type": "git",

@@ -1,5 +1,5 @@
-<h1>std.js is JavaScript standard</h1>
-<p>std.js es un proyecto de código abierto que he comenzado por mi cuenta, con el único fin de reunir una serie de funciones utilizadas frecuentemente con diferentes fines. De esta manera std.js propone funciones para:</p>
+<h1>std is JavaScript standard</h1>
+<p>std es un proyecto de código abierto que he comenzado por mi cuenta, con el único fin de reunir una serie de funcionalidades de uso frecuente en el desarrollo frontend. De esta manera std propone funciones para:</p>
 
 <ul>
 	<li>atajos (getElement) y ejecución (ready) del DOM</li>
@@ -12,7 +12,7 @@
 </ul>
 <p>¿Por qué no utilizar una de las tantas librerías JavaScript del mercado, si están tan bien documentadas y son tan funcionales? tengo varias razones para utilizar y mantener este trabajo, tal vez algunas de ellas sean muy egocéntricas y otras más carezcan de sentido, pero son mis razones y estas son: rapidez de ejecución (hasta 80% más rápido que algunos frameworks populares), control absoluto del código, simplicidad y porque realmente amo a JavaScript como es, con sus virtudes y defectos.</p>
 
-<h2>Premisas de std.js</h2>
+<h2>Premisas de std</h2>
 <ul>
 	<li>
 		<b>Promover la simplicidad:</b> Keep It Simple, Stupid! de hecho soy un eterno creyente que el camino más sencillo casi siempre es el más efectivo.
@@ -24,15 +24,15 @@
 		<b>Dar prioridad a lo nativo:</b> Siempre es mejor usar las cosas nativas del lenguaje, en caso de las animaciones existe CSS y aunque no sea soportado por algunos navegadores, si es una animación estética es mucho mejor pasar de JavaScript.
 	</li>
 	<li>
-		<b>Continuar la legacía IE:</b> Hasta donde sea posible claro está, tampoco vamos a dar soporte a IE 6, pues ya ni Microsoft lo da.
+		<b>Modificar lo menos posible la sintaxis JavaScript:</b> Aún que tal vez muchos no compartan mí opinión, para mí JavaScript es hermoso tal cual es y quiero mantenerlo así.
 	</li>
 	<li>
-		<b>Modificar lo menos posible la sintaxis JavaScript:</b> Aún que tal vez muchos no compartan mí opinión, para mí JavaScript es hermoso tal cual es y quiero mantenerlo así.
+		<b>Continuar la legacía IE:</b> Hasta donde sea posible claro está, tampoco vamos a dar soporte a IE 6, pues ya ni Microsoft lo da.
 	</li>
 </ul>
 
 <h2>Consideraciones</h2>
-<p>Lógicamente std.js no ha sido testeado infinidad de veces como lo hacen "fameworks" más populares y por lo tanto es MUY posible que este plagado de errores y asuntos aún no resueltos, según he ido testeando el funcionamiento de la librería he observado que algunos errores son debido a algunas consideraciones que se deben tener en cuenta.</p>
+<p>Lógicamente std no ha sido testeado infinidad de veces como lo hacen "fameworks" más populares y por lo tanto es MUY posible que este plagado de errores y asuntos aún no resueltos, según he ido testeando el funcionamiento de la librería he observado que algunos errores son debido a algunas consideraciones que se deben tener en cuenta.</p>
 
 <h3>Pruébalo en un servidor</h3>
 <p>Para realizar las pruebas AJAX se deben tener los archivos directamente en algún servidor, esta misma consideración debe ser tomada en cuenta para la utilización de hojas de estilos en Chrome, pues si se prueba de manera stand alone, puede presentar inconvenientes.</p>
@@ -45,6 +45,7 @@
 
 ```javascript
 (function($, window, undefined) {
+	"use strict";
 	/*#module*/
 })(std, window);
 ```
@@ -55,6 +56,7 @@
 
 ```javascript
 (function($, window, undefined) {
+	"use strict";
 	// declaración de variables globales
 	var FALSE = false,
 		TRUE = true,

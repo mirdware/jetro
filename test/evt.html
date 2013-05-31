@@ -57,13 +57,37 @@
             }
         })(std);
 
+        function outListener(event) {
+            $("#show-relatedTarget"). innerHTML = "exited " + event.target.id + " for " + event.relatedTarget.id;
+        }
+
+        function overListener(event) {
+            $("#show-relatedTarget").innerHTML = "entered " + event.target.id + " from " + event.relatedTarget.id;
+        }
+
+        function resetListener () {
+            $("#show-relatedTarget").innerHTML = "Mueva el mouse sobre los divs";
+        }
+
     	$ (function () {
     		$.evt.add ($("#add-item"), "click", addItem);
     		$.evt.add ($("#add-evt"), "click", addEvt);
             $.evt.add ($("#delegate"), "click", delegateList);
             $.evt.add ($(".multi-add"), "click", evento);
             $.evt.add ([$("p", $("#prueba-evt"))[0], $("@btn")[0], $("#a")], "click", evento);
-            $.evt.add ($("#form"), "submit", evento);
+            $.evt.add($("#form"), "submit", evento);
+            $.evt.add($("#top"), {
+                mouseover: overListener,
+                mouseout: outListener,
+                click: function (e) {
+                   console.log(e.relatedTarget);
+                }
+            });
+            $.evt.add($("#bottom"), {
+                mouseover: overListener,
+                mouseout: outListener
+            });
+            $.evt.add($("#outer"), "mouseout", resetListener);
     	});
     </script>
 </head>
@@ -102,5 +126,11 @@
         <label>Email:</label><input type="text" name="email" size="30" class="input-text" /><br />
         <input type="submit" class="btn" />
     </form>
+
+    <div id="outer">
+        <div id="top"></div>
+        <div id="bottom"></div>
+    </div>
+    <div id="show-relatedTarget">Mueva el mouse sobre los divs</div>
 </body>
 </html>

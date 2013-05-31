@@ -15,40 +15,41 @@
 			@param: {Element} obj es el elemento que se desea mostrar u ocultar
 			@param: {Object} opt son las opciones configurables durante el efecto, estas son las mismas de anim.
 		*/
-		function fade (obj, opt) {
-			opt || (opt = {});
-			var cssObj = std.css(obj),
-				onComplete = opt.onComplete;
-			if(cssObj.get("display") == "none") {
-				cssObj.set({
-					display: "block",
-					opacity: 0
-				});
-				std.sfx.anim(obj, {opacity: 1}, opt);
-			} else {
-				std.sfx.anim(obj, {opacity: 0}, std.extend(opt, {
-					onComplete: function(){
-						cssObj.set("display", "none");
-						onComplete&&onComplete();
-					}
-				}));
+		var fade = (function () {
+			var stop = function (){};
+
+			return function (obj, opt) {
+				opt || (opt = {});
+				var cssObj = std.css(obj),
+					onComplete = opt.onComplete;
+				if(cssObj.get("display") == "none") {
+					stop();
+					cssObj.set({
+						display: "block",
+						opacity: 0
+					});
+					stop = std.sfx.anim(obj, {opacity: 1}, opt);
+				} else {
+					stop();
+					stop = std.sfx.anim(obj, {opacity: 0}, std.extend(opt, {
+						onComplete: function(){
+							cssObj.set("display", "none");
+							onComplete && onComplete();
+						}
+					}));
+				}
 			}
-		}
+		})();
 
     	function fadeForm(e) {
 				e.preventDefault();
 				var opt = std.ajax.form(this);
 				if(isNaN(opt.duration) || isNaN(opt.fps)) {
+					alert("Solo valores numericos");
 					return;
 				}
 				var target = std("#mover");
-				if(!target.block) {
-					fade(target,opt);
-					target.block = true;
-					setTimeout(function() {
-						target.block = false;
-					}, opt.duracion);
-				}
+				fade(target,opt);
 			}
 
     	$ (function (){
@@ -141,13 +142,13 @@
 		<li><b>Opciones:</b> Como su nombre lo indica es un parametro totalmente opcional y contiene dentro de un objeto las siguientes propiedades:
 		<ul>
 			<li><b>duración (duration): </b>El tiempo que durará la animación, por defecto son 1000 milisegundos</li>
-			<li><b>Frames por segundo (fps): </b>El numero de intervalos que mostrara la animación en 1 segundo, por defecto son 100</li>
+			<li><b>Frames por segundo (fps): </b>El numero de intervalos que mostrara la animación en 1 segundo, por defecto son 60</li>
 			<li><b>al completar (onComplete): </b>Una función que sera ejecutada al terminar la animación</li>
 		</ul></li>
 	</ol>
 	<p>Es importante mencionar que (std.)sfx.anim soporta animación de colores:</p>
 	<div id="prueba-anim"></div>
-	<p>sfx cuenta con otros dos metodos que son fade y dyd, el primero realiza una difuminación o atenuación del elemento dependiento si este esta o no visble, por su parte dyd realiza acciones de drag and drop (arrastrar y soltar) ambos efectos los podemos observar en el siguiente recuadro:</p>
+	<p>sfx cuenta con otros dos metodos que son fade (deprecated en favor de anim) y dyd, el primero realiza una difuminación o atenuación del elemento dependiento si este esta o no visble, por su parte dyd realiza acciones de drag and drop (arrastrar y soltar) ambos efectos los podemos observar en el siguiente recuadro:</p>
 	<form action="#" method="post" id="form-fade">
 		<fieldset style="float:left; margin: 10px"><legend>Fade</legend>
 			<label class="radio">Duración:
@@ -156,7 +157,7 @@
 			<label class="radio">Frames Por Segundo:
 				<input type="text" name="fps" size="5" class="input-text" />
 			</label>
-			<button class="btn">Aparecer/Desaparecer</button>
+			<input type="submit" class="btn" value="Aparecer/Desaparecer" />
 		</fieldset>
 	</form>
 

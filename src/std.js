@@ -20,6 +20,7 @@
 	@version: 0.1
 */
 (function(window, undefined) {
+"use strict";
 var TRUE = true,
 	FALSE = false,
 	NULL = null,
@@ -79,7 +80,7 @@ var TRUE = true,
 					prefix = id.charAt(0);
 				
 				if (arguments.length>1 && !node) {
-					return testElement;
+					return [];
 				}
 				if (prefix == "#") {
 					return document.getElementById(name);
@@ -133,9 +134,9 @@ var TRUE = true,
 								readyList.shift()();
 							} while (readyList.length);
 							std.evt.remove(document, {
-								"DOMContentLoaded": ready,
-								"dataavailable": ready,
-								"readystatechange": stateChange
+								DOMContentLoaded: ready,
+								dataavailable: ready,
+								readystatechange: stateChange
 							});
 							std.evt.remove(window, "load", ready);
 						}
@@ -170,9 +171,9 @@ var TRUE = true,
 						para window load (document no lo acepta)
 					*/ 
 					std.evt.add(document, {
-						"DOMContentLoaded": ready,
-						"dataavailable": ready,
-						"readystatechange": stateChange
+						DOMContentLoaded: ready,
+						dataavailable: ready,
+						readystatechange: stateChange
 					});
 					std.evt.add(window, "load", ready);
 				}
@@ -204,7 +205,7 @@ var TRUE = true,
 					@param: {boolean} capture estable el flujo de eventos TRUE si es capture y FALSE si es bubbling
 				*/
 				add: function(element, nEvent, fn, capture) {
-					if(loops(element, nEvent, fn, capture)) {
+					if(loops(core.add, element, nEvent, fn, capture)) {
 						if (element.addEventListener) {
 							element.addEventListener(nEvent,fn,capture);
 						} else if (element.attachEvent) {
@@ -216,7 +217,7 @@ var TRUE = true,
 							}
 							var sid = fn.id+"-"+element.id;
 							events[sid] = function(){
-								fn.call(element, core.fix());
+								fn.call(element, fix());
 							};
 							element.attachEvent("on"+nEvent,events[sid]);
 						} else {
@@ -233,13 +234,13 @@ var TRUE = true,
 					@param: {boolean} capture establece como ocurria el flujo de eventos TRUE si es capture y FALSE si es bubbling 
 				*/
 				remove: function(element, nEvent, fn, capture){
-					if(loops(element, nEvent, fn, capture)) {
+					if(loops(core.remove, element, nEvent, fn, capture)) {
 						if (element.removeEventListener){
 							element.removeEventListener(nEvent,fn,capture);
 						} else if (element.detachEvent) {
 							element.detachEvent("on"+nEvent,events[fn.id+"-"+element.id]);
 						} else {
-							element["on"+nEvent] = function(){};
+							element["on"+nEvent] = NULL;
 						}
 					}
 				},
@@ -254,7 +255,7 @@ var TRUE = true,
 					@param {boolean} capture establece como ocurrira el flujo de eventos TRUE si es capture y FALSE si es bubbling
 				*/
 				on: function(element, observe, nEvent, fn, capture) {
-					if(loops(element, nEvent, fn, capture, observe)) {
+					if(loops(core.on, element, nEvent, fn, capture, observe)) {
 						if (!fn.id) {
 							fn.id = id++;
 						}
@@ -299,42 +300,6 @@ var TRUE = true,
 				*/
 				off: function (element, observe, nEvent, fn, capture) {
 					core.remove(element, nEvent, events[observe+fn.id+"-"+element.id], capture);
-				},
-				
-				/**
-					Se encarga de generar un objeto evento con un formato unico permitiendo asi una solución crossbrowser.
-					@return: El evento formateado para su correcto uso
-				*/
-				fix: function() {
-					var e = window.event,
-						body = document.body;	
-					if (e) {
-						e.charCode = (e.type == "keypress") ? e.keyCode : 0;
-						e.eventPhase = 2;
-						e.isChar = (e.charCode > 0);
-						e.pageX = e.clientX + body.scrollLeft;
-						e.pageY = e.clientY + body.scrollTop;
-						
-						e.preventDefault = function() {
-							this.returnValue = FALSE;
-						};
-						
-						if (e.type == "mouseout") {
-							e.relatedTarget = e.toElement;
-						} else if (e.type == "mouseover") {
-							e.relatedTarget = e.fromElement;
-						}
-							
-						e.stopPropagation = function() {
-							this.cancelBubble = TRUE;
-						};
-							
-						e.target = e.srcElement;
-						e.time = (new Date).getTime();
-						return e;
-					}
-					
-					return core.fix.caller.arguments[0];
 				}
 			};
 			
@@ -347,9 +312,7 @@ var TRUE = true,
 				@param {boolean} capture en caso de nEvent ser un objeto debera ser nulo y no se tomara en cuenta
 				@param {string} observe puede ser undefined lo que indica que fue llamado desde add o remove
 			*/
-			function loops(element, nEvent, fn, capture, observe) {
-				var caller = loops.caller;
-
+			function loops(caller, element, nEvent, fn, capture, observe) {
 				if (element) {
 					/*	validar si no es un elemento (una lista de elementos es distinta), si tiene una
 						longitud, es decir se encuentra serializado y es diferente a window, esta ultima
@@ -372,6 +335,37 @@ var TRUE = true,
 					}
 				}
 				return !!element;
+			}
+
+			/**
+				Se encarga de generar un objeto evento con un formato unico permitiendo asi una solución crossbrowser.
+				@return: El evento formateado para su correcto uso
+			*/
+			function fix () {
+				var e = window.event,
+					body = document.body,
+					type = e.type;
+
+				e.charCode = e.type == "keypress"? e.keyCode: 0;
+				e.eventPhase = 2;
+				e.isChar = e.charCode > 0;
+				e.pageX = e.clientX + body.scrollLeft;
+				e.pageY = e.clientY + body.scrollTop;
+				e.relatedTarget = type == "mouseout"? e.toElement:
+								  type == "mouseover"? e.fromElement:
+								  NULL;
+				
+				e.preventDefault = function() {
+					this.returnValue = FALSE;
+				};
+					
+				e.stopPropagation = function() {
+					this.cancelBubble = TRUE;
+				};
+					
+				e.target = e.srcElement;
+				e.time = +new Date;
+				return e;
 			}
 			
 			return core;
@@ -461,7 +455,7 @@ var TRUE = true,
 							if (lastStyleSheet.addRule) {
 								lastStyleSheet.addRule(ruleName, NULL, lengthRule);
 							} else {
-								lastStyleSheet.insertRule(ruleName+" { }", lengthRule);
+								lastStyleSheet.insertRule(ruleName+"{}", lengthRule);
 							}
 						}
 						obj = getCSSRule(ruleName);
@@ -478,13 +472,14 @@ var TRUE = true,
 					*/
 					get: function(prop) {
 						normalize(arguments);
-						var style = (obj != ruleName)?obj.style[prop]:(obj.currentStyle || document.defaultView.getComputedStyle(obj, ""))[prop];
+						var style = obj != ruleName? obj.style[prop]:
+									(obj.currentStyle || document.defaultView.getComputedStyle(obj, ""))[prop];
 						//unificar a rgb la salida de colores
 						if(style.indexOf("#") == 0) {
 							style = "rgb("+hexToRGB(style).join(", ")+")";
 						}
 						if(prop == "filter") {
-							style = (style == "")?"1":(parseInt(style.replace(/[^\d]/g,""))/100)+"";
+							style = style == ""?"1":(parseInt(style.replace(/[^\d]/g,""))/100)+"";
 						}
 						return style;
 					},
@@ -731,7 +726,14 @@ var TRUE = true,
 					timer,
 					from = [],
 					to = [],
-					post = [];
+					post = [],
+					stop = function () {
+						clearInterval(timer);
+						for(var prop in props) {
+							style.set(prop, props[prop]);
+						}
+						onComplete && onComplete();
+					};
 				
 				for(var prop in props) {
 					var cssProp = style.get(prop);
@@ -770,17 +772,11 @@ var TRUE = true,
 							}
 						}
 					} else {
-						timer = clearInterval(timer);
-						for(var prop in props) {
-							style.set(prop, props[prop]);
-						}
-						if(onComplete) {
-							onComplete();
-						}
+						stop();
 					}
 				}, Math.round(1000/fps));
 
-				return timer;
+				return stop;
 			}
 		}
 	};

@@ -18,25 +18,25 @@
 		EventList = {ready: [], close: []},
 		text = createElement("h2"),
 		loading = createElement("div"),
+		active = FALSE,
 		modal,
 		overlay,
 		local,
 		body,
 		core = {
+			active: function () {
+				return active;
+			},
 			/**
 				Renderiza el nodo la ventana modal dependiendo del enlace que la halla invocado, tomando el titulo de la misma etiqueta.
 				Crea todo el marco de la ventana modal y el overlay que cubrira la pantalla del navegador.
 				@see: std
 			*/
-			show: function (e) {
-				var self = this,
-					title = self.getAttribute("title") || "",
-					isCache = self.rel.split("-")[1] == "cache",
-					url = self.getAttribute("href"),
-					path = location.href.replace(location.hash, ""),
+			show: function (url, title, isCache) {
+				title || (title = "");
+				var path = location.href.replace(location.hash, ""),
 					element;
-					
-				e && e.preventDefault();
+
 				if (url.indexOf(path+"#") == 0) {
 					url = url.replace(path, "");
 				}
@@ -71,7 +71,7 @@
 					$.sfx.anim(modal, {opacity: 0}, {
 						onComplete: function(){
 							removeLocal();
-							core.show.call(self);
+							core.show(url, title, isCache);
 						},
 						duration: 500
 					});
@@ -119,6 +119,7 @@
 					marginTop: -(height/2)+"px"
 				});
 				core.reset();
+				active = TRUE;
 				bind ("ready");
 			},
 		
@@ -126,12 +127,12 @@
 				Elimina el nodo principal de la ventana modal y oculta el resto de la estructura.
 				@see: std
 			*/
-			hide: function () {
+			hide: function (e) {
 				$.sfx.anim(modal, {opacity: 0}, {
 					onComplete: function (){
 						overlay.style.display = "none";
 						modal.style.display = "none";
-						removeLocal();
+						removeLocal(e);
 					},
 					duration: 500
 				});
@@ -167,15 +168,25 @@
 			}
 		};
 	
-	function removeLocal () {
+	function removeLocal ( done ) {
 		var modalBody = modal.childNodes[1];
 		if (modalBody) {
 			local && body.appendChild(local);
 			modal.removeChild(modalBody);
-			bind ("close");
+			active = FALSE;
+			done && bind ("close");
 		} else {
 			body.removeChild(loading);
 		}
+	}
+
+	function fire (e) {
+		e.preventDefault();
+		var self = this,
+			title = self.getAttribute("title") || "",
+			isCache = self.rel.split("-")[1] == "cache",
+			url = self.getAttribute("href");
+		core.show(url, title, isCache);
 	}
 
 	function bind (type) {
@@ -200,11 +211,11 @@
 
 	$(function (){
 		body = document.body;
-		$.evt.on(document,"a","click", function() {
+		$.evt.on(document,"a","click", function(e) {
 			var self = this,
 				rel = self.rel;
 			if(rel.indexOf("modal") == 0 ) {
-				core.show.apply(self,arguments);
+				fire.call(self, e);
 			} else if(rel == "external" && self.target != "_blank") {
 				self.target = "_blank";
 			}

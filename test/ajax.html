@@ -10,11 +10,12 @@
 	    <script type="text/javascript">
 	    function simpleAJAX(e) {
 			e.preventDefault();
-			var form = std.ajax.form(this.form);
-			console.log(form);
+			var form = std.ajax.form(this.form),
+				container = std("#response");
+			container.innerHTML = '<img src="images/modal_loading.gif" />';
 			std.ajax.request(this.form.action,{
 				callback: function(r) {
-					std('#response').innerHTML = r;
+					container.innerHTML = r;
 				},
 				data: form,
 				method:form.method

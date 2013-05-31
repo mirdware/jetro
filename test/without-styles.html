@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width">
+		<title>Sin estilos CSS</title>
+		<link rel="shortcut icon" href="images/labs.ico" />
+		<script type="text/javascript" src="../src/std.js"></script>
+		<script type="text/javascript">
+			$(function () {
+				var css = $.css("#element");
+				css.set({
+					width: "100px",
+					height: "100px",
+					backgroundColor: "#0F0"
+				});
+				$.evt.add($("#element"), "click", function () {
+					css.set("backgroundColor", "#FF0");
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div id="element"></div>
+	</body>
+</html>
