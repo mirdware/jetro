@@ -15,18 +15,16 @@
 		TRUE = true,
 		document = window.document,
 		location = document.location,
-		EventList = {ready: [], close: []},
+		EventList = {rdy: [], cls: []},
+		key_ready = "rdy",
+		key_close = "cls",
 		text = createElement("h2"),
 		loading = createElement("div"),
-		active = FALSE,
 		modal,
 		overlay,
 		local,
 		body,
 		core = {
-			active: function () {
-				return active;
-			},
 			/**
 				Renderiza el nodo la ventana modal dependiendo del enlace que la halla invocado, tomando el titulo de la misma etiqueta.
 				Crea todo el marco de la ventana modal y el overlay que cubrira la pantalla del navegador.
@@ -52,7 +50,7 @@
 					modal.id = "modal-std";
 					loading.id = "modal-loading"
 					head.className = "modal-head";
-					$.evt.add([img, overlay],"click",core.hide);
+					$.evt.add([img, overlay, loading], "click", core.hide);
 					head.appendChild(img);
 					head.appendChild(text);
 					modal.appendChild(head);
@@ -63,9 +61,7 @@
 						area: overlay
 					});
 				}
-
 				overlay.style.display = "";
-				modal.style.display = "";
 
 				if (modal.childNodes[1]) {
 					$.sfx.anim(modal, {opacity: 0}, {
@@ -84,7 +80,9 @@
 					local.parentNode.removeChild(local);
 				} else {
 					var aux = createElement("div");
-					if (!isCache || !(aux.innerHTML = cache[url])) {
+					if ( cache[url] ) {
+						aux.innerHTML = cache[url];
+					} else {
 						body.appendChild(loading);
 						$.ajax.request(url, {
 							callback: function(r){
@@ -99,28 +97,31 @@
 					}
 					element = aux.firstChild;
 				}
-				element.className += " modal-body";
-				modal.appendChild(element);
-				element.style.display = "block";
-				text.innerHTML = title;
-				$.sfx.anim(modal, {opacity:1});
-				
-				var childsModal = modal.childNodes,
-					height = 0,
-					width = element.offsetWidth;
-				
-				for (var i=0,h; h=childsModal[i]; i++) {
-					height += h.offsetHeight;
+
+				if ( element ) {
+					modal.style.display = "";
+					element.className += " modal-body";
+					modal.appendChild(element);
+					element.style.display = "block";
+					text.innerHTML = title;
+					$.sfx.anim(modal, {opacity:1});
+					
+					var childsModal = modal.childNodes,
+						height = 0,
+						width = element.offsetWidth;
+					
+					for (var i=0,h; h=childsModal[i]; i++) {
+						height += h.offsetHeight;
+					}
+					$.css(modal).set({
+						width: width+"px",
+						height: height+"px",
+						marginLeft: -(width/2)+"px",
+						marginTop: -(height/2)+"px"
+					});
+					core.reset();
+					bind (key_ready);
 				}
-				$.css(modal).set({
-					width: width+"px",
-					height: height+"px",
-					marginLeft: -(width/2)+"px",
-					marginTop: -(height/2)+"px"
-				});
-				core.reset();
-				active = TRUE;
-				bind ("ready");
 			},
 		
 			/**
@@ -155,7 +156,8 @@
 					dispararán cuando la ventana se cargue.
 			*/
 			ready: function (fn) {
-				EventList.ready.push(fn);
+				EventList[key_ready].push(fn);
+				return core;
 			},
 
 			/**
@@ -164,7 +166,8 @@
 					dispararán cuando la ventana se cierre.
 			*/
 			close: function (fn) {
-				EventList.close.push(fn);
+				EventList[key_close].push(fn);
+				return core;
 			}
 		};
 	
@@ -173,8 +176,7 @@
 		if (modalBody) {
 			local && body.appendChild(local);
 			modal.removeChild(modalBody);
-			active = FALSE;
-			done && bind ("close");
+			done && bind (key_close);
 		} else {
 			body.removeChild(loading);
 		}

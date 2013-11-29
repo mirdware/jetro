@@ -62,6 +62,18 @@ var TRUE = true,
 			return std;
 		},
 
+		/**
+			Retorna el numero de elementos de un objeto, funciona de igual manera para array o String.
+			@return {Integer} retorna el número de elementos del objeto.
+		**/
+		size: function (obj) {
+			var i=0, prop;
+			for (prop in obj) {
+				++i;
+			}
+			return i;
+		},
+
 		/** DOM */
 		dom: {
 			/**
@@ -205,7 +217,7 @@ var TRUE = true,
 					@param: {boolean} capture estable el flujo de eventos TRUE si es capture y FALSE si es bubbling
 				*/
 				add: function(element, nEvent, fn, capture) {
-					if(loops(core.add, element, nEvent, fn, capture)) {
+					if( loops(core.add, element, nEvent, fn, capture) ) {
 						if (element.addEventListener) {
 							element.addEventListener(nEvent,fn,capture);
 						} else if (element.attachEvent) {
@@ -217,7 +229,7 @@ var TRUE = true,
 							}
 							var sid = fn.id+"-"+element.id;
 							events[sid] = function(){
-								fn.call(element, fix());
+								fn.call(element, core.fix());
 							};
 							element.attachEvent("on"+nEvent,events[sid]);
 						} else {
@@ -234,7 +246,7 @@ var TRUE = true,
 					@param: {boolean} capture establece como ocurria el flujo de eventos TRUE si es capture y FALSE si es bubbling 
 				*/
 				remove: function(element, nEvent, fn, capture){
-					if(loops(core.remove, element, nEvent, fn, capture)) {
+					if( loops(core.remove, element, nEvent, fn, capture) ) {
 						if (element.removeEventListener){
 							element.removeEventListener(nEvent,fn,capture);
 						} else if (element.detachEvent) {
@@ -255,7 +267,7 @@ var TRUE = true,
 					@param {boolean} capture establece como ocurrira el flujo de eventos TRUE si es capture y FALSE si es bubbling
 				*/
 				on: function(element, observe, nEvent, fn, capture) {
-					if(loops(core.on, element, nEvent, fn, capture, observe)) {
+					if( loops(core.on, element, nEvent, fn, capture, observe) ) {
 						if (!fn.id) {
 							fn.id = id++;
 						}
@@ -268,18 +280,17 @@ var TRUE = true,
 									(prefix == "@")?"name":
 									"nodeName",
 							name = (type=="nodeName")?observe.toUpperCase():observe.substr(1),
-							sid = observe+fn.id+"-"+element.id;
+							sid = observe+fn.id+"-"+element.id,
+							pattern = new RegExp("(^|\\s)"+name+"(\\s|$)");
 
 						events[sid] = function (e) {
-							var target = e.target,
-								args = arguments,
-								pattern = new RegExp("(^|\\s)"+name+"(\\s|$)");
+							var target = e.target;
 							if(observe == "*") {
-								fn.apply(target, args);
+								fn.call(target, e);
 							} else {
 								while(target && target !== element) {
 									if( (prefix == "." && pattern.test(target[type])) || target[type] == name ) {
-										fn.apply(target, args);
+										fn.call(target, e);
 									}
 									target = target.parentNode;
 								}
@@ -299,7 +310,42 @@ var TRUE = true,
 					@param {boolean} capture establece como ocurria el flujo de eventos TRUE si es capture y FALSE si es bubbling
 				*/
 				off: function (element, observe, nEvent, fn, capture) {
-					core.remove(element, nEvent, events[observe+fn.id+"-"+element.id], capture);
+					if ( loops(core.off,  element, nEvent, fn, capture, observe) ) {
+						core.remove(element, nEvent, events[observe+fn.id+"-"+element.id], capture);
+					}
+				},
+				
+				/**
+					Se encarga de generar un objeto evento con un formato unico permitiendo asi una solución crossbrowser.
+					@return: El evento formateado para su correcto uso
+				*/
+				fix: function() {
+					var e = window.event,
+						body = document.body,
+						type = e.type;	
+					if (e) {
+						e.charCode = type == "keypress" ? e.keyCode : 0;
+						e.eventPhase = 2;
+						e.isChar = e.charCode > 0;
+						e.pageX = e.clientX + body.scrollLeft;
+						e.pageY = e.clientY + body.scrollTop;
+						
+						e.preventDefault = function() {
+							this.returnValue = FALSE;
+						};
+						
+						e.relatedTarget = 	type == "mouseout" ? e.toElement:
+											type == "mouseover" ? e.fromElement:
+											NULL;
+							
+						e.stopPropagation = function() {
+							this.cancelBubble = TRUE;
+						};
+							
+						e.target = e.srcElement;
+						e.time = +new Date();
+					}
+					return e;
 				}
 			};
 			
@@ -336,44 +382,13 @@ var TRUE = true,
 				}
 				return !!element;
 			}
-
-			/**
-				Se encarga de generar un objeto evento con un formato unico permitiendo asi una solución crossbrowser.
-				@return: El evento formateado para su correcto uso
-			*/
-			function fix () {
-				var e = window.event,
-					body = document.body,
-					type = e.type;
-
-				e.charCode = e.type == "keypress"? e.keyCode: 0;
-				e.eventPhase = 2;
-				e.isChar = e.charCode > 0;
-				e.pageX = e.clientX + body.scrollLeft;
-				e.pageY = e.clientY + body.scrollTop;
-				e.relatedTarget = type == "mouseout"? e.toElement:
-								  type == "mouseover"? e.fromElement:
-								  NULL;
-				
-				e.preventDefault = function() {
-					this.returnValue = FALSE;
-				};
-					
-				e.stopPropagation = function() {
-					this.cancelBubble = TRUE;
-				};
-					
-				e.target = e.srcElement;
-				e.time = +new Date;
-				return e;
-			}
 			
 			return core;
 			
 		})(),
 		
 		/** ESTILOS */
-		css: (function(){	
+		css: (function(){
 			/**
 				Busca selectores CSS dentro de las hojas de estilos del documento que coincidan con la regla de estilo pasada como parametro,
 				en caso de encontrarla procede a eliminarla o retornarla segun sea el caso.
@@ -390,15 +405,11 @@ var TRUE = true,
 					for (var j = 0, cssRule; cssRule = cssRules[j]; j++){
 						if (cssRule.selectorText == ruleName) {
 							if (deleteFlag) {
-								if (styleSheet.cssRules) {
-									styleSheet.deleteRule(j);
-								} else {
-									styleSheet.removeRule(j);
-								}
+								styleSheet.cssRules? styleSheet.deleteRule(j):
+													 styleSheet.removeRule(j);
 								return TRUE;
-							} else {
-								return cssRule;
 							}
+							return cssRule;
 						}
 					}
 				}
@@ -435,33 +446,30 @@ var TRUE = true,
 				Establece si se va a trabajar el estilo sobre una regla css o sobre el elemento directamente, en caso que una regla css no exista 
 				esta función la crea. Tambien establece los metodos get y set de las propiedades css del elemento.
 				@param: {String || element} ruleName es el selector de la regla de estilo a buscar o directamente el elemento con el cual trabajar
-				@param: {boolean} deleteFlag especifica si se elimina una regla css, en caso de ruleName no ser una regla css este parametro 
+				@param: {boolean} deleteFlag elimina una regla css si se encuentra en TRUE, en caso que ruleName no sea una regla css este parametro 
 						sera omitido
 				@return: El objeto con los metodos get y set necesarios para trabajar los estilos de manera correcta y estandarizada
 			*/
 			return function(ruleName, deleteFlag) {
-				var obj;
+				var obj = ruleName;
 				if(typeof ruleName == "string") {
 					if(deleteFlag) {
-						getCSSRule(ruleName, deleteFlag)
+						return getCSSRule(ruleName, deleteFlag);
 					} else {
 						if (!styleSheets.length) {
 							std("head")[0].appendChild(document.createElement("style"));
 						}
-						var lastStyleSheet = styleSheets[styleSheets.length-1],
-							lengthRule = lastStyleSheet.length;
-						if (!getCSSRule(ruleName)) {
-
-							if (lastStyleSheet.addRule) {
-								lastStyleSheet.addRule(ruleName, NULL, lengthRule);
-							} else {
-								lastStyleSheet.insertRule(ruleName+"{}", lengthRule);
-							}
-						}
 						obj = getCSSRule(ruleName);
+						if (!obj) {
+							//crear la regla de estilo ya que no existe
+							var lastStyleSheet = styleSheets[styleSheets.length-1],
+								cssRules = lastStyleSheet.cssRules || lastStyleSheet.rules,
+								lengthRules = cssRules.length;
+							lastStyleSheet.cssRules ?	lastStyleSheet.insertRule(ruleName+"{}", lengthRules):
+														lastStyleSheet.addRule(ruleName, NULL, lengthRules);
+							obj = cssRules[lengthRules];
+						}
 					}
-				} else {
-					obj = ruleName;
 				}
 				return {
 					/**
@@ -472,14 +480,14 @@ var TRUE = true,
 					*/
 					get: function(prop) {
 						normalize(arguments);
-						var style = obj != ruleName? obj.style[prop]:
-									(obj.currentStyle || document.defaultView.getComputedStyle(obj, ""))[prop];
+						var style = (obj === ruleName ? obj.currentStyle || document.defaultView.getComputedStyle(obj, ""):
+														obj.style)[prop];
 						//unificar a rgb la salida de colores
 						if(style.indexOf("#") == 0) {
 							style = "rgb("+hexToRGB(style).join(", ")+")";
 						}
 						if(prop == "filter") {
-							style = style == ""?"1":(parseInt(style.replace(/[^\d]/g,""))/100)+"";
+							style = (style == "")? "1" : (parseInt(style.replace(/[^\d]/g,""))/100)+"";
 						}
 						return style;
 					},
@@ -550,7 +558,7 @@ var TRUE = true,
 						data = NULL;
 					}
 				}
-				xmlHttp.onreadystatechange = function() {
+				xmlHttp.onreadystatechange = function(e) {
 					if (xmlHttp.readyState == 4) {
 						if (xmlHttp.status == 200) {
 							callback && callback( response == "XML"?xmlHttp.responseXML:
@@ -562,7 +570,7 @@ var TRUE = true,
 						feedback(xmlHttp.readyState);
 					}
 				};
-				
+
 				xmlHttp.open(method, url, async);
 				!isDataForm && xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 				xmlHttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
@@ -578,10 +586,13 @@ var TRUE = true,
 				if(typeof obj != "object") {
 					return obj;
 				}
-				var res=[], typeKey;
-				for(var key in obj) {
-					typeKey = typeof obj[key];
-					if(typeKey == "string" || typeKey == "number") {
+				var res = [],
+					typeData,
+					key;
+
+				for(key in obj) {
+					typeData = typeof obj[key];
+					if(typeData == "string" || typeData == "number" || typeData == "boolean") {
 						res.push( encodeURIComponent(key)+"="+encodeURIComponent(obj[key]) );
 					}
 				}
@@ -604,6 +615,9 @@ var TRUE = true,
 						type = inp.type;
 						if( (type == "radio" || type == "checkbox") && !inp.checked ) {
 							continue;
+						}
+						if (name.indexOf("[]") != -1) {
+							name += i;
 						}
 						obj[name] = inp.value;
 						if(!obj[name] && type.indexOf("select") == 0 && (index = inp.selectedIndex) != -1) {
@@ -660,6 +674,7 @@ var TRUE = true,
 							x = initX+nowX-cEjeX,
 							y = initY+nowY-cEjeY;
 
+						e.preventDefault();
 						if (x<=(marginL*-1)+aLeft) {
 							x = (marginL*-1)+aLeft;
 						} else if (x>=(aWidth+marginL+aLeft-(mov.offsetWidth+marginL*2))) {
@@ -678,20 +693,19 @@ var TRUE = true,
 							left: x+"px",
 							top: y+"px"
 						});
-						onDrag && onDrag();
-						e.preventDefault();
+						onDrag && onDrag(e);
 					}
 					
 					/**
 						Remueve los eventos mousemove y mouseup del documento
 						@see: EVENTOS
 					*/
-					function drop() {
+					function drop(e) {
 						std.evt.remove(document,{
 							mousemove: drag,
 							mouseup: drop
 						}, TRUE);
-						onDrop && onDrop();
+						onDrop && onDrop(e);
 					}
 					
 					std.evt.add(document,{
@@ -722,31 +736,31 @@ var TRUE = true,
 					duration = parseInt(opt.duration) || 1000,
 					fps = parseInt(opt.fps) || 60,
 					onComplete = opt.onComplete,
-					time,
-					timer,
 					from = [],
 					to = [],
 					post = [],
+					i = 0,
+					time, timer, prop, cssProp, value,
 					stop = function () {
-						clearInterval(timer);
-						for(var prop in props) {
+						timer = clearInterval(timer);
+						for(prop in props) {
 							style.set(prop, props[prop]);
 						}
 						onComplete && onComplete();
 					};
 				
-				for(var prop in props) {
-					var cssProp = style.get(prop);
+				for(prop in props) {
+					cssProp = style.get(prop);
 					if(cssProp.indexOf("rgb") == 0) {
 						post[prop] = [];
-						var value = props[prop];
+						value = props[prop];
 						if(value.indexOf("#") == 0) {
 							to[prop] = hexToRGB(value);
 						} else {
 							to[prop] = value.substring(4, value.length-1).split(",");
 						}
 						from[prop] = cssProp.substring(4, cssProp.length-1).split(",");
-						for(var i=0; i<3; i++) {
+						for(; i<3; i++) {
 							from[prop][i] = parseInt(from[prop][i]);
 							post[prop][i] = (from[prop][i]-to[prop][i])/((duration/1000)*fps);
 						}
@@ -759,20 +773,22 @@ var TRUE = true,
 				
 				time = +new Date;
 				timer = setInterval(function () {
-					var currentTime = +new Date;
-					if(currentTime < time + duration) {
-						for(var prop in props) {
-							if(style.get(prop).indexOf("rgb") == 0) {
-								for(var i=0; i<3; i++) {
-									from[prop][i] = Math.round(from[prop][i]-post[prop][i]);
+					if (timer) {
+						var currentTime = +new Date;
+						if(currentTime < time + duration) {
+							for(prop in props) {
+								if(style.get(prop).indexOf("rgb") == 0) {
+									for(var i=0; i<3; i++) {
+										from[prop][i] = Math.round(from[prop][i]-post[prop][i]);
+									}
+									style.set(prop, "rgb(" + from[prop] + ")");
+								} else {
+									style.set(prop, (from[prop] + (to[prop] - from[prop]) * ((currentTime - time) / duration)) + post[prop]);
 								}
-								style.set(prop, "rgb(" + from[prop].toString() + ")");
-							} else {
-								style.set(prop, (from[prop] + (to[prop] - from[prop]) * ((currentTime - time) / duration)) + post[prop]);
 							}
+						} else {
+							stop();
 						}
-					} else {
-						stop();
 					}
 				}, Math.round(1000/fps));
 
@@ -818,54 +834,52 @@ std.extend (String.prototype,{
 
 
 /** JSON */
-if(window.JSON == undefined) {
-	window.JSON = {
-		/**
-			Genera una cadena JSON valida partiendo de un objeto javascript sin funciones.
-			@param: {object} obj es el objeto suministrado para ser parseado a String
-			@return: Una cadena formateada correctamente como JSON
-			@deprecated
-		*/
-		stringify: function(obj) {
-			if (!(obj instanceof Object)) {
-				return obj;
-			}
-			var isArray = obj instanceof Array,
-				strJSON = isArray?"[":"{",
-				value;
-				
-			for(var key in obj) {
-				value = obj[key]
-				if(typeof value != "function") {
-					if (!isArray) {
-						strJSON += '"'+key+'":';
-					}
-					strJSON += (value instanceof Object? JSON.stringify(value):
-								typeof value == "string"?'"'+value+'"':
-								value)+',';
-				}
-			}
-			
-			return strJSON.substr(0, strJSON.length-1) + (isArray?"]":"}");
-		},
-		/**
-			Crea un objeto partiendo de una cadena JSON correctamente formateada.
-			@param: {String} str es un string que debe se parseado a un objeto javascript
-			@return: Dependiendo si es una cadena JSON valida se retornara el objeto, en caso contrario no se retorna nada
-			@deprecated
-		*/
-		parse: function(strJSON) {
-			if (typeof strJSON == "string" && /^[\],:{}\s]*$/
-				.test(strJSON.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@')
-				.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
-				.replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
-				return window[ "eval" ]("("+strJSON+")");
-			}
-			
-			throw new Error("JSON.parse");
+window.JSON || (window.JSON = {
+	/**
+		Genera una cadena JSON valida partiendo de un objeto javascript sin funciones.
+		@param: {object} obj es el objeto suministrado para ser parseado a String
+		@return: Una cadena formateada correctamente como JSON
+		@deprecated
+	*/
+	stringify: function(obj) {
+		if (!(obj instanceof Object)) {
+			return obj;
 		}
-	};
-}
+		var isArray = obj instanceof Array,
+			strJSON = isArray?"[":"{",
+			value;
+			
+		for(var key in obj) {
+			value = obj[key]
+			if(typeof value != "function") {
+				if (!isArray) {
+					strJSON += '"'+key+'":';
+				}
+				strJSON += (value instanceof Object? JSON.stringify(value):
+							typeof value == "string"?'"'+value+'"':
+							value)+',';
+			}
+		}
+		
+		return strJSON.substr(0, strJSON.length-1) + (isArray?"]":"}");
+	},
+	/**
+		Crea un objeto partiendo de una cadena JSON correctamente formateada.
+		@param: {String} str es un string que debe se parseado a un objeto javascript
+		@return: Dependiendo si es una cadena JSON valida se retornara el objeto, en caso contrario no se retorna nada
+		@deprecated
+	*/
+	parse: function(strJSON) {
+		if (typeof strJSON == "string" && /^[\],:{}\s]*$/
+			.test(strJSON.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@')
+			.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
+			.replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
+			return window[ "eval" ]("("+strJSON+")");
+		}
+		
+		throw new Error("JSON.parse");
+	}
+});
 
 /* Estableciendo un mismo atajo para std.dom.ready y std.dom.get */
 window.$ = function () {

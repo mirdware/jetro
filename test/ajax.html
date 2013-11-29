@@ -57,6 +57,10 @@
 		std(function () {
 			std.evt.add(std("#std"),"click",simpleAJAX);
 			std.evt.add(std("#images"), "change", formDataAJAX);
+			std.evt.add(std("#url-gen"), "click", function (e) {
+				var form = $.ajax.form(e.target.form);
+				std('#response').innerHTML = $.ajax.url(form);
+			});
 		});
 	  	</script>
 	</head>
@@ -93,5 +97,17 @@
 		</div>
 		<div id="response" class="center">...</div>
 		
+		<h3>URL</h3>
+		<form method="GET">
+			<label for="form-nombre">Nombre:</label> <input type="text" name="nombre" id="form-nombre" class="input-text" /><br />
+			<label>Algo: <input type="checkbox" name="enviar"/></label><br />
+		    <label>Opciones:</label>
+		    <label class="radio">opt1<input type="radio" name="radio" value="opt1" /></label>
+		    <label class="radio">opt2<input type="radio" name="radio" value="opt2" /></label>
+		    <label class="radio">opt3<input type="radio" name="radio" value="opt3" /></label><br />
+		    <input type="submit" class="btn" value="Enviar" /> 
+		    <input type="button" class="btn" value = "Generar URL" id="url-gen" />
+		</form>
+
 	</body>
 </html>
