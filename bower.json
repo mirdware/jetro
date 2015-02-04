@@ -1,0 +1,17 @@
+{
+	"name": "jetro",
+	"version": "0.1.1",
+	"homepage": "http://mirdaware.com",
+	"authors": "Marlon Ramírez",
+	"description": "JavaScript for everybody",
+	"main": [
+		"./src/jetro.js"
+	],
+	"keywords": [
+		"Jetro",
+		"JavaScript"
+	],
+	"license": "MIT",
+	"ignore": {},
+	"dependencies": {}
+}

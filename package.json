@@ -1,26 +1,33 @@
 {
-	"name": "std",
-	"title": "std JS",
-	"language": "JavaScript",
-	"description": "is JavaScript standard",
-	"version": "0.1pre",
-	"homepage": "http://mirdaware.info",
-	"author": {
-		"name": "Marlon Ramirez",
-		"twitter": "marlonyramirez",
-		"mail": "marlonramirez@outlook.com"
-	},
-	"bugs": {
-		"url": "https://github.com/marlonramirez/std.js/issues/new"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/marlonramirez/std.js.git",
-	},
-	"license": [
-		{
-			"type": "MIT",
-			"url": "https://raw.github.com/marlonramirez/std.js/master/MIT-License.txt"
-		}
-	]
+  "name": "jetro",
+  "title": "Jetro",
+  "language": "JavaScript",
+  "description": "JavaScript for everybody",
+  "version": "0.1.1",
+  "homepage": "http://mirdaware.com",
+  "author": {
+    "name": "Marlon Ramírez",
+    "twitter": "marlonyramirez",
+    "mail": "marlonramirez@outlook.com"
+  },
+  "bugs": {
+    "url": "https://github.com/marlonramirez/std.js/issues/new"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mirdware/Jetro.git"
+  },
+  "license": [
+    {
+      "type": "MIT",
+      "url": "https://raw.github.com/marlonramirez/Jetro.js/master/LICENSE"
+    }
+  ],
+  "author": "Marlon Ramirez <marlonramirez@outlook.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-uglify": "^0.4.0",
+    "grunt-contrib-watch": "~0.6.1"
+  }
 }
